@@ -13,6 +13,7 @@
 
 
     <TextView
+        android:id="@+id/main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
@@ -29,49 +30,46 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="3"
             android:layout_marginBottom="16dp"
+            android:layout_weight="3"
+            android:backgroundTint="@color/white"
+            android:text="Поиск"
+            android:textAllCaps="false"
+            android:textColor="#1A1B22"
+            android:textSize="22sp"
             app:cornerRadius="15dp"
             app:icon="@drawable/ic_search"
             app:iconGravity="textStart"
-            app:iconTint="#1A1B22"
-            android:backgroundTint="@color/white"
-            android:textSize="22sp"
-            android:textColor="#1A1B22"
-            android:textAllCaps="false"
-            android:text="Поиск"
-            android:layout_gravity="center" />
+            app:iconTint="#1A1B22" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="3"
             android:layout_marginBottom="16dp"
+            android:layout_weight="3"
+            android:backgroundTint="@color/white"
+            android:text="Медиатека"
+            android:textAllCaps="false"
+            android:textColor="#1A1B22"
+            android:textSize="22sp"
             app:cornerRadius="15dp"
             app:icon="@drawable/ic_library"
             app:iconGravity="textStart"
-            app:iconTint="#1A1B22"
-            android:backgroundTint="@color/white"
-            android:textSize="22sp"
-            android:textColor="#1A1B22"
-            android:textAllCaps="false"
-            android:text="Медиатека"
-            android:layout_gravity="center" />
+            app:iconTint="#1A1B22" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="3"
+            android:backgroundTint="@color/white"
+            android:text="Настройки"
+            android:textAllCaps="false"
+            android:textColor="#1A1B22"
+            android:textSize="22sp"
             app:cornerRadius="15dp"
             app:icon="@drawable/ic_settings"
             app:iconGravity="textStart"
-            app:iconTint="#1A1B22"
-            android:backgroundTint="@color/white"
-            android:textSize="22sp"
-            android:textColor="#1A1B22"
-            android:textAllCaps="false"
-            android:text="Настройки"
-            android:layout_gravity="center"/>
+            app:iconTint="#1A1B22" />
 
     </LinearLayout>
 
