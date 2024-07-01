@@ -1,19 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:background="#3772E7"
+    android:orientation="vertical"
+    android:paddingTop="14dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="28dp" >
+
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_gravity="start"
+        android:text="@string/app_name"
+        android:textColor="#fff"
+        android:paddingBottom="40dp"
+        android:textSize="22sp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:layout_marginBottom="16dp"
+            app:cornerRadius="15dp"
+            app:icon="@drawable/ic_search"
+            app:iconGravity="textStart"
+            app:iconTint="#1A1B22"
+            android:backgroundTint="@color/white"
+            android:textSize="22sp"
+            android:textColor="#1A1B22"
+            android:textAllCaps="false"
+            android:text="Поиск"
+            android:layout_gravity="center" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:layout_marginBottom="16dp"
+            app:cornerRadius="15dp"
+            app:icon="@drawable/ic_library"
+            app:iconGravity="textStart"
+            app:iconTint="#1A1B22"
+            android:backgroundTint="@color/white"
+            android:textSize="22sp"
+            android:textColor="#1A1B22"
+            android:textAllCaps="false"
+            android:text="Медиатека"
+            android:layout_gravity="center" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            app:cornerRadius="15dp"
+            app:icon="@drawable/ic_settings"
+            app:iconGravity="textStart"
+            app:iconTint="#1A1B22"
+            android:backgroundTint="@color/white"
+            android:textSize="22sp"
+            android:textColor="#1A1B22"
+            android:textAllCaps="false"
+            android:text="Настройки"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
+
+</LinearLayout>
