@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name" translatable="false">Playlist Maker</string>
+    <string name="app_settings" translatable="false">Настройки</string>
 </resources>

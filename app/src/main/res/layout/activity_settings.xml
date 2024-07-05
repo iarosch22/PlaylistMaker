@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/white"
-        android:text="Настройки"
+        android:text="@string/app_settings"
         android:textColor="#1a1b22"
         android:textAllCaps="false"
         android:paddingBottom="16dp"
@@ -45,8 +45,7 @@
         <Switch
             android:layout_width="56dp"
             android:layout_height="40dp"
-            android:layout_gravity="end"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
+            android:layout_gravity="end" />
 
     </FrameLayout>
 
