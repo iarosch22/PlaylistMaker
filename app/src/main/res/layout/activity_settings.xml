@@ -13,28 +13,38 @@
     android:paddingEnd="18dp"
     android:paddingBottom="@dimen/large_padding">
 
-
-    <Button
-        android:id="@+id/btn_back"
-        android:layout_width="wrap_content"
+    <FrameLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
-        android:text="@string/app_settings"
-        android:textColor="@color/yp_black"
-        android:textAllCaps="false"
-        android:paddingBottom="@dimen/medium_padding"
-        android:layout_marginBottom="@dimen/large_margin"
-        android:textSize="@dimen/primary_text_size"
-        app:icon="@drawable/ic_back"
-        app:iconGravity="textStart"
-        app:iconTint="@color/yp_black"
-        app:iconPadding="@dimen/medium_padding"/>
+        android:layout_marginBottom="@dimen/large_margin">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/inner_heading_padding"
+            android:paddingBottom="@dimen/inner_heading_padding"
+            android:src="@drawable/ic_back" />
+
+        <TextView
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="48dp"
+            android:backgroundTint="@color/white"
+            android:paddingTop="10dp"
+            android:paddingBottom="@dimen/inner_heading_padding"
+            android:text="@string/app_settings"
+            android:textAllCaps="false"
+            android:textColor="@color/yp_black"
+            android:textSize="@dimen/primary_text_size" />
+
+    </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/medium_padding"
-        android:paddingBottom="@dimen/medium_padding" >
+        android:paddingTop="@dimen/inner_btn_padding"
+        android:paddingBottom="@dimen/inner_btn_padding" >
 
         <TextView
             android:layout_width="wrap_content"
@@ -54,8 +64,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/medium_padding"
-        android:paddingBottom="@dimen/medium_padding" >
+        android:paddingTop="@dimen/inner_btn_padding"
+        android:paddingBottom="@dimen/inner_btn_padding" >
 
         <TextView
             android:layout_width="wrap_content"
@@ -66,8 +76,8 @@
             android:layout_gravity="start" />
 
         <ImageView
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:src="@drawable/ic_share"
             android:layout_gravity="end" />
 
@@ -76,8 +86,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/medium_padding"
-        android:paddingBottom="@dimen/medium_padding" >
+        android:paddingTop="@dimen/inner_btn_padding"
+        android:paddingBottom="@dimen/inner_btn_padding" >
 
         <TextView
             android:layout_width="wrap_content"
@@ -88,8 +98,8 @@
             android:layout_gravity="start" />
 
         <ImageView
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:src="@drawable/ic_support"
             android:layout_gravity="end" />
 
@@ -98,8 +108,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/medium_padding"
-        android:paddingBottom="@dimen/medium_padding" >
+        android:paddingTop="@dimen/inner_btn_padding"
+        android:paddingBottom="@dimen/inner_btn_padding" >
 
         <TextView
             android:layout_width="wrap_content"
@@ -110,8 +120,8 @@
             android:layout_gravity="start" />
 
         <ImageView
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:src="@drawable/ic_arrow"
             android:layout_gravity="end" />
 
