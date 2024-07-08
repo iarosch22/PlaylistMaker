@@ -1,8 +1,7 @@
 package com.practicum.playlistmaker
 
-import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class SettingsActivity: AppCompatActivity() {
@@ -10,11 +9,10 @@ class SettingsActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        val btnBack = findViewById<Button>(R.id.btn_back)
+        val btnBack = findViewById<TextView>(R.id.btn_back)
 
         btnBack.setOnClickListener {
-            val backIntent = Intent(this@SettingsActivity, MainActivity::class.java)
-            startActivity(backIntent)
+            this.finish()
         }
     }
 }
