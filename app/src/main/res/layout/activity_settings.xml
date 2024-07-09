@@ -6,7 +6,7 @@
     tools:context=".SettingsActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFF"
+    android:background="@color/white"
     android:orientation="vertical"
     android:paddingTop="@dimen/top_padding"
     android:paddingStart="@dimen/medium_padding"
