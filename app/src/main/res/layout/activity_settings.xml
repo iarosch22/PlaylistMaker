@@ -8,22 +8,19 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    android:paddingTop="@dimen/top_padding"
-    android:paddingStart="@dimen/medium_padding"
-    android:paddingEnd="18dp"
-    android:paddingBottom="@dimen/large_padding">
+    style="@style/LayoutPadding" >
 
     <FrameLayout
         android:id="@+id/btn_back"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/large_margin">
+        android:layout_marginBottom="@dimen/margin_24">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/inner_heading_padding"
-            android:paddingBottom="@dimen/inner_heading_padding"
+            android:paddingTop="@dimen/padding_12"
+            android:paddingBottom="@dimen/padding_12"
             android:src="@drawable/ic_back" />
 
         <TextView
@@ -32,11 +29,9 @@
             android:layout_marginStart="48dp"
             android:backgroundTint="@color/white"
             android:paddingTop="10dp"
-            android:paddingBottom="@dimen/inner_heading_padding"
+            android:paddingBottom="@dimen/padding_12"
             android:text="@string/app_settings"
-            android:textAllCaps="false"
-            android:textColor="@color/yp_black"
-            android:textSize="@dimen/primary_text_size" />
+            style="@style/HeadingTextStyles" />
 
     </FrameLayout>
 
@@ -50,9 +45,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/app_darktheme"
-            android:textColor="@color/black"
-            android:textSize="@dimen/regular_text_size"
-            android:layout_gravity="start" />
+            android:layout_gravity="start"
+            style="@style/RegularTextStyle" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:layout_width="56dp"
@@ -71,9 +65,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/app_share"
-            android:textColor="@color/black"
-            android:textSize="@dimen/regular_text_size"
-            android:layout_gravity="start" />
+            android:layout_gravity="start"
+            style="@style/RegularTextStyle" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -93,9 +86,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/app_support"
-            android:textColor="@color/black"
-            android:textSize="@dimen/regular_text_size"
-            android:layout_gravity="start" />
+            android:layout_gravity="start"
+            style="@style/RegularTextStyle" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -115,9 +107,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/app_agreement"
-            android:textColor="@color/black"
-            android:textSize="@dimen/regular_text_size"
-            android:layout_gravity="start" />
+            android:layout_gravity="start"
+            style="@style/RegularTextStyle" />
 
         <ImageView
             android:layout_width="wrap_content"
