@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.TextView
@@ -21,7 +22,21 @@ class SettingsActivity: AppCompatActivity() {
         btnShare.setOnClickListener {
             val message = "https://practicum.yandex.ru/android-developer/?from=catalog"
             val intent = Intent(Intent.ACTION_SEND)
+
             intent.setType("text/plain")
+            intent.putExtra(Intent.EXTRA_TEXT, message)
+            startActivity(intent)
+        }
+
+        val btnSupport = findViewById<ViewGroup>(R.id.btn_support)
+        btnSupport.setOnClickListener {
+            val subject = "Сообщение разработчикам и разработчицам приложения Playlist Maker"
+            val message = "Спасибо разработчикам и разработчицам за крутое приложение!"
+            val intent = Intent(Intent.ACTION_SENDTO)
+
+            intent.data = Uri.parse("mailto:")
+            intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("vit.iarosch@yandex.by"))
+            intent.putExtra(Intent.EXTRA_SUBJECT, subject)
             intent.putExtra(Intent.EXTRA_TEXT, message)
             startActivity(intent)
         }
