@@ -23,7 +23,7 @@ class SettingsActivity: AppCompatActivity() {
             val message = "https://practicum.yandex.ru/android-developer/?from=catalog"
             val intent = Intent(Intent.ACTION_SEND)
 
-            intent.setType("text/plain")
+            intent.type = "text/plain"
             intent.putExtra(Intent.EXTRA_TEXT, message)
             startActivity(intent)
         }
@@ -32,12 +32,18 @@ class SettingsActivity: AppCompatActivity() {
         btnSupport.setOnClickListener {
             val subject = "Сообщение разработчикам и разработчицам приложения Playlist Maker"
             val message = "Спасибо разработчикам и разработчицам за крутое приложение!"
-            val intent = Intent(Intent.ACTION_SENDTO)
+            val intent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:"))
 
-            intent.data = Uri.parse("mailto:")
             intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("vit.iarosch@yandex.by"))
             intent.putExtra(Intent.EXTRA_SUBJECT, subject)
             intent.putExtra(Intent.EXTRA_TEXT, message)
+            startActivity(intent)
+        }
+
+        val btnTerms = findViewById<ViewGroup>(R.id.btn_terms)
+        btnTerms.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://yandex.ru/legal/practicum_offer/"))
+
             startActivity(intent)
         }
     }
