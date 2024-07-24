@@ -1,15 +1,19 @@
 package com.practicum.playlistmaker
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 
 class SearchActivity : AppCompatActivity() {
+
+    private var textValue = TEXT_DEF
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -19,13 +23,39 @@ class SearchActivity : AppCompatActivity() {
             this.finish()
         }
 
-        val container = findViewById<LinearLayout>(R.id.containerInput)
         val inputEditText = findViewById<EditText>(R.id.inputEditText)
         val clearBtn = findViewById<ImageView>(R.id.clearIcon)
 
         clearBtn.setOnClickListener {
-            inputEditText.setText("")
+            inputEditText.setText(TEXT_DEF)
         }
+
+        val textWatcher = object: TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // empty
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                textValue = s.toString()
+                clearBtn.visibility = clearButtonVisibility(s)
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                // empty
+            }
+        }
+
+        inputEditText.addTextChangedListener(textWatcher)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(INPUT_TEXT, textValue)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        textValue = savedInstanceState.getString(INPUT_TEXT, TEXT_DEF)
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
@@ -35,6 +65,11 @@ class SearchActivity : AppCompatActivity() {
             View.VISIBLE
         }
 
+    }
+
+    companion object {
+        const val INPUT_TEXT = "INPUT_TEXT"
+        const val TEXT_DEF = ""
     }
 
 }

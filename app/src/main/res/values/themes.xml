@@ -3,7 +3,6 @@
     <style name="Theme.PlaylistMaker" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/yp_blue</item>
-        <item name="colorPrimaryVariant">@color/yp_white</item>
         <item name="colorOnPrimary">@color/yp_white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/yp_white</item>

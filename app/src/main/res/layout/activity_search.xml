@@ -58,13 +58,8 @@
             android:layout_width="0dp"
             android:layout_height="36dp"
             android:layout_weight="1"
-            android:inputType="text"
             android:hint="@string/app_search"
-            android:lines="1"
-            android:maxLength="15"
-            android:textColorHint="@color/yp_hint"
-            android:background="@android:color/transparent"
-            style="@style/RegularTextStyle" />
+            style="@style/EditTextStyles" />
 
         <ImageView
             android:id="@+id/clearIcon"
