@@ -3,8 +3,8 @@
     <color name="black">#000000</color>
     <color name="yp_white">#FFFFFF</color>
     <color name="yp_black">#1A1B22</color>
-    <color name="yp_icon">#AEAFB4</color>
-    <color name="yp_hint">#AEAFB4</color>
-    <color name="yp_background_search_field">#E6E8EB</color>
+    <color name="yp_icon">#FFFFFF</color>
+    <color name="yp_hint">#1A1B22</color>
+    <color name="yp_background_search_field">#FFFFFF</color>
     <color name="yp_blue">#3772E7</color>
 </resources>
