@@ -21,5 +21,9 @@ class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
             .centerCrop()
             .placeholder(R.drawable.ic_placeholder)
             .into(ivTrackArtwork)
+
+        tvTrackName.text = item.trackName
+        tvArtistName.text = item.artistName
+        tvTrackTime.text = item.trackTime
     }
 }
