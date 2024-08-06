@@ -13,8 +13,7 @@
     <ImageView
         android:id="@+id/ivTrackArtwork"
         android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:src="@drawable/ic_placeholder"/>
+        android:layout_height="45dp" />
 
     <LinearLayout
         android:layout_width="0dp"

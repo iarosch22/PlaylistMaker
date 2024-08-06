@@ -60,6 +60,8 @@ class SearchActivity : AppCompatActivity() {
         inputEditText.addTextChangedListener(textWatcher)
 
         val recyclerView = findViewById<RecyclerView>(R.id.rvTrackSearch)
+        val trackAdapter = TrackAdapter(tracks)
+        recyclerView.adapter = trackAdapter
 
     }
 
