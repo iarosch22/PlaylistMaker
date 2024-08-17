@@ -70,5 +70,4 @@
         <item name="android:paddingEnd">@dimen/padding_24</item>
     </style>
 
-    <dimen name="padding_24">24dp</dimen>
 </resources>

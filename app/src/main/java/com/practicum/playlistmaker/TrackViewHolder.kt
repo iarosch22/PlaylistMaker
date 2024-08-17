@@ -21,7 +21,7 @@ class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     fun bind(item: Track) {
         tvTrackName.text = item.trackName
         tvArtistName.text = item.artistName
-        tvTrackTime.text = item.trackTime
+        tvTrackTime.text = item.trackTimeMillis
         loadTrackArtwork(item.artworkUrl100)
     }
 
