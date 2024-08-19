@@ -58,27 +58,9 @@ class SearchActivity : AppCompatActivity() {
         trackAdapter.tracks = tracks
         recyclerView.adapter = trackAdapter
 
-        setBtnBack()
-        setBtnClear()
+        setButtons()
 
-        reloadBtn.setOnClickListener {
-            if (inputEditText.text.isNotEmpty()) {
-                performSearch(inputEditText.text.toString())
-            }
-        }
-
-        val textWatcher = object: TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                textValue = s.toString()
-                clearBtn.visibility = clearButtonVisibility(s)
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        }
-
-        inputEditText.addTextChangedListener(textWatcher)
+        setTextWatcher()
 
         inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -129,6 +111,33 @@ class SearchActivity : AppCompatActivity() {
             showMessage(MessageType.NO_MESSAGE)
             inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
         }
+    }
+    private fun setBtnReload() {
+        reloadBtn.setOnClickListener {
+            if (inputEditText.text.isNotEmpty()) {
+                performSearch(inputEditText.text.toString())
+            }
+        }
+    }
+    private fun setButtons() {
+        setBtnBack()
+        setBtnClear()
+        setBtnReload()
+    }
+
+    private fun setTextWatcher() {
+        val textWatcher = object: TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                textValue = s.toString()
+                clearBtn.visibility = clearButtonVisibility(s)
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        }
+
+        inputEditText.addTextChangedListener(textWatcher)
     }
 
     private fun showMessage(type: MessageType) {
