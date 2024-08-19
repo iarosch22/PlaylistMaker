@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -29,12 +30,14 @@ class SearchActivity : AppCompatActivity() {
     private val tracks = ArrayList<Track>()
     private val trackAdapter = TrackAdapter()
 
+    private lateinit var inputMethodManager: InputMethodManager
     private lateinit var phSomethingWentWrong: ViewGroup
     private lateinit var phNothingFound: ViewGroup
     private lateinit var btnBack: ViewGroup
     private lateinit var inputEditText: EditText
     private lateinit var clearBtn: ImageView
     private lateinit var recyclerView: RecyclerView
+    private lateinit var reloadBtn: Button
 
 
 
@@ -42,7 +45,7 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        inputMethodManager = (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)!!
 
         phSomethingWentWrong = findViewById(R.id.phSomethingWentWrong)
         phNothingFound = findViewById(R.id.phNothingFound)
@@ -50,30 +53,29 @@ class SearchActivity : AppCompatActivity() {
         inputEditText = findViewById(R.id.inputEditText)
         clearBtn = findViewById(R.id.clearIcon)
         recyclerView = findViewById(R.id.rvTrackSearch)
+        reloadBtn = findViewById(R.id.reloadBtn)
 
         trackAdapter.tracks = tracks
         recyclerView.adapter = trackAdapter
 
         setBtnBack()
+        setBtnClear()
 
-        clearBtn.setOnClickListener {
-            inputEditText.setText(TEXT_DEF)
-            inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
+        reloadBtn.setOnClickListener {
+            if (inputEditText.text.isNotEmpty()) {
+                performSearch(inputEditText.text.toString())
+            }
         }
 
         val textWatcher = object: TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // empty
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 textValue = s.toString()
                 clearBtn.visibility = clearButtonVisibility(s)
             }
 
-            override fun afterTextChanged(s: Editable?) {
-                // empty
-            }
+            override fun afterTextChanged(s: Editable?) {}
         }
 
         inputEditText.addTextChangedListener(textWatcher)
@@ -82,32 +84,7 @@ class SearchActivity : AppCompatActivity() {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
 
                 if (inputEditText.text.isNotEmpty()) {
-                    itunesService.search(inputEditText.text.toString()).enqueue(object: Callback<TrackResponce> {
-                        override fun onResponse(
-                            call: Call<TrackResponce>,
-                            response: Response<TrackResponce>
-                        ) {
-                            if (response.code() == 200) {
-                                tracks.clear()
-                                if (response.body()?.results?.isNotEmpty() == true) {
-                                    tracks.addAll(response.body()?.results!!)
-                                    trackAdapter.notifyDataSetChanged()
-                                }
-                                if (tracks.isEmpty()) {
-                                    showMessage(MessageType.NOTHING_FOUND)
-                                } else {
-                                    showMessage(MessageType.NO_MESSAGE)
-                                }
-                            } else {
-                                showMessage(MessageType.SOMETHING_WENT_WRONG)
-                            }
-                        }
-
-                        override fun onFailure(call: Call<TrackResponce>, t: Throwable) {
-                            showMessage(MessageType.SOMETHING_WENT_WRONG)
-                        }
-
-                    })
+                    performSearch(inputEditText.text.toString())
                 }
                 true
             }
@@ -144,6 +121,15 @@ class SearchActivity : AppCompatActivity() {
     private fun setBtnBack() {
         btnBack.setOnClickListener { this.finish() }
     }
+    private fun setBtnClear() {
+        clearBtn.setOnClickListener {
+            inputEditText.setText(TEXT_DEF)
+            tracks.clear()
+            trackAdapter.notifyDataSetChanged()
+            showMessage(MessageType.NO_MESSAGE)
+            inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
+        }
+    }
 
     private fun showMessage(type: MessageType) {
         when(type) {
@@ -160,6 +146,35 @@ class SearchActivity : AppCompatActivity() {
                 phNothingFound.visibility = View.GONE
             }
         }
+    }
+
+    private fun performSearch(inputText: String) {
+        itunesService.search(inputText).enqueue(object: Callback<TrackResponce> {
+            override fun onResponse(
+                call: Call<TrackResponce>,
+                response: Response<TrackResponce>
+            ) {
+                if (response.code() == 200) {
+                    tracks.clear()
+                    trackAdapter.notifyDataSetChanged()
+                    if (response.body()?.results?.isNotEmpty() == true) {
+                        tracks.addAll(response.body()?.results!!)
+                        trackAdapter.notifyDataSetChanged()
+                    }
+                    if (tracks.isEmpty()) {
+                        showMessage(MessageType.NOTHING_FOUND)
+                    } else {
+                        showMessage(MessageType.NO_MESSAGE)
+                    }
+                } else {
+                    showMessage(MessageType.SOMETHING_WENT_WRONG)
+                }
+            }
+
+            override fun onFailure(call: Call<TrackResponce>, t: Throwable) {
+                showMessage(MessageType.SOMETHING_WENT_WRONG)
+            }
+        })
     }
 
     companion object {
