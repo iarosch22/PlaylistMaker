@@ -1,17 +1,34 @@
 package com.practicum.playlistmaker
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.switchmaterial.SwitchMaterial
+
 
 class SettingsActivity: AppCompatActivity() {
+
+    private lateinit var themeSwitcher: SwitchMaterial
+    private lateinit var sharedPreferences: SharedPreferences
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+
+        themeSwitcher = findViewById(R.id.themeSwitcher)
+
+        sharedPreferences = getSharedPreferences(APP_THEME_PREFERENCES, MODE_PRIVATE)
+
+        themeSwitcher.isChecked = (applicationContext as App).darkTheme
+
+        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            (applicationContext as App).switchTheme(checked)
+            saveThemePreferences(checked)
+        }
 
         val btnBack = findViewById<ViewGroup>(R.id.btn_back)
         btnBack.setOnClickListener {
@@ -48,6 +65,12 @@ class SettingsActivity: AppCompatActivity() {
 
             startActivity(intent)
         }
+    }
+
+    private fun saveThemePreferences(isDarkTheme: Boolean) {
+        sharedPreferences.edit()
+            .putBoolean(DARK_THEME, isDarkTheme)
+            .apply()
     }
 
 }
