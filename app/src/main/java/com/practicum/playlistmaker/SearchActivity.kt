@@ -18,7 +18,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 
 class SearchActivity : AppCompatActivity() {
 
@@ -36,7 +35,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var btnBack: ViewGroup
     private lateinit var inputEditText: EditText
     private lateinit var clearBtn: ImageView
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var rvTrackSearch: RecyclerView
     private lateinit var reloadBtn: Button
 
 
@@ -52,11 +51,11 @@ class SearchActivity : AppCompatActivity() {
         btnBack = findViewById(R.id.btn_back)
         inputEditText = findViewById(R.id.inputEditText)
         clearBtn = findViewById(R.id.clearIcon)
-        recyclerView = findViewById(R.id.rvTrackSearch)
+        rvTrackSearch = findViewById(R.id.rvTrackSearch)
         reloadBtn = findViewById(R.id.reloadBtn)
 
         trackAdapter.tracks = tracks
-        recyclerView.adapter = trackAdapter
+        rvTrackSearch.adapter = trackAdapter
 
         setButtons()
 
