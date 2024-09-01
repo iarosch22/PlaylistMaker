@@ -33,11 +33,11 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var phSomethingWentWrong: ViewGroup
     private lateinit var phNothingFound: ViewGroup
     private lateinit var btnBack: ViewGroup
+    private lateinit var hintLatestSearch: ViewGroup
     private lateinit var inputEditText: EditText
     private lateinit var clearBtn: ImageView
     private lateinit var rvTrackSearch: RecyclerView
     private lateinit var reloadBtn: Button
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,6 +53,7 @@ class SearchActivity : AppCompatActivity() {
         clearBtn = findViewById(R.id.clearIcon)
         rvTrackSearch = findViewById(R.id.rvTrackSearch)
         reloadBtn = findViewById(R.id.reloadBtn)
+        hintLatestSearch = findViewById(R.id.latestSearchList)
 
         trackAdapter.tracks = tracks
         rvTrackSearch.adapter = trackAdapter
@@ -70,6 +71,10 @@ class SearchActivity : AppCompatActivity() {
                 true
             }
             false
+        }
+
+        inputEditText.setOnFocusChangeListener { v, hasFocus ->
+            hintLatestSearch.visibility = if (hasFocus && inputEditText.text.isEmpty()) View.VISIBLE else  View.GONE
         }
     }
 
@@ -131,6 +136,8 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 textValue = s.toString()
                 clearBtn.visibility = clearButtonVisibility(s)
+
+                hintLatestSearch.visibility = if (inputEditText.hasFocus() && s?.isEmpty() == true) View.VISIBLE else View.GONE
             }
 
             override fun afterTextChanged(s: Editable?) {}
