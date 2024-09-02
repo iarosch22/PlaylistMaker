@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -29,6 +30,8 @@ class SearchActivity : AppCompatActivity() {
     private val tracks = ArrayList<Track>()
     private val trackAdapter = TrackAdapter()
 
+    private lateinit var sharedPreferences: SharedPreferences
+
     private lateinit var inputMethodManager: InputMethodManager
     private lateinit var phSomethingWentWrong: ViewGroup
     private lateinit var phNothingFound: ViewGroup
@@ -45,6 +48,8 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
 
         inputMethodManager = (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)!!
+
+        sharedPreferences = getSharedPreferences(APP_SEARCH_HISTORY, MODE_PRIVATE)
 
         phSomethingWentWrong = findViewById(R.id.phSomethingWentWrong)
         phNothingFound = findViewById(R.id.phNothingFound)

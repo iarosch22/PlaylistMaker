@@ -19,6 +19,11 @@ class TrackAdapter(): RecyclerView.Adapter<TrackViewHolder>() {
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         holder.bind(tracks[position])
+
+        holder.itemView.setOnClickListener {
+
+            // TODO: передать сюда просто листенер
+        }
     }
 
 }
