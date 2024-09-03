@@ -2,6 +2,7 @@ package com.practicum.playlistmaker
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -28,9 +29,13 @@ class SearchActivity : AppCompatActivity() {
     private val retrofit = createRetrofit()
     private val itunesService = retrofit.create(ItunesApi::class.java)
     private val tracks = ArrayList<Track>()
-    private val trackAdapter = TrackAdapter()
+    private val searchTracks = ArrayList<Track>()
+    private lateinit var trackAdapter: TrackAdapter
+    private lateinit var searchTrackAdapter: TrackAdapter
 
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var listener: OnSharedPreferenceChangeListener
+    private lateinit var searchHistory: SearchHistory
 
     private lateinit var inputMethodManager: InputMethodManager
     private lateinit var phSomethingWentWrong: ViewGroup
@@ -40,6 +45,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var inputEditText: EditText
     private lateinit var clearBtn: ImageView
     private lateinit var rvTrackSearch: RecyclerView
+    private lateinit var rvLatestTrack: RecyclerView
     private lateinit var reloadBtn: Button
 
 
@@ -47,9 +53,14 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
+        trackAdapter = TrackAdapter(this)
+        searchTrackAdapter = TrackAdapter(this)
+
         inputMethodManager = (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)!!
 
         sharedPreferences = getSharedPreferences(APP_SEARCH_HISTORY, MODE_PRIVATE)
+        searchHistory = SearchHistory(sharedPreferences)
+
 
         phSomethingWentWrong = findViewById(R.id.phSomethingWentWrong)
         phNothingFound = findViewById(R.id.phNothingFound)
@@ -57,15 +68,30 @@ class SearchActivity : AppCompatActivity() {
         inputEditText = findViewById(R.id.inputEditText)
         clearBtn = findViewById(R.id.clearIcon)
         rvTrackSearch = findViewById(R.id.rvTrackSearch)
+        rvLatestTrack = findViewById(R.id.rvLatestTrackSearch)
         reloadBtn = findViewById(R.id.reloadBtn)
         hintLatestSearch = findViewById(R.id.latestSearchList)
 
         trackAdapter.tracks = tracks
         rvTrackSearch.adapter = trackAdapter
 
+        searchTrackAdapter.tracks = searchTracks
+        rvLatestTrack.adapter = searchTrackAdapter
+
         setButtons()
 
         setTextWatcher()
+
+        listener = OnSharedPreferenceChangeListener { sharedPreferences, key ->
+            if (key == APP_NEW_TRACK_KEY) {
+                val track = sharedPreferences?.getString(APP_NEW_TRACK_KEY, null)
+                if (track != null) {
+                    searchTrackAdapter.tracks.add(0, searchHistory.createTrackFromJson(track))
+                    searchTrackAdapter.notifyDataSetChanged()
+                }
+            }
+        }
+        sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
 
         inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {

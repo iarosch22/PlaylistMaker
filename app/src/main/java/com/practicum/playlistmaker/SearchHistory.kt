@@ -1,15 +1,18 @@
 package com.practicum.playlistmaker
 
+import android.content.Context
 import android.content.SharedPreferences
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener
+import android.widget.Toast
 import com.google.gson.Gson
 
 class SearchHistory(private val sharedPreferences: SharedPreferences) {
 
-    fun addTrackToSearchHistory(track: Track) {
+    fun addTrackToSearchHistory(track: Track, context: Context) {
         sharedPreferences.edit()
             .putString(APP_NEW_TRACK_KEY, createJsonFromTrack(track))
             .apply()
+
+        Toast.makeText(context, track.trackId, Toast.LENGTH_SHORT).show()
     }
 
     fun saveToSearchHistory(tracks: Array<Track>) {
@@ -27,7 +30,7 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
         return Gson().toJson(track)
     }
 
-    private fun createTrackFromJson(json: String): Track {
+    fun createTrackFromJson(json: String): Track {
         return Gson().fromJson(json, Track::class.java)
     }
 
