@@ -6,6 +6,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -15,6 +16,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,7 +31,6 @@ class SearchActivity : AppCompatActivity() {
     private val retrofit = createRetrofit()
     private val itunesService = retrofit.create(ItunesApi::class.java)
     private val tracks = ArrayList<Track>()
-    private val searchTracks = ArrayList<Track>()
     private lateinit var trackAdapter: TrackAdapter
     private lateinit var searchTrackAdapter: TrackAdapter
 
@@ -61,7 +62,6 @@ class SearchActivity : AppCompatActivity() {
         sharedPreferences = getSharedPreferences(APP_SEARCH_HISTORY, MODE_PRIVATE)
         searchHistory = SearchHistory(sharedPreferences)
 
-
         phSomethingWentWrong = findViewById(R.id.phSomethingWentWrong)
         phNothingFound = findViewById(R.id.phNothingFound)
         btnBack = findViewById(R.id.btn_back)
@@ -75,8 +75,9 @@ class SearchActivity : AppCompatActivity() {
         trackAdapter.tracks = tracks
         rvTrackSearch.adapter = trackAdapter
 
-        searchTrackAdapter.tracks = searchTracks
+        searchTrackAdapter.tracks = searchHistory.readTracksFromSearchHistory()
         rvLatestTrack.adapter = searchTrackAdapter
+
 
         setButtons()
 
@@ -107,6 +108,12 @@ class SearchActivity : AppCompatActivity() {
         inputEditText.setOnFocusChangeListener { v, hasFocus ->
             hintLatestSearch.visibility = if (hasFocus && inputEditText.text.isEmpty()) View.VISIBLE else  View.GONE
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        searchHistory.saveToSearchHistory(searchTrackAdapter.tracks)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

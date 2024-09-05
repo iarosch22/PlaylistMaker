@@ -1,10 +1,8 @@
 package com.practicum.playlistmaker
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 
@@ -26,7 +24,6 @@ class TrackAdapter(private val context: Context): RecyclerView.Adapter<TrackView
         holder.bind(tracks[position])
 
         holder.itemView.setOnClickListener {
-            Toast.makeText(holder.itemView.context, tracks[position].trackId, Toast.LENGTH_SHORT).show()
 
             sharedPreferences.edit()
                 .putString(APP_NEW_TRACK_KEY, Gson().toJson(tracks[position]))
