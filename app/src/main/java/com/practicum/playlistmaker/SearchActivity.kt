@@ -48,6 +48,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var rvTrackSearch: RecyclerView
     private lateinit var rvLatestTrack: RecyclerView
     private lateinit var reloadBtn: Button
+    private lateinit var clearHistoryBtn: Button
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,6 +72,7 @@ class SearchActivity : AppCompatActivity() {
         rvLatestTrack = findViewById(R.id.rvLatestTrackSearch)
         reloadBtn = findViewById(R.id.reloadBtn)
         hintLatestSearch = findViewById(R.id.latestSearchList)
+        clearHistoryBtn = findViewById(R.id.clearSearchHistory)
 
         trackAdapter.tracks = tracks
         rvTrackSearch.adapter = trackAdapter
@@ -103,6 +105,15 @@ class SearchActivity : AppCompatActivity() {
                 true
             }
             false
+        }
+
+        clearHistoryBtn.setOnClickListener {
+            sharedPreferences.edit()
+                .clear()
+                .apply()
+
+            searchTrackAdapter.tracks.clear()
+            searchTrackAdapter.notifyDataSetChanged()
         }
 
         inputEditText.setOnFocusChangeListener { v, hasFocus ->
