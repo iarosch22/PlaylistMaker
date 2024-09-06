@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -87,10 +88,13 @@ class SearchActivity : AppCompatActivity() {
 
         listener = OnSharedPreferenceChangeListener { sharedPreferences, key ->
             if (key == APP_NEW_TRACK_KEY) {
-                val track = sharedPreferences?.getString(APP_NEW_TRACK_KEY, null)
-                if (track != null) {
-                    searchTrackAdapter.tracks.add(0, searchHistory.createTrackFromJson(track))
-                    searchTrackAdapter.notifyDataSetChanged()
+                val trackJson = sharedPreferences?.getString(APP_NEW_TRACK_KEY, null)
+                if (trackJson != null) {
+                    val track = searchHistory.createTrackFromJson(trackJson)
+//                    searchTrackAdapter.tracks.add(0, searchHistory.createTrackFromJson(track))
+//                    searchTrackAdapter.notifyDataSetChanged()
+                    addSearchTrack(track)
+                    Toast.makeText(this, "${searchTrackAdapter.itemCount}", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -108,9 +112,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         clearHistoryBtn.setOnClickListener {
-            sharedPreferences.edit()
-                .clear()
-                .apply()
+            searchHistory.clearHistory()
 
             searchTrackAdapter.tracks.clear()
             searchTrackAdapter.notifyDataSetChanged()
@@ -241,9 +243,23 @@ class SearchActivity : AppCompatActivity() {
         })
     }
 
+    private fun addSearchTrack(track: Track) {
+        val positionToRemove = LATEST_SEARCH_TRACKS_SIZE - 1
+
+        if (searchTrackAdapter.itemCount == LATEST_SEARCH_TRACKS_SIZE) {
+            searchTrackAdapter.tracks.removeAt(positionToRemove)
+            searchTrackAdapter.notifyItemRemoved(positionToRemove)
+            searchTrackAdapter.notifyItemRangeChanged(positionToRemove, positionToRemove)
+        }
+
+        searchTrackAdapter.tracks.add(0, track)
+        searchTrackAdapter.notifyDataSetChanged()
+    }
+
     companion object {
         const val INPUT_TEXT = "INPUT_TEXT"
         const val TEXT_DEF = ""
+        const val LATEST_SEARCH_TRACKS_SIZE = 5
     }
 
 }

@@ -101,40 +101,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/latestSearchList"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:text="@string/app_latest_search"
-            android:gravity="center"
-            style="@style/MediumTextStyle"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvLatestTrackSearch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:orientation="vertical"
-            tools:listitem="@layout/track_search_item"
-            tools:itemCount="1"/>
-
-        <Button
-            android:id="@+id/clearSearchHistory"
-            android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:layout_marginTop="@dimen/margin_24"
-            android:layout_gravity="center"
-            android:text="@string/app_clear_btn"
-            style="@style/PlaceholderButtonStyles"/>
-
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/phNothingFound"
         android:visibility="gone"
         android:layout_width="wrap_content"
@@ -201,6 +167,40 @@
             android:layout_height="36dp"
             android:layout_gravity="center"
             android:text="@string/app_reload"
+            style="@style/PlaceholderButtonStyles"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/latestSearchList"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="@string/app_latest_search"
+            android:gravity="center"
+            style="@style/MediumTextStyle"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvLatestTrackSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="vertical"
+            tools:listitem="@layout/track_search_item"
+            tools:itemCount="1"/>
+
+        <Button
+            android:id="@+id/clearSearchHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginTop="@dimen/margin_24"
+            android:layout_gravity="center"
+            android:text="@string/app_clear_btn"
             style="@style/PlaceholderButtonStyles"/>
 
     </LinearLayout>

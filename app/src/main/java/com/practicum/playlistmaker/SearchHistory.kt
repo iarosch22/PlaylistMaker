@@ -21,6 +21,12 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
         return Gson().fromJson(json, Track::class.java)
     }
 
+    fun clearHistory() {
+        sharedPreferences.edit()
+            .clear()
+            .apply()
+    }
+
     private fun createJsonFromTrackList(tracks: ArrayList<Track>): String {
         return Gson().toJson(tracks)
     }
