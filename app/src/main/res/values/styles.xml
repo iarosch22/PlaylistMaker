@@ -70,4 +70,9 @@
         <item name="android:paddingEnd">@dimen/padding_24</item>
     </style>
 
+    <style name="ThemeSwitcherStyle">
+        <item name="thumbTint">@color/yp_switcher_thumb</item>
+        <item name="trackTint">@color/yp_switcher_track</item>
+    </style>
+
 </resources>

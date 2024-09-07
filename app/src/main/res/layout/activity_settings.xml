@@ -51,7 +51,8 @@
             android:id="@+id/themeSwitcher"
             android:layout_width="56dp"
             android:layout_height="24dp"
-            android:layout_gravity="end" />
+            android:layout_gravity="end"
+            style="@style/ThemeSwitcherStyle"/>
 
     </FrameLayout>
 

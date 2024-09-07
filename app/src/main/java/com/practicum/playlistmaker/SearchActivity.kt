@@ -91,7 +91,6 @@ class SearchActivity : AppCompatActivity() {
                 val trackJson = sharedPreferences?.getString(APP_NEW_TRACK_KEY, null)
                 if (trackJson != null) {
                     addSearchTrack(searchHistory.createTrackFromJson(trackJson))
-                    Toast.makeText(this, "${searchTrackAdapter.itemCount}", Toast.LENGTH_SHORT).show()
                 }
             }
         }

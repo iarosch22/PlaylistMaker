@@ -8,4 +8,6 @@
     <color name="yp_placeholder_btn">#1A1B22</color>
     <color name="yp_background_search_field">#FFFFFF</color>
     <color name="yp_blue">#3772E7</color>
+    <color name="yp_switcher_thumb">#3772E7</color>
+    <color name="yp_switcher_track">#9FBBF3</color>
 </resources>
