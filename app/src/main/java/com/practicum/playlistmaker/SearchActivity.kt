@@ -90,10 +90,7 @@ class SearchActivity : AppCompatActivity() {
             if (key == APP_NEW_TRACK_KEY) {
                 val trackJson = sharedPreferences?.getString(APP_NEW_TRACK_KEY, null)
                 if (trackJson != null) {
-                    val track = searchHistory.createTrackFromJson(trackJson)
-//                    searchTrackAdapter.tracks.add(0, searchHistory.createTrackFromJson(track))
-//                    searchTrackAdapter.notifyDataSetChanged()
-                    addSearchTrack(track)
+                    addSearchTrack(searchHistory.createTrackFromJson(trackJson))
                     Toast.makeText(this, "${searchTrackAdapter.itemCount}", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -244,22 +241,32 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun addSearchTrack(track: Track) {
-        val positionToRemove = LATEST_SEARCH_TRACKS_SIZE - 1
+        val duplicateTrackIndex = searchTrackAdapter.tracks.indexOfFirst { it.trackId == track.trackId }
 
         if (searchTrackAdapter.itemCount == LATEST_SEARCH_TRACKS_SIZE) {
-            searchTrackAdapter.tracks.removeAt(positionToRemove)
-            searchTrackAdapter.notifyItemRemoved(positionToRemove)
-            searchTrackAdapter.notifyItemRangeChanged(positionToRemove, positionToRemove)
+            val positionToRemove = LATEST_SEARCH_TRACKS_SIZE - 1
+
+            deleteSearchTrack(positionToRemove)
+        }
+
+        if (duplicateTrackIndex !=  -1) {
+            deleteSearchTrack(duplicateTrackIndex)
         }
 
         searchTrackAdapter.tracks.add(0, track)
         searchTrackAdapter.notifyDataSetChanged()
     }
 
+    private fun deleteSearchTrack(position: Int) {
+        searchTrackAdapter.tracks.removeAt(position)
+        searchTrackAdapter.notifyItemRemoved(position)
+        searchTrackAdapter.notifyItemRangeChanged(position, searchTrackAdapter.tracks.size)
+    }
+
     companion object {
         const val INPUT_TEXT = "INPUT_TEXT"
         const val TEXT_DEF = ""
-        const val LATEST_SEARCH_TRACKS_SIZE = 5
+        const val LATEST_SEARCH_TRACKS_SIZE = 10
     }
 
 }
