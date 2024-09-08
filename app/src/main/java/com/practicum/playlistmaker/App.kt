@@ -6,10 +6,6 @@ import androidx.appcompat.app.AppCompatDelegate
 const val APP_THEME_PREFERENCES = "app_theme_preferences"
 const val DARK_THEME = "dark_theme"
 
-const val APP_SEARCH_HISTORY = "app_search_history"
-const val APP_SEARCH_TRACKS_KEY = "app_search_tracks_key"
-const val APP_NEW_TRACK_KEY = "app_new_track_key"
-
 class App: Application() {
 
     var darkTheme = false

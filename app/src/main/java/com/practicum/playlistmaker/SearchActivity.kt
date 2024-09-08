@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +24,10 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+
+const val APP_SEARCH_HISTORY = "app_search_history"
+const val APP_SEARCH_TRACKS_KEY = "app_search_tracks_key"
+const val APP_NEW_TRACK_KEY = "app_new_track_key"
 
 class SearchActivity : AppCompatActivity() {
 
@@ -50,6 +55,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var rvLatestTrack: RecyclerView
     private lateinit var reloadBtn: Button
     private lateinit var clearHistoryBtn: Button
+    private lateinit var latestSearchHeading: TextView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,6 +80,7 @@ class SearchActivity : AppCompatActivity() {
         reloadBtn = findViewById(R.id.reloadBtn)
         hintLatestSearch = findViewById(R.id.latestSearchList)
         clearHistoryBtn = findViewById(R.id.clearSearchHistory)
+        latestSearchHeading = findViewById(R.id.latestSearchHeading)
 
         trackAdapter.tracks = tracks
         rvTrackSearch.adapter = trackAdapter
@@ -111,12 +118,11 @@ class SearchActivity : AppCompatActivity() {
             searchHistory.clearHistory()
 
             searchTrackAdapter.tracks.clear()
+            hintLatestSearch.visibility = View.GONE
             searchTrackAdapter.notifyDataSetChanged()
         }
 
-        inputEditText.setOnFocusChangeListener { v, hasFocus ->
-            hintLatestSearch.visibility = if (hasFocus && inputEditText.text.isEmpty()) View.VISIBLE else  View.GONE
-        }
+        inputEditText.setOnFocusChangeListener { v, hasFocus -> showLatestSearch(hasFocus) }
     }
 
     override fun onStop() {
@@ -242,14 +248,14 @@ class SearchActivity : AppCompatActivity() {
     private fun addSearchTrack(track: Track) {
         val duplicateTrackIndex = searchTrackAdapter.tracks.indexOfFirst { it.trackId == track.trackId }
 
+        if (duplicateTrackIndex !=  -1) {
+            deleteSearchTrack(duplicateTrackIndex)
+        }
+
         if (searchTrackAdapter.itemCount == LATEST_SEARCH_TRACKS_SIZE) {
             val positionToRemove = LATEST_SEARCH_TRACKS_SIZE - 1
 
             deleteSearchTrack(positionToRemove)
-        }
-
-        if (duplicateTrackIndex !=  -1) {
-            deleteSearchTrack(duplicateTrackIndex)
         }
 
         searchTrackAdapter.tracks.add(0, track)
@@ -262,10 +268,12 @@ class SearchActivity : AppCompatActivity() {
         searchTrackAdapter.notifyItemRangeChanged(position, searchTrackAdapter.tracks.size)
     }
 
+    private fun showLatestSearch(hasFocus: Boolean) { hintLatestSearch.visibility = if (hasFocus && inputEditText.text.isEmpty()) View.VISIBLE else  View.GONE }
+
     companion object {
-        const val INPUT_TEXT = "INPUT_TEXT"
-        const val TEXT_DEF = ""
-        const val LATEST_SEARCH_TRACKS_SIZE = 10
+        private const val INPUT_TEXT = "INPUT_TEXT"
+        private const val TEXT_DEF = ""
+        private const val LATEST_SEARCH_TRACKS_SIZE = 10
     }
 
 }

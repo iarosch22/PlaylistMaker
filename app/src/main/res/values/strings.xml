@@ -17,5 +17,6 @@
     <string name="app_something_went_check">Загрузка не удалась. Проверьте подключение к интернету</string>
     <string name="app_reload">Обновить</string>
     <string name="app_latest_search">Вы искали</string>
+    <string name="app_search_title">История поиска</string>
     <string name="app_clear_btn">Очистить историю</string>
 </resources>
