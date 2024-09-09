@@ -14,7 +14,6 @@ import java.util.Locale
 
 class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
-    private val rootLayout: LinearLayout = itemView.findViewById(R.id.rootLayout)
     private val ivTrackArtwork: ImageView = itemView.findViewById(R.id.ivTrackArtwork)
     private val tvTrackName: TextView = itemView.findViewById(R.id.tvTrackName)
     private val tvArtistName: TextView = itemView.findViewById(R.id.tvArtistName)
