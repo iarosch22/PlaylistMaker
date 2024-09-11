@@ -48,6 +48,7 @@
         app:srcCompat="@drawable/ic_placeholder_large"/>
 
     <TextView
+        android:id="@+id/trackName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Yesterday (Remastered 2009)"
@@ -60,7 +61,58 @@
         app:layout_constraintStart_toStartOf="@id/left_guideline"
         app:layout_constraintEnd_toStartOf="@id/right_guideline"
         app:layout_constraintTop_toBottomOf="@id/cover"
+        app:layout_constraintHorizontal_bias="0"
         style="@style/HeadingTextStyles"/>
+
+    <TextView
+        android:id="@+id/artistName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="The Beatles "
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_marginTop="@dimen/margin_12"
+        android:layout_marginStart="@dimen/margin_8"
+        android:layout_marginEnd="@dimen/margin_8"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintStart_toStartOf="@id/left_guideline"
+        app:layout_constraintEnd_toStartOf="@id/right_guideline"
+        app:layout_constraintTop_toBottomOf="@id/trackName"
+        app:layout_constraintHorizontal_bias="0"
+        style="@style/ArtistNameStyle"/>
+
+    <ImageView
+        android:id="@+id/saveToPlaylist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_8"
+        app:srcCompat="@drawable/ic_save_to_playlist"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="@id/left_guideline"
+        app:layout_constraintEnd_toStartOf="@id/playButton"
+        app:layout_constraintBottom_toBottomOf="@id/playButton"
+        app:layout_constraintTop_toTopOf="@id/playButton"/>
+
+    <ImageView
+        android:id="@+id/playButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_30"
+        app:srcCompat="@drawable/ic_play"
+        app:layout_constraintTop_toBottomOf="@id/artistName"
+        app:layout_constraintStart_toEndOf="@id/saveToPlaylist"
+        app:layout_constraintEnd_toStartOf="@id/saveToFavorites"/>
+
+    <ImageView
+        android:id="@+id/saveToFavorites"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_8"
+        app:srcCompat="@drawable/ic_like"
+        app:layout_constraintStart_toEndOf="@id/playButton"
+        app:layout_constraintEnd_toStartOf="@id/right_guideline"
+        app:layout_constraintBottom_toBottomOf="@id/playButton"
+        app:layout_constraintTop_toTopOf="@id/playButton" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
