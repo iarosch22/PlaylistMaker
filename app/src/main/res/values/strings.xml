@@ -19,4 +19,6 @@
     <string name="app_latest_search">Вы искали</string>
     <string name="app_search_title">История поиска</string>
     <string name="app_clear_btn">Очистить историю</string>
+
+    <string name="player_cover_image">Обложка альбома</string>
 </resources>
