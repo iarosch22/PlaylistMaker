@@ -114,14 +114,6 @@ class SearchActivity : AppCompatActivity() {
             false
         }
 
-        clearHistoryBtn.setOnClickListener {
-            searchHistory.clearHistory()
-
-            searchTrackAdapter.tracks.clear()
-            hintLatestSearch.visibility = View.GONE
-            searchTrackAdapter.notifyDataSetChanged()
-        }
-
         inputEditText.setOnFocusChangeListener { v, hasFocus -> showLatestSearch(hasFocus) }
     }
 
@@ -176,10 +168,20 @@ class SearchActivity : AppCompatActivity() {
             }
         }
     }
+    private fun setClearHistoryBtn() {
+        clearHistoryBtn.setOnClickListener {
+            searchHistory.clearHistory()
+
+            searchTrackAdapter.tracks.clear()
+            hintLatestSearch.visibility = View.GONE
+            searchTrackAdapter.notifyDataSetChanged()
+        }
+    }
     private fun setButtons() {
         setBtnBack()
         setBtnClear()
         setBtnReload()
+        setClearHistoryBtn()
     }
 
     private fun setTextWatcher() {

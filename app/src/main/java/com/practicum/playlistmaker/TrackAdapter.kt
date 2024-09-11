@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 
-class TrackAdapter(private val context: Context): RecyclerView.Adapter<TrackViewHolder>() {
+class TrackAdapter(context: Context): RecyclerView.Adapter<TrackViewHolder>() {
 
     var tracks = ArrayList<Track>()
     private val sharedPreferences = context.getSharedPreferences(APP_SEARCH_HISTORY, Context.MODE_PRIVATE)
