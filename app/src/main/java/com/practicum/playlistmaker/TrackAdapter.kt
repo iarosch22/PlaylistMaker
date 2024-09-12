@@ -7,10 +7,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 
-class TrackAdapter(private val context: Context, private val listener: OnTrackClickListener): RecyclerView.Adapter<TrackViewHolder>() {
+class TrackAdapter(private val listener: OnTrackClickListener): RecyclerView.Adapter<TrackViewHolder>() {
 
     var tracks = ArrayList<Track>()
-    private val sharedPreferences = context.getSharedPreferences(APP_SEARCH_HISTORY, Context.MODE_PRIVATE)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.track_search_item, parent, false)
@@ -24,13 +23,7 @@ class TrackAdapter(private val context: Context, private val listener: OnTrackCl
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         holder.bind(tracks[position])
 
-        holder.itemView.setOnClickListener {
-            listener.onTrackClick(tracks[position])
-
-            sharedPreferences.edit()
-                .putString(APP_NEW_TRACK_KEY, Gson().toJson(tracks[position]))
-                .apply()
-        }
+        holder.itemView.setOnClickListener { listener.onTrackClick(tracks[position]) }
     }
 
 }

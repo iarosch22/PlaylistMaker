@@ -63,8 +63,8 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        trackAdapter = TrackAdapter(this, this)
-        searchTrackAdapter = TrackAdapter(this, this)
+        trackAdapter = TrackAdapter(this)
+        searchTrackAdapter = TrackAdapter(this)
 
         inputMethodManager = (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)!!
 
@@ -281,6 +281,10 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {
 
     override fun onTrackClick(track: Track) {
         val playerIntent = Intent(this@SearchActivity, PlayerActivity::class.java)
+
+        sharedPreferences.edit()
+            .putString(APP_NEW_TRACK_KEY, Gson().toJson(track))
+            .apply()
 
         startActivity(playerIntent)
     }
