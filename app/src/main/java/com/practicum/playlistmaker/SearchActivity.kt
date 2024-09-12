@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
@@ -29,7 +30,7 @@ const val APP_SEARCH_HISTORY = "app_search_history"
 const val APP_SEARCH_TRACKS_KEY = "app_search_tracks_key"
 const val APP_NEW_TRACK_KEY = "app_new_track_key"
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : AppCompatActivity(), OnTrackClickListener {
 
     private var textValue = TEXT_DEF
 
@@ -62,8 +63,8 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        trackAdapter = TrackAdapter(this)
-        searchTrackAdapter = TrackAdapter(this)
+        trackAdapter = TrackAdapter(this, this)
+        searchTrackAdapter = TrackAdapter(this, this)
 
         inputMethodManager = (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)!!
 
@@ -276,6 +277,12 @@ class SearchActivity : AppCompatActivity() {
         private const val INPUT_TEXT = "INPUT_TEXT"
         private const val TEXT_DEF = ""
         private const val LATEST_SEARCH_TRACKS_SIZE = 10
+    }
+
+    override fun onTrackClick(track: Track) {
+        val playerIntent = Intent(this@SearchActivity, PlayerActivity::class.java)
+
+        startActivity(playerIntent)
     }
 
 }

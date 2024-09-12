@@ -1,12 +1,13 @@
 package com.practicum.playlistmaker
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 
-class TrackAdapter(context: Context): RecyclerView.Adapter<TrackViewHolder>() {
+class TrackAdapter(private val context: Context, private val listener: OnTrackClickListener): RecyclerView.Adapter<TrackViewHolder>() {
 
     var tracks = ArrayList<Track>()
     private val sharedPreferences = context.getSharedPreferences(APP_SEARCH_HISTORY, Context.MODE_PRIVATE)
@@ -24,6 +25,7 @@ class TrackAdapter(context: Context): RecyclerView.Adapter<TrackViewHolder>() {
         holder.bind(tracks[position])
 
         holder.itemView.setOnClickListener {
+            listener.onTrackClick(tracks[position])
 
             sharedPreferences.edit()
                 .putString(APP_NEW_TRACK_KEY, Gson().toJson(tracks[position]))
