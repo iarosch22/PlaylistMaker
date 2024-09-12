@@ -60,6 +60,10 @@
         <item name="android:textSize">@dimen/text_size_14</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
     </style>
+    <style name="PlayerDescriptionTextStyle">
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">@dimen/text_size_13</item>
+    </style>
 
     <style name="LayoutPadding">
         <item name="android:paddingTop">@dimen/padding_4</item>

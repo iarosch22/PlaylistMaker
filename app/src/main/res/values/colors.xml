@@ -3,6 +3,7 @@
     <color name="black">#000000</color>
     <color name="yp_white">#FFFFFF</color>
     <color name="yp_black">#1A1B22</color>
+    <color name="yp_gray">#AEAFB4</color>
     <color name="yp_icon">#AEAFB4</color>
     <color name="yp_hint">#AEAFB4</color>
     <color name="yp_placeholder_btn">#FFFFFF</color>
