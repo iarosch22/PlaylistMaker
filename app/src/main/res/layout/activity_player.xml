@@ -208,7 +208,7 @@
         android:layout_height="@dimen/size_32"
         app:layout_constrainedWidth="true"
         android:gravity="center_vertical|end"
-        tools:text="5:35"
+        tools:text="1965"
         android:maxLines="1"
         android:ellipsize="end"
         android:textColor="?attr/colorOnSecondary"
