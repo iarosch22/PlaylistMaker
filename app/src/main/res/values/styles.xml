@@ -55,7 +55,7 @@
         <item name="android:textSize">@dimen/text_size_19</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
     </style>
-    <style name="ArtistNameStyle">
+    <style name="AdditionalTextStyle">
         <item name="android:textColor">?attr/colorOnSecondary</item>
         <item name="android:textSize">@dimen/text_size_14</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>

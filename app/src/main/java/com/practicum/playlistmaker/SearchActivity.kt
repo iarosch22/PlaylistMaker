@@ -274,8 +274,11 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {
     private fun showLatestSearch(hasFocus: Boolean) { hintLatestSearch.visibility = if (hasFocus && inputEditText.text.isEmpty()) View.VISIBLE else  View.GONE }
 
     override fun onTrackClick(track: Track) {
-        val playerIntent = Intent(this@SearchActivity, PlayerActivity::class.java)
+        sharedPreferences.edit()
+            .putString(APP_NEW_TRACK_KEY, Gson().toJson(track))
+            .apply()
 
+        val playerIntent = Intent(this@SearchActivity, PlayerActivity::class.java)
 
         playerIntent.putExtra("TRACK", track)
 

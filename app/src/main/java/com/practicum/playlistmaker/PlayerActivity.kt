@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -62,20 +63,18 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         if (track != null) {
-            val trackTime = track.trackTimeMillis.toLong()
-
             trackName.text = track.trackName
             artistName.text = track.artistName
-            trackTimeValue.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(trackTime)
+            trackTimeValue.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis.toLong())
 
-            if (track.collectionName == null) {
+            if (track.collectionName.isEmpty()) {
                 collectionNameValue.visibility = View.GONE
                 collectionNameField.visibility = View.GONE
             } else {
                 collectionNameValue.text = track.collectionName
             }
 
-            releaseDateValue.text = track.releaseDate
+            releaseDateValue.text = track.releaseDate.take(4).takeIf { it.length == 4 } ?: ""
             primaryGenreNameValue.text = track.primaryGenreName
             countryValue.text = track.country
 
