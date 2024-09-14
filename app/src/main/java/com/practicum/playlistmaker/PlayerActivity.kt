@@ -82,6 +82,14 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+//    private fun getTrackFromIntent(): Track {
+//        return if (VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) ({
+//            intent.getParcelableExtra("TRACK", Track::class.java)
+//        }) else ({
+//            intent.getParcelableExtra("TRACK")
+//        })
+//    }
+
     private fun loadArtWork(artworkUrl: String) {
         val cornersValueDp = 8F
         val cornersValuePx = dpToPx(cornersValueDp, this)
