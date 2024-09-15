@@ -7,7 +7,6 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -30,7 +29,7 @@ const val APP_SEARCH_HISTORY = "app_search_history"
 const val APP_SEARCH_TRACKS_KEY = "app_search_tracks_key"
 const val APP_NEW_TRACK_KEY = "app_new_track_key"
 
-class SearchActivity : AppCompatActivity(), OnTrackClickListener {
+class SearchActivity : AppCompatActivity() {
 
     private var textValue = TEXT_DEF
 
@@ -42,7 +41,8 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {
     private lateinit var searchTrackAdapter: TrackAdapter
 
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var listener: OnSharedPreferenceChangeListener
+    private lateinit var sharedPreferenceChangeListener: OnSharedPreferenceChangeListener
+    private lateinit var trackListener: OnTrackClickListener
     private lateinit var searchHistory: SearchHistory
 
     private lateinit var inputMethodManager: InputMethodManager
@@ -63,8 +63,10 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        trackAdapter = TrackAdapter(this)
-        searchTrackAdapter = TrackAdapter(this)
+        setOnTrackClick()
+
+        trackAdapter = TrackAdapter(trackListener)
+        searchTrackAdapter = TrackAdapter(trackListener)
 
         inputMethodManager = (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)!!
 
@@ -94,7 +96,7 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {
 
         setTextWatcher()
 
-        listener = OnSharedPreferenceChangeListener { sharedPreferences, key ->
+        sharedPreferenceChangeListener = OnSharedPreferenceChangeListener { sharedPreferences, key ->
             if (key == APP_NEW_TRACK_KEY) {
                 val trackJson = sharedPreferences?.getString(APP_NEW_TRACK_KEY, null)
                 if (trackJson != null) {
@@ -102,7 +104,7 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {
                 }
             }
         }
-        sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
+        sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
 
         inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -273,16 +275,21 @@ class SearchActivity : AppCompatActivity(), OnTrackClickListener {
 
     private fun showLatestSearch(hasFocus: Boolean) { hintLatestSearch.visibility = if (hasFocus && inputEditText.text.isEmpty()) View.VISIBLE else  View.GONE }
 
-    override fun onTrackClick(track: Track) {
-        sharedPreferences.edit()
-            .putString(APP_NEW_TRACK_KEY, Gson().toJson(track))
-            .apply()
-
+    private fun setOnTrackClick() {
         val playerIntent = Intent(this@SearchActivity, PlayerActivity::class.java)
 
-        playerIntent.putExtra("TRACK", track)
+        trackListener = OnTrackClickListener { track: Track ->
+            sharedPreferences.edit()
+                .putString(APP_NEW_TRACK_KEY, Gson().toJson(track))
+                .apply()
 
-        startActivity(playerIntent)
+            Toast.makeText(this, track.country, Toast.LENGTH_SHORT).show()
+
+            playerIntent.putExtra("TRACK", track)
+
+            startActivity(playerIntent)
+        }
+
     }
 
     companion object {

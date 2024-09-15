@@ -1,6 +1,6 @@
 package com.practicum.playlistmaker
 
-interface OnTrackClickListener {
+fun interface OnTrackClickListener {
 
     fun onTrackClick(track: Track)
 

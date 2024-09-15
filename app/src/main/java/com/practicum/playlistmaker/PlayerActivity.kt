@@ -16,6 +16,8 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+const val SDK_TIRAMISU = Build.VERSION_CODES.TIRAMISU
+
 class PlayerActivity : AppCompatActivity() {
 
     private lateinit var backBtn: ImageButton
@@ -56,39 +58,34 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun setTrackValues() {
-        val track = if (VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        val track = if (VERSION.SDK_INT >= SDK_TIRAMISU) {
             intent.getParcelableExtra("TRACK", Track::class.java)
         } else {
             intent.getParcelableExtra<Track>("TRACK")
         }
 
-        if (track != null) {
-            trackName.text = track.trackName
-            artistName.text = track.artistName
-            trackTimeValue.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis.toLong())
-
-            if (track.collectionName.isEmpty()) {
-                collectionNameValue.visibility = View.GONE
-                collectionNameField.visibility = View.GONE
-            } else {
-                collectionNameValue.text = track.collectionName
-            }
-
-            releaseDateValue.text = track.releaseDate.take(4).takeIf { it.length == 4 } ?: ""
-            primaryGenreNameValue.text = track.primaryGenreName
-            countryValue.text = track.country
-
-            loadArtWork(track.getCoverArtwork())
+        if (track == null) {
+            finish()
+            return
         }
-    }
 
-//    private fun getTrackFromIntent(): Track {
-//        return if (VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) ({
-//            intent.getParcelableExtra("TRACK", Track::class.java)
-//        }) else ({
-//            intent.getParcelableExtra("TRACK")
-//        })
-//    }
+        trackName.text = track.trackName
+        artistName.text = track.artistName
+        trackTimeValue.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis.toLong())
+
+        if (track.collectionName.isEmpty()) {
+            collectionNameValue.visibility = View.GONE
+            collectionNameField.visibility = View.GONE
+        } else {
+            collectionNameValue.text = track.collectionName
+        }
+
+        releaseDateValue.text = track.releaseDate.take(4).takeIf { it.length == 4 } ?: ""
+        primaryGenreNameValue.text = track.primaryGenreName
+        countryValue.text = track.country
+
+        loadArtWork(track.getCoverArtwork())
+    }
 
     private fun loadArtWork(artworkUrl: String) {
         val cornersValueDp = 8F
