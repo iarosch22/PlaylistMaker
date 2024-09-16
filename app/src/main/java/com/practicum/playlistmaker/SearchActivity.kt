@@ -283,8 +283,6 @@ class SearchActivity : AppCompatActivity() {
                 .putString(APP_NEW_TRACK_KEY, Gson().toJson(track))
                 .apply()
 
-            Toast.makeText(this, track.country, Toast.LENGTH_SHORT).show()
-
             playerIntent.putExtra("TRACK", track)
 
             startActivity(playerIntent)
