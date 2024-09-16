@@ -69,17 +69,7 @@ class SearchActivity : AppCompatActivity() {
         sharedPreferences = getSharedPreferences(APP_SEARCH_HISTORY, MODE_PRIVATE)
         searchHistory = SearchHistory(sharedPreferences)
 
-        phSomethingWentWrong = findViewById(R.id.phSomethingWentWrong)
-        phNothingFound = findViewById(R.id.phNothingFound)
-        btnBack = findViewById(R.id.btn_back)
-        inputEditText = findViewById(R.id.inputEditText)
-        clearBtn = findViewById(R.id.clearIcon)
-        rvTrackSearch = findViewById(R.id.rvTrackSearch)
-        rvLatestTrack = findViewById(R.id.rvLatestTrackSearch)
-        reloadBtn = findViewById(R.id.reloadBtn)
-        hintLatestSearch = findViewById(R.id.latestSearchList)
-        clearHistoryBtn = findViewById(R.id.clearSearchHistory)
-        latestSearchHeading = findViewById(R.id.latestSearchHeading)
+        setViews()
 
         trackAdapter.tracks = tracks
         rvTrackSearch.adapter = trackAdapter
@@ -146,6 +136,20 @@ class SearchActivity : AppCompatActivity() {
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+    }
+
+    private fun setViews() {
+        phSomethingWentWrong = findViewById(R.id.phSomethingWentWrong)
+        phNothingFound = findViewById(R.id.phNothingFound)
+        btnBack = findViewById(R.id.btn_back)
+        inputEditText = findViewById(R.id.inputEditText)
+        clearBtn = findViewById(R.id.clearIcon)
+        rvTrackSearch = findViewById(R.id.rvTrackSearch)
+        rvLatestTrack = findViewById(R.id.rvLatestTrackSearch)
+        reloadBtn = findViewById(R.id.reloadBtn)
+        hintLatestSearch = findViewById(R.id.latestSearchList)
+        clearHistoryBtn = findViewById(R.id.clearSearchHistory)
+        latestSearchHeading = findViewById(R.id.latestSearchHeading)
     }
 
     private fun setBtnBack() {
