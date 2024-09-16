@@ -15,7 +15,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -42,7 +41,6 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var sharedPreferenceChangeListener: OnSharedPreferenceChangeListener
-    private lateinit var trackListener: OnTrackClickListener
     private lateinit var searchHistory: SearchHistory
 
     private lateinit var inputMethodManager: InputMethodManager
@@ -63,10 +61,8 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        setOnTrackClick()
-
-        trackAdapter = TrackAdapter(trackListener)
-        searchTrackAdapter = TrackAdapter(trackListener)
+        trackAdapter = TrackAdapter(createOnTrackClick())
+        searchTrackAdapter = TrackAdapter(createOnTrackClick())
 
         inputMethodManager = (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)!!
 
@@ -275,10 +271,10 @@ class SearchActivity : AppCompatActivity() {
 
     private fun showLatestSearch(hasFocus: Boolean) { hintLatestSearch.visibility = if (hasFocus && inputEditText.text.isEmpty()) View.VISIBLE else  View.GONE }
 
-    private fun setOnTrackClick() {
+    private fun createOnTrackClick(): OnTrackClickListener {
         val playerIntent = Intent(this@SearchActivity, PlayerActivity::class.java)
 
-        trackListener = OnTrackClickListener { track: Track ->
+        val trackListener = OnTrackClickListener { track: Track ->
             sharedPreferences.edit()
                 .putString(APP_NEW_TRACK_KEY, Gson().toJson(track))
                 .apply()
@@ -288,6 +284,8 @@ class SearchActivity : AppCompatActivity() {
             startActivity(playerIntent)
         }
 
+
+        return trackListener
     }
 
     companion object {
