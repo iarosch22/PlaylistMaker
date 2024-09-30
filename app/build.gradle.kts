@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("kotlin-parcelize")
 }
 
 android {
@@ -50,4 +51,5 @@ dependencies {
     annotationProcessor(libs.compiler)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+    implementation(libs.androidx.constraintlayout.v200)
 }

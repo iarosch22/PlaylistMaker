@@ -183,7 +183,7 @@
             android:id="@+id/latestSearchHeading"
             android:layout_width="match_parent"
             android:layout_height="52dp"
-            android:text="@string/app_search_title"
+            android:text="@string/app_latest_search"
             android:gravity="center"
             style="@style/MediumTextStyle"/>
 

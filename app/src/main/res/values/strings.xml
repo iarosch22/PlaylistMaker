@@ -19,4 +19,11 @@
     <string name="app_latest_search">Вы искали</string>
     <string name="app_search_title">История поиска</string>
     <string name="app_clear_btn">Очистить историю</string>
+    <string name="player_cover_image">Обложка альбома</string>
+    <string name="app_trackTime">Длительность</string>
+    <string name="app_country">Страна</string>
+    <string name="app_genre">Жанр</string>
+    <string name="app_releaseDate">Год</string>
+    <string name="app_collectionName">Альбом</string>
+    <string name="app_duration">0:30</string>
 </resources>

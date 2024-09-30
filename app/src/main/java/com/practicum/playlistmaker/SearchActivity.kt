@@ -1,12 +1,12 @@
 package com.practicum.playlistmaker
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -15,7 +15,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -41,7 +40,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchTrackAdapter: TrackAdapter
 
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var listener: OnSharedPreferenceChangeListener
+    private lateinit var sharedPreferenceChangeListener: OnSharedPreferenceChangeListener
     private lateinit var searchHistory: SearchHistory
 
     private lateinit var inputMethodManager: InputMethodManager
@@ -62,25 +61,15 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        trackAdapter = TrackAdapter(this)
-        searchTrackAdapter = TrackAdapter(this)
+        trackAdapter = TrackAdapter(createOnTrackClick())
+        searchTrackAdapter = TrackAdapter(createOnTrackClick())
 
         inputMethodManager = (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)!!
 
         sharedPreferences = getSharedPreferences(APP_SEARCH_HISTORY, MODE_PRIVATE)
         searchHistory = SearchHistory(sharedPreferences)
 
-        phSomethingWentWrong = findViewById(R.id.phSomethingWentWrong)
-        phNothingFound = findViewById(R.id.phNothingFound)
-        btnBack = findViewById(R.id.btn_back)
-        inputEditText = findViewById(R.id.inputEditText)
-        clearBtn = findViewById(R.id.clearIcon)
-        rvTrackSearch = findViewById(R.id.rvTrackSearch)
-        rvLatestTrack = findViewById(R.id.rvLatestTrackSearch)
-        reloadBtn = findViewById(R.id.reloadBtn)
-        hintLatestSearch = findViewById(R.id.latestSearchList)
-        clearHistoryBtn = findViewById(R.id.clearSearchHistory)
-        latestSearchHeading = findViewById(R.id.latestSearchHeading)
+        setViews()
 
         trackAdapter.tracks = tracks
         rvTrackSearch.adapter = trackAdapter
@@ -93,7 +82,7 @@ class SearchActivity : AppCompatActivity() {
 
         setTextWatcher()
 
-        listener = OnSharedPreferenceChangeListener { sharedPreferences, key ->
+        sharedPreferenceChangeListener = OnSharedPreferenceChangeListener { sharedPreferences, key ->
             if (key == APP_NEW_TRACK_KEY) {
                 val trackJson = sharedPreferences?.getString(APP_NEW_TRACK_KEY, null)
                 if (trackJson != null) {
@@ -101,7 +90,7 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
         }
-        sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
+        sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
 
         inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -112,14 +101,6 @@ class SearchActivity : AppCompatActivity() {
                 true
             }
             false
-        }
-
-        clearHistoryBtn.setOnClickListener {
-            searchHistory.clearHistory()
-
-            searchTrackAdapter.tracks.clear()
-            hintLatestSearch.visibility = View.GONE
-            searchTrackAdapter.notifyDataSetChanged()
         }
 
         inputEditText.setOnFocusChangeListener { v, hasFocus -> showLatestSearch(hasFocus) }
@@ -157,6 +138,20 @@ class SearchActivity : AppCompatActivity() {
             .build()
     }
 
+    private fun setViews() {
+        phSomethingWentWrong = findViewById(R.id.phSomethingWentWrong)
+        phNothingFound = findViewById(R.id.phNothingFound)
+        btnBack = findViewById(R.id.btn_back)
+        inputEditText = findViewById(R.id.inputEditText)
+        clearBtn = findViewById(R.id.clearIcon)
+        rvTrackSearch = findViewById(R.id.rvTrackSearch)
+        rvLatestTrack = findViewById(R.id.rvLatestTrackSearch)
+        reloadBtn = findViewById(R.id.reloadBtn)
+        hintLatestSearch = findViewById(R.id.latestSearchList)
+        clearHistoryBtn = findViewById(R.id.clearSearchHistory)
+        latestSearchHeading = findViewById(R.id.latestSearchHeading)
+    }
+
     private fun setBtnBack() {
         btnBack.setOnClickListener { this.finish() }
     }
@@ -176,10 +171,20 @@ class SearchActivity : AppCompatActivity() {
             }
         }
     }
+    private fun setClearHistoryBtn() {
+        clearHistoryBtn.setOnClickListener {
+            searchHistory.clearHistory()
+
+            searchTrackAdapter.tracks.clear()
+            hintLatestSearch.visibility = View.GONE
+            searchTrackAdapter.notifyDataSetChanged()
+        }
+    }
     private fun setButtons() {
         setBtnBack()
         setBtnClear()
         setBtnReload()
+        setClearHistoryBtn()
     }
 
     private fun setTextWatcher() {
@@ -269,6 +274,23 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showLatestSearch(hasFocus: Boolean) { hintLatestSearch.visibility = if (hasFocus && inputEditText.text.isEmpty()) View.VISIBLE else  View.GONE }
+
+    private fun createOnTrackClick(): OnTrackClickListener {
+        val playerIntent = Intent(this@SearchActivity, PlayerActivity::class.java)
+
+        val trackListener = OnTrackClickListener { track: Track ->
+            sharedPreferences.edit()
+                .putString(APP_NEW_TRACK_KEY, Gson().toJson(track))
+                .apply()
+
+            playerIntent.putExtra("TRACK", track)
+
+            startActivity(playerIntent)
+        }
+
+
+        return trackListener
+    }
 
     companion object {
         private const val INPUT_TEXT = "INPUT_TEXT"
