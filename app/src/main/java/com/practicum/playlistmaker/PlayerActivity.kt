@@ -30,6 +30,9 @@ class PlayerActivity : AppCompatActivity() {
 
     private val handler = Handler(Looper.getMainLooper())
 
+    private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
+    private val runnableDuration by lazy { createAndUpdateDuration() }
+
     private lateinit var backBtn: ImageButton
     private lateinit var cover: ImageView
     private lateinit var trackName: TextView
@@ -79,7 +82,7 @@ class PlayerActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         mediaPlayer.release()
-        handler.removeCallbacks(createAndUpdateDuration())
+        handler.removeCallbacks(runnableDuration)
     }
 
     private fun setBackBtn() {
@@ -103,7 +106,7 @@ class PlayerActivity : AppCompatActivity() {
         url = track.previewUrl
         trackName.text = track.trackName
         artistName.text = track.artistName
-        trackTimeValue.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis.toLong())
+        trackTimeValue.text = dateFormat.format(track.trackTimeMillis.toLong())
 
         if (track.collectionName.isEmpty()) {
             collectionNameValue.visibility = View.GONE
@@ -159,7 +162,7 @@ class PlayerActivity : AppCompatActivity() {
         mediaPlayer.start()
         playButton.setImageResource(R.drawable.ic_pause)
         playerState = STATE_PLAYING
-        handler.post(createAndUpdateDuration())
+        handler.post(runnableDuration)
     }
 
     private fun pausePlayer() {
