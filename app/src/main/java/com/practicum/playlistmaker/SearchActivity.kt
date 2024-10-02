@@ -30,6 +30,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 const val APP_SEARCH_HISTORY = "app_search_history"
 const val APP_SEARCH_TRACKS_KEY = "app_search_tracks_key"
 const val APP_NEW_TRACK_KEY = "app_new_track_key"
+const val TRACK = "TRACK"
 
 class SearchActivity : AppCompatActivity() {
 
@@ -234,6 +235,9 @@ class SearchActivity : AppCompatActivity() {
 
     private fun performSearch() {
         progressBar.visibility = View.VISIBLE
+        phNothingFound.visibility = View.GONE
+        phSomethingWentWrong.visibility = View.GONE
+        rvTrackSearch.visibility = View.GONE
 
         itunesService.search(inputEditText.text.toString()).enqueue(object: Callback<TrackResponce> {
             override fun onResponse(
@@ -241,6 +245,7 @@ class SearchActivity : AppCompatActivity() {
                 response: Response<TrackResponce>
             ) {
                 progressBar.visibility = View.GONE
+                rvTrackSearch.visibility = View.VISIBLE
                 if (response.code() == 200) {
                     tracks.clear()
                     trackAdapter.notifyDataSetChanged()
@@ -300,7 +305,7 @@ class SearchActivity : AppCompatActivity() {
 
 
             if (clickDebounce()) {
-                playerIntent.putExtra("TRACK", track)
+                playerIntent.putExtra(TRACK, track)
 
                 startActivity(playerIntent)
             }

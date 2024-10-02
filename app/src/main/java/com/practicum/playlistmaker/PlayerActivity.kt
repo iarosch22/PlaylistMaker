@@ -93,9 +93,9 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun setTrackValues() {
         val track = if (VERSION.SDK_INT >= SDK_TIRAMISU) {
-            intent.getParcelableExtra("TRACK", Track::class.java)
+            intent.getParcelableExtra(TRACK, Track::class.java)
         } else {
-            intent.getParcelableExtra<Track>("TRACK")
+            intent.getParcelableExtra<Track>(TRACK)
         }
 
         if (track == null) {
