@@ -18,6 +18,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -112,7 +113,7 @@ class SearchActivity : AppCompatActivity() {
             false
         }
 
-        inputEditText.setOnFocusChangeListener { v, hasFocus -> showLatestSearch(hasFocus) }
+        inputEditText.setOnFocusChangeListener { _, hasFocus -> showLatestSearch(hasFocus) }
     }
 
     override fun onStop() {
@@ -204,8 +205,8 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 textValue = s.toString()
                 clearBtn.visibility = clearButtonVisibility(s)
-
-                hintLatestSearch.visibility = if (inputEditText.hasFocus() && s?.isEmpty() == true) View.VISIBLE else View.GONE
+                // TODO:  
+                hintLatestSearch.visibility = if (inputEditText.hasFocus() && s?.isEmpty() == true && searchTrackAdapter.tracks.isNotEmpty()) View.VISIBLE else View.GONE
 
                 searchDebounce()
             }
@@ -293,7 +294,9 @@ class SearchActivity : AppCompatActivity() {
         searchTrackAdapter.notifyItemRangeChanged(position, searchTrackAdapter.tracks.size)
     }
 
-    private fun showLatestSearch(hasFocus: Boolean) { hintLatestSearch.visibility = if (hasFocus && inputEditText.text.isEmpty()) View.VISIBLE else  View.GONE }
+    private fun showLatestSearch(hasFocus: Boolean) { hintLatestSearch.visibility = if (
+        hasFocus && inputEditText.text.isEmpty() && searchTrackAdapter.tracks.isNotEmpty()
+        ) View.VISIBLE else  View.GONE }
 
     private fun createOnTrackClick(): OnTrackClickListener {
         val playerIntent = Intent(this@SearchActivity, PlayerActivity::class.java)
