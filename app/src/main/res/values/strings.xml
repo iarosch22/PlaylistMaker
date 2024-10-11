@@ -25,5 +25,5 @@
     <string name="app_genre">Жанр</string>
     <string name="app_releaseDate">Год</string>
     <string name="app_collectionName">Альбом</string>
-    <string name="app_duration">0:30</string>
+    <string name="app_duration">0:00</string>
 </resources>
