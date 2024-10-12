@@ -247,7 +247,7 @@ class SearchActivity : AppCompatActivity() {
         phSomethingWentWrong.visibility = View.GONE
         rvTrackSearch.visibility = View.GONE
 
-        itunesService.search(inputEditText.text.toString()).enqueue(object: Callback<TrackSearchResponse> {
+        itunesService.searchTracks(inputEditText.text.toString()).enqueue(object: Callback<TrackSearchResponse> {
             override fun onResponse(
                 call: Call<TrackSearchResponse>,
                 response: Response<TrackSearchResponse>
