@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.ui.settings
 
 import android.content.Intent
 import android.content.SharedPreferences
@@ -7,6 +7,10 @@ import android.os.Bundle
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.practicum.playlistmaker.APP_THEME_PREFERENCES
+import com.practicum.playlistmaker.App
+import com.practicum.playlistmaker.DARK_THEME
+import com.practicum.playlistmaker.R
 
 
 class SettingsActivity: AppCompatActivity() {

@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.ui.tracks
 
 import android.content.Context
 import android.content.Intent
@@ -18,10 +18,17 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
+import com.practicum.playlistmaker.data.network.ItunesApi
+import com.practicum.playlistmaker.MessageType
+import com.practicum.playlistmaker.OnTrackClickListener
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.SearchHistory
+import com.practicum.playlistmaker.data.dto.TrackSearchResponse
+import com.practicum.playlistmaker.domain.models.Track
+import com.practicum.playlistmaker.ui.player.PlayerActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -43,8 +50,8 @@ class SearchActivity : AppCompatActivity() {
     private val retrofit = createRetrofit()
     private val itunesService = retrofit.create(ItunesApi::class.java)
     private val tracks = ArrayList<Track>()
-    private lateinit var trackAdapter: TrackAdapter
-    private lateinit var searchTrackAdapter: TrackAdapter
+    private lateinit var tracksAdapter: TracksAdapter
+    private lateinit var searchTracksAdapter: TracksAdapter
     private val handler = Handler(Looper.getMainLooper())
     private val searchRunnable = Runnable { performSearch() }
 
@@ -71,8 +78,8 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        trackAdapter = TrackAdapter(createOnTrackClick())
-        searchTrackAdapter = TrackAdapter(createOnTrackClick())
+        tracksAdapter = TracksAdapter(createOnTrackClick())
+        searchTracksAdapter = TracksAdapter(createOnTrackClick())
 
         inputMethodManager = (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)!!
 
@@ -81,11 +88,11 @@ class SearchActivity : AppCompatActivity() {
 
         setViews()
 
-        trackAdapter.tracks = tracks
-        rvTrackSearch.adapter = trackAdapter
+        tracksAdapter.tracks = tracks
+        rvTrackSearch.adapter = tracksAdapter
 
-        searchTrackAdapter.tracks = searchHistory.readTracksFromSearchHistory()
-        rvLatestTrack.adapter = searchTrackAdapter
+        searchTracksAdapter.tracks = searchHistory.readTracksFromSearchHistory()
+        rvLatestTrack.adapter = searchTracksAdapter
 
 
         setButtons()
@@ -119,7 +126,7 @@ class SearchActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
 
-        searchHistory.saveToSearchHistory(searchTrackAdapter.tracks)
+        searchHistory.saveToSearchHistory(searchTracksAdapter.tracks)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -170,7 +177,7 @@ class SearchActivity : AppCompatActivity() {
         clearBtn.setOnClickListener {
             inputEditText.setText(TEXT_DEF)
             tracks.clear()
-            trackAdapter.notifyDataSetChanged()
+            tracksAdapter.notifyDataSetChanged()
             showMessage(MessageType.NO_MESSAGE)
             inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
         }
@@ -186,9 +193,9 @@ class SearchActivity : AppCompatActivity() {
         clearHistoryBtn.setOnClickListener {
             searchHistory.clearHistory()
 
-            searchTrackAdapter.tracks.clear()
+            searchTracksAdapter.tracks.clear()
             hintLatestSearch.visibility = View.GONE
-            searchTrackAdapter.notifyDataSetChanged()
+            searchTracksAdapter.notifyDataSetChanged()
         }
     }
     private fun setButtons() {
@@ -206,7 +213,7 @@ class SearchActivity : AppCompatActivity() {
                 textValue = s.toString()
                 clearBtn.visibility = clearButtonVisibility(s)
                 // TODO:  
-                hintLatestSearch.visibility = if (inputEditText.hasFocus() && s?.isEmpty() == true && searchTrackAdapter.tracks.isNotEmpty()) View.VISIBLE else View.GONE
+                hintLatestSearch.visibility = if (inputEditText.hasFocus() && s?.isEmpty() == true && searchTracksAdapter.tracks.isNotEmpty()) View.VISIBLE else View.GONE
 
                 searchDebounce()
             }
@@ -240,19 +247,19 @@ class SearchActivity : AppCompatActivity() {
         phSomethingWentWrong.visibility = View.GONE
         rvTrackSearch.visibility = View.GONE
 
-        itunesService.search(inputEditText.text.toString()).enqueue(object: Callback<TrackResponce> {
+        itunesService.search(inputEditText.text.toString()).enqueue(object: Callback<TrackSearchResponse> {
             override fun onResponse(
-                call: Call<TrackResponce>,
-                response: Response<TrackResponce>
+                call: Call<TrackSearchResponse>,
+                response: Response<TrackSearchResponse>
             ) {
                 progressBar.visibility = View.GONE
                 rvTrackSearch.visibility = View.VISIBLE
                 if (response.code() == 200) {
                     tracks.clear()
-                    trackAdapter.notifyDataSetChanged()
+                    tracksAdapter.notifyDataSetChanged()
                     if (response.body()?.results?.isNotEmpty() == true) {
                         tracks.addAll(response.body()?.results!!)
-                        trackAdapter.notifyDataSetChanged()
+                        tracksAdapter.notifyDataSetChanged()
                     }
                     if (tracks.isEmpty()) {
                         showMessage(MessageType.NOTHING_FOUND)
@@ -264,7 +271,7 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<TrackResponce>, t: Throwable) {
+            override fun onFailure(call: Call<TrackSearchResponse>, t: Throwable) {
                 progressBar.visibility = View.GONE
                 showMessage(MessageType.SOMETHING_WENT_WRONG)
             }
@@ -272,30 +279,30 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun addSearchTrack(track: Track) {
-        val duplicateTrackIndex = searchTrackAdapter.tracks.indexOfFirst { it.trackId == track.trackId }
+        val duplicateTrackIndex = searchTracksAdapter.tracks.indexOfFirst { it.trackId == track.trackId }
 
         if (duplicateTrackIndex !=  -1) {
             deleteSearchTrack(duplicateTrackIndex)
         }
 
-        if (searchTrackAdapter.itemCount == LATEST_SEARCH_TRACKS_SIZE) {
+        if (searchTracksAdapter.itemCount == LATEST_SEARCH_TRACKS_SIZE) {
             val positionToRemove = LATEST_SEARCH_TRACKS_SIZE - 1
 
             deleteSearchTrack(positionToRemove)
         }
 
-        searchTrackAdapter.tracks.add(0, track)
-        searchTrackAdapter.notifyDataSetChanged()
+        searchTracksAdapter.tracks.add(0, track)
+        searchTracksAdapter.notifyDataSetChanged()
     }
 
     private fun deleteSearchTrack(position: Int) {
-        searchTrackAdapter.tracks.removeAt(position)
-        searchTrackAdapter.notifyItemRemoved(position)
-        searchTrackAdapter.notifyItemRangeChanged(position, searchTrackAdapter.tracks.size)
+        searchTracksAdapter.tracks.removeAt(position)
+        searchTracksAdapter.notifyItemRemoved(position)
+        searchTracksAdapter.notifyItemRangeChanged(position, searchTracksAdapter.tracks.size)
     }
 
     private fun showLatestSearch(hasFocus: Boolean) { hintLatestSearch.visibility = if (
-        hasFocus && inputEditText.text.isEmpty() && searchTrackAdapter.tracks.isNotEmpty()
+        hasFocus && inputEditText.text.isEmpty() && searchTracksAdapter.tracks.isNotEmpty()
         ) View.VISIBLE else  View.GONE }
 
     private fun createOnTrackClick(): OnTrackClickListener {
