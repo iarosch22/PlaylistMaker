@@ -4,7 +4,7 @@ import com.practicum.playlistmaker.domain.api.TracksInteractor
 import com.practicum.playlistmaker.domain.api.TracksRepository
 import java.util.concurrent.Executors
 
-class TracjsInteractorImpl(private val repository: TracksRepository) : TracksInteractor {
+class TracksInteractorImpl(private val repository: TracksRepository) : TracksInteractor {
 
     private val executor = Executors.newCachedThreadPool()
 
