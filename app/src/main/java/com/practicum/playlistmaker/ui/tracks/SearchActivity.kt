@@ -21,17 +21,13 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
+import com.practicum.playlistmaker.Creator
 import com.practicum.playlistmaker.data.network.ItunesApi
-import com.practicum.playlistmaker.MessageType
-import com.practicum.playlistmaker.OnTrackClickListener
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.SearchHistory
-import com.practicum.playlistmaker.data.dto.TrackSearchResponse
+import com.practicum.playlistmaker.data.TrackManager
+import com.practicum.playlistmaker.domain.api.TracksInteractor
 import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.ui.player.PlayerActivity
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -55,9 +51,10 @@ class SearchActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private val searchRunnable = Runnable { performSearch() }
 
+    private lateinit var trackInteractor: TracksInteractor
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var sharedPreferenceChangeListener: OnSharedPreferenceChangeListener
-    private lateinit var searchHistory: SearchHistory
+    private lateinit var trackManager: TrackManager
 
     private lateinit var inputMethodManager: InputMethodManager
     private lateinit var phSomethingWentWrong: ViewGroup
@@ -81,17 +78,19 @@ class SearchActivity : AppCompatActivity() {
         tracksAdapter = TracksAdapter(createOnTrackClick())
         searchTracksAdapter = TracksAdapter(createOnTrackClick())
 
+        trackInteractor = Creator.provideTracksInteractor(this)
+
         inputMethodManager = (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)!!
 
         sharedPreferences = getSharedPreferences(APP_SEARCH_HISTORY, MODE_PRIVATE)
-        searchHistory = SearchHistory(sharedPreferences)
+        trackManager = TrackManager(this)
 
         setViews()
 
         tracksAdapter.tracks = tracks
         rvTrackSearch.adapter = tracksAdapter
 
-        searchTracksAdapter.tracks = searchHistory.readTracksFromSearchHistory()
+        searchTracksAdapter.tracks = trackInteractor.getSearchedTracks()
         rvLatestTrack.adapter = searchTracksAdapter
 
 
@@ -99,11 +98,12 @@ class SearchActivity : AppCompatActivity() {
 
         setTextWatcher()
 
+
         sharedPreferenceChangeListener = OnSharedPreferenceChangeListener { sharedPreferences, key ->
             if (key == APP_NEW_TRACK_KEY) {
                 val trackJson = sharedPreferences?.getString(APP_NEW_TRACK_KEY, null)
                 if (trackJson != null) {
-                    addSearchTrack(searchHistory.createTrackFromJson(trackJson))
+                    addSearchTrack(trackManager.createTrackFromJson(trackJson))
                 }
             }
         }
@@ -126,7 +126,7 @@ class SearchActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
 
-        searchHistory.saveToSearchHistory(searchTracksAdapter.tracks)
+        trackManager.saveToSearchHistory(searchTracksAdapter.tracks)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -191,7 +191,7 @@ class SearchActivity : AppCompatActivity() {
     }
     private fun setClearHistoryBtn() {
         clearHistoryBtn.setOnClickListener {
-            searchHistory.clearHistory()
+            trackManager.clearHistory()
 
             searchTracksAdapter.tracks.clear()
             hintLatestSearch.visibility = View.GONE
@@ -212,7 +212,6 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 textValue = s.toString()
                 clearBtn.visibility = clearButtonVisibility(s)
-                // TODO:  
                 hintLatestSearch.visibility = if (inputEditText.hasFocus() && s?.isEmpty() == true && searchTracksAdapter.tracks.isNotEmpty()) View.VISIBLE else View.GONE
 
                 searchDebounce()
@@ -241,7 +240,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun performSearch() {
+    /* private fun performSearch() {
         progressBar.visibility = View.VISIBLE
         phNothingFound.visibility = View.GONE
         phSomethingWentWrong.visibility = View.GONE
@@ -274,6 +273,29 @@ class SearchActivity : AppCompatActivity() {
             override fun onFailure(call: Call<TrackSearchResponse>, t: Throwable) {
                 progressBar.visibility = View.GONE
                 showMessage(MessageType.SOMETHING_WENT_WRONG)
+            }
+        })
+    } */
+
+    private fun performSearch() {
+        progressBar.visibility = View.VISIBLE
+        phNothingFound.visibility = View.GONE
+        phSomethingWentWrong.visibility = View.GONE
+        rvTrackSearch.visibility = View.GONE
+
+        trackInteractor.searchTracks(inputEditText.text.toString(), object : TracksInteractor.TrackConsumer {
+            override fun consume(foundTracks: List<Track>) {
+                handler.post{
+                    progressBar.visibility = View.GONE
+                    if (foundTracks.isNotEmpty()) {
+                        tracks.clear()
+                        rvTrackSearch.visibility = View.VISIBLE
+                        tracks.addAll(foundTracks)
+                        tracksAdapter.notifyDataSetChanged()
+                    } else {
+                        showMessage(MessageType.NOTHING_FOUND)
+                    }
+                }
             }
         })
     }

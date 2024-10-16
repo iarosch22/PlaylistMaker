@@ -10,4 +10,7 @@ interface TracksInteractor {
         fun consume(foundTracks: List<Track>)
     }
 
+    fun getSearchedTracks(): ArrayList<Track>
+
+    fun saveSearchedTracks(tracks: ArrayList<Track>)
 }
