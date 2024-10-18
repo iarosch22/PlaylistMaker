@@ -212,9 +212,13 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 textValue = s.toString()
                 clearBtn.visibility = clearButtonVisibility(s)
-                hintLatestSearch.visibility = if (inputEditText.hasFocus() && s?.isEmpty() == true && searchTracksAdapter.tracks.isNotEmpty()) View.VISIBLE else View.GONE
+                hintLatestSearch.visibility = if (inputEditText.hasFocus() && s?.isEmpty() == true && searchTracksAdapter.tracks.isNotEmpty()) {
+                    View.VISIBLE
+                } else {
+                    searchDebounce()
+                    View.GONE
+                }
 
-                searchDebounce()
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -240,52 +244,18 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    /* private fun performSearch() {
-        progressBar.visibility = View.VISIBLE
-        phNothingFound.visibility = View.GONE
-        phSomethingWentWrong.visibility = View.GONE
-        rvTrackSearch.visibility = View.GONE
-
-        itunesService.searchTracks(inputEditText.text.toString()).enqueue(object: Callback<TrackSearchResponse> {
-            override fun onResponse(
-                call: Call<TrackSearchResponse>,
-                response: Response<TrackSearchResponse>
-            ) {
-                progressBar.visibility = View.GONE
-                rvTrackSearch.visibility = View.VISIBLE
-                if (response.code() == 200) {
-                    tracks.clear()
-                    tracksAdapter.notifyDataSetChanged()
-                    if (response.body()?.results?.isNotEmpty() == true) {
-                        tracks.addAll(response.body()?.results!!)
-                        tracksAdapter.notifyDataSetChanged()
-                    }
-                    if (tracks.isEmpty()) {
-                        showMessage(MessageType.NOTHING_FOUND)
-                    } else {
-                        showMessage(MessageType.NO_MESSAGE)
-                    }
-                } else {
-                    showMessage(MessageType.SOMETHING_WENT_WRONG)
-                }
-            }
-
-            override fun onFailure(call: Call<TrackSearchResponse>, t: Throwable) {
-                progressBar.visibility = View.GONE
-                showMessage(MessageType.SOMETHING_WENT_WRONG)
-            }
-        })
-    } */
-
     private fun performSearch() {
+        val query = inputEditText.text.toString()
+
         progressBar.visibility = View.VISIBLE
         phNothingFound.visibility = View.GONE
         phSomethingWentWrong.visibility = View.GONE
         rvTrackSearch.visibility = View.GONE
 
-        trackInteractor.searchTracks(inputEditText.text.toString(), object : TracksInteractor.TrackConsumer {
+        trackInteractor.searchTracks(query, object : TracksInteractor.TrackConsumer {
             override fun consume(foundTracks: List<Track>) {
                 handler.post{
+                    showMessage(MessageType.NO_MESSAGE)
                     progressBar.visibility = View.GONE
                     if (foundTracks.isNotEmpty()) {
                         tracks.clear()
