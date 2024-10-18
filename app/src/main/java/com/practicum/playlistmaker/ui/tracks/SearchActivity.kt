@@ -178,7 +178,7 @@ class SearchActivity : AppCompatActivity() {
             inputEditText.setText(TEXT_DEF)
             tracks.clear()
             tracksAdapter.notifyDataSetChanged()
-            showMessage(MessageType.NO_MESSAGE)
+            showMessage(NO_MESSAGE)
             inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
         }
     }
@@ -227,17 +227,17 @@ class SearchActivity : AppCompatActivity() {
         inputEditText.addTextChangedListener(textWatcher)
     }
 
-    private fun showMessage(type: MessageType) {
+    private fun showMessage(type: String) {
         when(type) {
-            MessageType.SOMETHING_WENT_WRONG -> {
+            SOMETHING_WENT_WRONG -> {
                 phNothingFound.visibility = View.GONE
                 phSomethingWentWrong.visibility = View.VISIBLE
             }
-            MessageType.NOTHING_FOUND -> {
+            NOTHING_FOUND -> {
                 phSomethingWentWrong.visibility = View.GONE
                 phNothingFound.visibility = View.VISIBLE
             }
-            MessageType.NO_MESSAGE -> {
+            NO_MESSAGE -> {
                 phSomethingWentWrong.visibility = View.GONE
                 phNothingFound.visibility = View.GONE
             }
@@ -255,7 +255,6 @@ class SearchActivity : AppCompatActivity() {
         trackInteractor.searchTracks(query, object : TracksInteractor.TrackConsumer {
             override fun consume(foundTracks: List<Track>) {
                 handler.post{
-                    showMessage(MessageType.NO_MESSAGE)
                     progressBar.visibility = View.GONE
                     if (foundTracks.isNotEmpty()) {
                         tracks.clear()
@@ -263,7 +262,7 @@ class SearchActivity : AppCompatActivity() {
                         tracks.addAll(foundTracks)
                         tracksAdapter.notifyDataSetChanged()
                     } else {
-                        showMessage(MessageType.NOTHING_FOUND)
+                        showMessage(NOTHING_FOUND)
                     }
                 }
             }
@@ -336,6 +335,10 @@ class SearchActivity : AppCompatActivity() {
         private const val LATEST_SEARCH_TRACKS_SIZE = 10
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val CLICK_DEBOUNCE_DELAY = 1000L
+
+        private const val SOMETHING_WENT_WRONG = "SOMETHING_WENT_WRONG"
+        private const val NOTHING_FOUND = "NOTHING_FOUND"
+        private const val NO_MESSAGE = "NO_MESSAGE"
     }
 
 }
