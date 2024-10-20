@@ -59,21 +59,13 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        tracksAdapter = TracksAdapter(createOnTrackClick())
-        searchTracksAdapter = TracksAdapter(createOnTrackClick())
-
         trackInteractor = Creator.provideTracksInteractor(this)
 
         inputMethodManager = (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)!!
 
         setViews()
 
-        tracksAdapter.tracks = tracks
-        rvTrackSearch.adapter = tracksAdapter
-
-        searchTracksAdapter.tracks = trackInteractor.getSearchedTracks()
-        rvLatestTrack.adapter = searchTracksAdapter
-
+        setAdapters()
 
         setButtons()
 
@@ -118,6 +110,17 @@ class SearchActivity : AppCompatActivity() {
 
     }
 
+    private fun setAdapters() {
+        tracksAdapter = TracksAdapter(createOnTrackClick())
+        searchTracksAdapter = TracksAdapter(createOnTrackClick())
+
+        tracksAdapter.tracks = tracks
+        rvTrackSearch.adapter = tracksAdapter
+
+        searchTracksAdapter.tracks = trackInteractor.getSearchedTracks()
+        rvLatestTrack.adapter = searchTracksAdapter
+    }
+
     private fun setViews() {
         phSomethingWentWrong = findViewById(R.id.phSomethingWentWrong)
         phNothingFound = findViewById(R.id.phNothingFound)
@@ -142,7 +145,7 @@ class SearchActivity : AppCompatActivity() {
             tracks.clear()
             tracksAdapter.notifyDataSetChanged()
             showMessage(NO_MESSAGE)
-            inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
+            inputMethodManager.hideSoftInputFromWindow(inputEditText.windowToken, 0)
         }
     }
     private fun setBtnReload() {
