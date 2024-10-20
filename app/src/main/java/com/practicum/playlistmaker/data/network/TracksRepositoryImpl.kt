@@ -35,4 +35,13 @@ class TracksRepositoryImpl(private val networkClient: NetworkClient, private val
     override fun saveSearchedTracks(tracks: ArrayList<Track>) {
         trackManager.saveToSearchHistory(tracks)
     }
+
+    override fun addTrackToHistory(track: Track) {
+        trackManager.addTrackToHistory(track)
+    }
+
+    override fun clearHistory() {
+        trackManager.clearHistory()
+    }
+
 }

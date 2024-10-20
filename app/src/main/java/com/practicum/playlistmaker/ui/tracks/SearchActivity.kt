@@ -2,8 +2,6 @@ package com.practicum.playlistmaker.ui.tracks
 
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -20,20 +18,12 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
 import com.practicum.playlistmaker.Creator
-import com.practicum.playlistmaker.data.network.ItunesApi
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.data.TrackManager
 import com.practicum.playlistmaker.domain.api.TracksInteractor
 import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.ui.player.PlayerActivity
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
-const val APP_SEARCH_HISTORY = "app_search_history"
-const val APP_SEARCH_TRACKS_KEY = "app_search_tracks_key"
-const val APP_NEW_TRACK_KEY = "app_new_track_key"
 const val TRACK = "TRACK"
 
 class SearchActivity : AppCompatActivity() {
@@ -42,9 +32,6 @@ class SearchActivity : AppCompatActivity() {
 
     private var isClickAllowed = true
 
-    private val baseUrl = "https://itunes.apple.com"
-    private val retrofit = createRetrofit()
-    private val itunesService = retrofit.create(ItunesApi::class.java)
     private val tracks = ArrayList<Track>()
     private lateinit var tracksAdapter: TracksAdapter
     private lateinit var searchTracksAdapter: TracksAdapter
@@ -52,9 +39,6 @@ class SearchActivity : AppCompatActivity() {
     private val searchRunnable = Runnable { performSearch() }
 
     private lateinit var trackInteractor: TracksInteractor
-    private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var sharedPreferenceChangeListener: OnSharedPreferenceChangeListener
-    private lateinit var trackManager: TrackManager
 
     private lateinit var inputMethodManager: InputMethodManager
     private lateinit var phSomethingWentWrong: ViewGroup
@@ -82,9 +66,6 @@ class SearchActivity : AppCompatActivity() {
 
         inputMethodManager = (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)!!
 
-        sharedPreferences = getSharedPreferences(APP_SEARCH_HISTORY, MODE_PRIVATE)
-        trackManager = TrackManager(this)
-
         setViews()
 
         tracksAdapter.tracks = tracks
@@ -97,17 +78,6 @@ class SearchActivity : AppCompatActivity() {
         setButtons()
 
         setTextWatcher()
-
-
-        sharedPreferenceChangeListener = OnSharedPreferenceChangeListener { sharedPreferences, key ->
-            if (key == APP_NEW_TRACK_KEY) {
-                val trackJson = sharedPreferences?.getString(APP_NEW_TRACK_KEY, null)
-                if (trackJson != null) {
-                    addSearchTrack(trackManager.createTrackFromJson(trackJson))
-                }
-            }
-        }
-        sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
 
         inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -126,7 +96,7 @@ class SearchActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
 
-        trackManager.saveToSearchHistory(searchTracksAdapter.tracks)
+        trackInteractor.saveSearchedTracks(searchTracksAdapter.tracks)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -146,13 +116,6 @@ class SearchActivity : AppCompatActivity() {
             View.VISIBLE
         }
 
-    }
-
-    private fun createRetrofit(): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
     }
 
     private fun setViews() {
@@ -191,7 +154,7 @@ class SearchActivity : AppCompatActivity() {
     }
     private fun setClearHistoryBtn() {
         clearHistoryBtn.setOnClickListener {
-            trackManager.clearHistory()
+            trackInteractor.clearHistory()
 
             searchTracksAdapter.tracks.clear()
             hintLatestSearch.visibility = View.GONE
@@ -300,10 +263,8 @@ class SearchActivity : AppCompatActivity() {
         val playerIntent = Intent(this@SearchActivity, PlayerActivity::class.java)
 
         val trackListener = OnTrackClickListener { track: Track ->
-            sharedPreferences.edit()
-                .putString(APP_NEW_TRACK_KEY, Gson().toJson(track))
-                .apply()
-
+            trackInteractor.addTrackToHistory(track)
+            addSearchTrack(track)
 
             if (clickDebounce()) {
                 playerIntent.putExtra(TRACK, track)

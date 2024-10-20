@@ -13,4 +13,8 @@ interface TracksInteractor {
     fun getSearchedTracks(): ArrayList<Track>
 
     fun saveSearchedTracks(tracks: ArrayList<Track>)
+
+    fun addTrackToHistory(track: Track)
+
+    fun clearHistory()
 }
