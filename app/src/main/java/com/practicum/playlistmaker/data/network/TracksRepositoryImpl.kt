@@ -5,7 +5,7 @@ import com.practicum.playlistmaker.data.dto.TrackSearchRequest
 import com.practicum.playlistmaker.data.dto.TrackSearchResponse
 import com.practicum.playlistmaker.domain.api.TracksRepository
 import com.practicum.playlistmaker.domain.models.Track
-import com.practicum.playlistmaker.data.TrackManager
+import com.practicum.playlistmaker.data.preferences.TrackManager
 
 class TracksRepositoryImpl(private val networkClient: NetworkClient, private val trackManager: TrackManager) : TracksRepository {
     override fun searchTracks(expression: String): List<Track> {

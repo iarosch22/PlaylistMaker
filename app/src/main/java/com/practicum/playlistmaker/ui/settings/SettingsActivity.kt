@@ -1,22 +1,21 @@
 package com.practicum.playlistmaker.ui.settings
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.switchmaterial.SwitchMaterial
-import com.practicum.playlistmaker.APP_THEME_PREFERENCES
-import com.practicum.playlistmaker.App
-import com.practicum.playlistmaker.DARK_THEME
+import com.practicum.playlistmaker.Creator
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.domain.api.SettingsInteractor
+import com.practicum.playlistmaker.ui.App
 
 
 class SettingsActivity: AppCompatActivity() {
 
     private lateinit var themeSwitcher: SwitchMaterial
-    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var settingsInteractor: SettingsInteractor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,13 +23,13 @@ class SettingsActivity: AppCompatActivity() {
 
         themeSwitcher = findViewById(R.id.themeSwitcher)
 
-        sharedPreferences = getSharedPreferences(APP_THEME_PREFERENCES, MODE_PRIVATE)
+        settingsInteractor = Creator.provideSettingsInteractor(this)
 
         themeSwitcher.isChecked = (applicationContext as App).darkTheme
 
-        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+        themeSwitcher.setOnCheckedChangeListener { _, checked ->
             (applicationContext as App).switchTheme(checked)
-            saveThemePreferences(checked)
+            settingsInteractor.saveThemePreferences(checked)
         }
 
         val btnBack = findViewById<ViewGroup>(R.id.btn_back)
@@ -68,12 +67,6 @@ class SettingsActivity: AppCompatActivity() {
 
             startActivity(intent)
         }
-    }
-
-    private fun saveThemePreferences(isDarkTheme: Boolean) {
-        sharedPreferences.edit()
-            .putBoolean(DARK_THEME, isDarkTheme)
-            .apply()
     }
 
 }
