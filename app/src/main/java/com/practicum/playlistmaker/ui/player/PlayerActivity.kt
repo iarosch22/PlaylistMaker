@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.databinding.ActivityPlayerBinding
 import com.practicum.playlistmaker.ui.tracks.TRACK
 import com.practicum.playlistmaker.domain.models.Track
 import java.text.SimpleDateFormat
@@ -36,6 +37,8 @@ class PlayerActivity : AppCompatActivity() {
     private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
     private val runnableDuration by lazy { createAndUpdateDuration() }
 
+    private lateinit var binding: ActivityPlayerBinding
+
     private lateinit var backBtn: ImageButton
     private lateinit var cover: ImageView
     private lateinit var trackName: TextView
@@ -51,20 +54,22 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_player)
+        binding = ActivityPlayerBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
-        backBtn = findViewById(R.id.btn_back)
-        cover = findViewById(R.id.cover)
-        trackName = findViewById(R.id.trackName)
-        artistName = findViewById(R.id.artistName)
-        trackTimeValue = findViewById(R.id.trackTimeValue)
-        collectionNameField = findViewById(R.id.collectionName)
-        collectionNameValue = findViewById(R.id.collectionNameValue)
-        releaseDateValue = findViewById(R.id.releaseDateValue)
-        primaryGenreNameValue = findViewById(R.id.primaryGenreNameValue)
-        countryValue = findViewById(R.id.countryValue)
-        playButton = findViewById(R.id.playButton)
-        duration = findViewById(R.id.duration)
+        backBtn = binding.btnBack
+        cover = binding.cover
+        trackName = binding.trackName
+        artistName = binding.artistName
+        trackTimeValue = binding.trackTimeValue
+        collectionNameField = binding.collectionName
+        collectionNameValue = binding.collectionNameValue
+        releaseDateValue = binding.releaseDateValue
+        primaryGenreNameValue = binding.primaryGenreNameValue
+        countryValue = binding.countryValue
+        playButton = binding.playButton
+        duration = binding.duration
 
         setBackBtn()
 

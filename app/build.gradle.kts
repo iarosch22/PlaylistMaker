@@ -8,6 +8,10 @@ android {
     namespace = "com.practicum.playlistmaker"
     compileSdk = 34
 
+    buildFeatures {
+        viewBinding = true
+    }
+
     defaultConfig {
         applicationId = "com.practicum.playlistmaker"
         minSdk = 29
@@ -33,10 +37,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
-    }
-
-    buildFeatures {
-        viewBinding = true
     }
 }
 
