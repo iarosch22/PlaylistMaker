@@ -33,9 +33,7 @@ class SettingsActivity: AppCompatActivity() {
         }
 
         val btnBack = findViewById<ViewGroup>(R.id.btn_back)
-        btnBack.setOnClickListener {
-            this.finish()
-        }
+        btnBack.setOnClickListener { finish() }
 
         val btnShare = findViewById<ViewGroup>(R.id.btn_share)
         btnShare.setOnClickListener {

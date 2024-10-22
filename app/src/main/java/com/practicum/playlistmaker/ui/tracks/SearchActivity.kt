@@ -17,6 +17,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.Creator
 import com.practicum.playlistmaker.R
@@ -160,7 +161,7 @@ class SearchActivity : AppCompatActivity() {
             trackInteractor.clearHistory()
 
             searchTracksAdapter.tracks.clear()
-            hintLatestSearch.visibility = View.GONE
+            hintLatestSearch.isVisible = true
             searchTracksAdapter.notifyDataSetChanged()
         }
     }
@@ -196,16 +197,16 @@ class SearchActivity : AppCompatActivity() {
     private fun showMessage(type: String) {
         when(type) {
             SOMETHING_WENT_WRONG -> {
-                phNothingFound.visibility = View.GONE
-                phSomethingWentWrong.visibility = View.VISIBLE
+                phNothingFound.isVisible = false
+                phSomethingWentWrong.isVisible = true
             }
             NOTHING_FOUND -> {
-                phSomethingWentWrong.visibility = View.GONE
-                phNothingFound.visibility = View.VISIBLE
+                phSomethingWentWrong.isVisible = false
+                phNothingFound.isVisible = true
             }
             NO_MESSAGE -> {
-                phSomethingWentWrong.visibility = View.GONE
-                phNothingFound.visibility = View.GONE
+                phSomethingWentWrong.isVisible = false
+                phNothingFound.isVisible = true
             }
         }
     }
@@ -213,18 +214,18 @@ class SearchActivity : AppCompatActivity() {
     private fun performSearch() {
         val query = inputEditText.text.toString()
 
-        progressBar.visibility = View.VISIBLE
-        phNothingFound.visibility = View.GONE
-        phSomethingWentWrong.visibility = View.GONE
-        rvTrackSearch.visibility = View.GONE
+        progressBar.isVisible = true
+        phNothingFound.isVisible = false
+        phSomethingWentWrong.isVisible = false
+        rvTrackSearch.isVisible = false
 
         trackInteractor.searchTracks(query, object : TracksInteractor.TrackConsumer {
             override fun consume(foundTracks: List<Track>) {
                 handler.post{
-                    progressBar.visibility = View.GONE
+                    progressBar.isVisible = false
                     if (foundTracks.isNotEmpty()) {
                         tracks.clear()
-                        rvTrackSearch.visibility = View.VISIBLE
+                        rvTrackSearch.isVisible = true
                         tracks.addAll(foundTracks)
                         tracksAdapter.notifyDataSetChanged()
                     } else {
@@ -258,9 +259,7 @@ class SearchActivity : AppCompatActivity() {
         searchTracksAdapter.notifyItemRangeChanged(position, searchTracksAdapter.tracks.size)
     }
 
-    private fun showLatestSearch(hasFocus: Boolean) { hintLatestSearch.visibility = if (
-        hasFocus && inputEditText.text.isEmpty() && searchTracksAdapter.tracks.isNotEmpty()
-        ) View.VISIBLE else  View.GONE }
+    private fun showLatestSearch(hasFocus: Boolean) { hintLatestSearch.isVisible = hasFocus && inputEditText.text.isEmpty() && searchTracksAdapter.tracks.isNotEmpty() }
 
     private fun createOnTrackClick(): OnTrackClickListener {
         val playerIntent = Intent(this@SearchActivity, PlayerActivity::class.java)
@@ -283,22 +282,22 @@ class SearchActivity : AppCompatActivity() {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true}, CLICK_DEBOUNCE_DELAY)
+            handler.postDelayed({ isClickAllowed = true}, CLICK_DEBOUNCE_DELAY_MILLIS)
         }
         return current
     }
 
     private fun searchDebounce() {
         handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY_MILLIS)
     }
 
     companion object {
         private const val INPUT_TEXT = "INPUT_TEXT"
         private const val TEXT_DEF = ""
         private const val LATEST_SEARCH_TRACKS_SIZE = 10
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val SEARCH_DEBOUNCE_DELAY_MILLIS = 2000L
+        private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
 
         private const val SOMETHING_WENT_WRONG = "SOMETHING_WENT_WRONG"
         private const val NOTHING_FOUND = "NOTHING_FOUND"
