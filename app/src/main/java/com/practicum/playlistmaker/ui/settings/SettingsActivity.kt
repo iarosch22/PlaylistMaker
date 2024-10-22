@@ -8,20 +8,25 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.practicum.playlistmaker.Creator
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
 import com.practicum.playlistmaker.domain.api.SettingsInteractor
 import com.practicum.playlistmaker.ui.App
 
 
 class SettingsActivity: AppCompatActivity() {
 
+    private lateinit var binding: ActivitySettingsBinding
+
     private lateinit var themeSwitcher: SwitchMaterial
     private lateinit var settingsInteractor: SettingsInteractor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
-        themeSwitcher = findViewById(R.id.themeSwitcher)
+        themeSwitcher = binding.themeSwitcher
 
         settingsInteractor = Creator.provideSettingsInteractor(this)
 
@@ -32,11 +37,9 @@ class SettingsActivity: AppCompatActivity() {
             settingsInteractor.saveThemePreferences(checked)
         }
 
-        val btnBack = findViewById<ViewGroup>(R.id.btn_back)
-        btnBack.setOnClickListener { finish() }
+        binding.btnBack.setOnClickListener { finish() }
 
-        val btnShare = findViewById<ViewGroup>(R.id.btn_share)
-        btnShare.setOnClickListener {
+        binding.btnShare.setOnClickListener {
             val message = getString(R.string.app_course_link)
             val intent = Intent(Intent.ACTION_SEND)
 
@@ -45,8 +48,7 @@ class SettingsActivity: AppCompatActivity() {
             startActivity(intent)
         }
 
-        val btnSupport = findViewById<ViewGroup>(R.id.btn_support)
-        btnSupport.setOnClickListener {
+        binding.btnSupport.setOnClickListener {
             val subject = getString(R.string.app_subject_message)
             val message = getString(R.string.app_message)
             val userMail = getString(R.string.app_user_mail)
@@ -58,8 +60,7 @@ class SettingsActivity: AppCompatActivity() {
             startActivity(intent)
         }
 
-        val btnTerms = findViewById<ViewGroup>(R.id.btn_terms)
-        btnTerms.setOnClickListener {
+        binding.btnTerms.setOnClickListener {
             val link = getString(R.string.app_terms_link)
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
 
