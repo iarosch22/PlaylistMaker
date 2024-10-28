@@ -2,7 +2,7 @@ package com.practicum.playlistmaker.ui
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.practicum.playlistmaker.Creator
+import com.practicum.playlistmaker.util.Creator
 
 const val DARK_THEME = "dark_theme"
 
