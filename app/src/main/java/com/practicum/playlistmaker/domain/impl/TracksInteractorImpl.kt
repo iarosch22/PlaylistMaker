@@ -3,12 +3,16 @@ package com.practicum.playlistmaker.domain.impl
 import com.practicum.playlistmaker.domain.api.TracksInteractor
 import com.practicum.playlistmaker.domain.api.TracksRepository
 import com.practicum.playlistmaker.domain.models.Track
+import com.practicum.playlistmaker.util.Resource
 
 class TracksInteractorImpl(private val repository: TracksRepository) : TracksInteractor {
 
     override fun searchTracks(expression: String, consumer: TracksInteractor.TrackConsumer) {
         val t = Thread {
-            consumer.consume(repository.searchTracks(expression))
+            when(val resource = repository.searchTracks(expression)) {
+                is Resource.Error -> { consumer.consume(null, resource.message)}
+                is Resource.Success -> { consumer.consume(resource.data, null) }
+            }
         }
 
         t.start()

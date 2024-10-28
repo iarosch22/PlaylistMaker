@@ -20,7 +20,7 @@ object Creator {
     }
 
     private fun getTracksRepository(context: Context): TracksRepository {
-        return TracksRepositoryImpl(RetrofitNetworkClient(), getTrackManager(context))
+        return TracksRepositoryImpl(RetrofitNetworkClient(context), getTrackManager(context))
     }
 
     fun provideTracksInteractor(context: Context): TracksInteractor {

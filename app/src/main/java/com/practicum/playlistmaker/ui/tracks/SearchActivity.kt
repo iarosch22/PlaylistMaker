@@ -16,6 +16,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
@@ -180,6 +181,7 @@ class SearchActivity : AppCompatActivity() {
                 textValue = s.toString()
                 clearBtn.visibility = clearButtonVisibility(s)
                 hintLatestSearch.visibility = if (inputEditText.hasFocus() && s?.isEmpty() == true && searchTracksAdapter.tracks.isNotEmpty()) {
+                    showMessage(NO_MESSAGE)
                     View.VISIBLE
                 } else {
                     searchDebounce()
@@ -206,34 +208,41 @@ class SearchActivity : AppCompatActivity() {
             }
             NO_MESSAGE -> {
                 phSomethingWentWrong.isVisible = false
-                phNothingFound.isVisible = true
+                phNothingFound.isVisible = false
             }
         }
     }
 
     private fun performSearch() {
-        val query = inputEditText.text.toString()
+        if (inputEditText.text.isNotEmpty()) {
+            progressBar.isVisible = true
+            phNothingFound.isVisible = false
+            phSomethingWentWrong.isVisible = false
+            rvTrackSearch.isVisible = false
 
-        progressBar.isVisible = true
-        phNothingFound.isVisible = false
-        phSomethingWentWrong.isVisible = false
-        rvTrackSearch.isVisible = false
+            trackInteractor.searchTracks(inputEditText.text.toString(), object : TracksInteractor.TrackConsumer {
+                override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
+                    handler.post{
+                        progressBar.isVisible = false
+                        if (foundTracks != null) {
+                            tracks.clear()
+                            tracks.addAll(foundTracks)
+                            tracksAdapter.notifyDataSetChanged()
+                            rvTrackSearch.isVisible = true
+                        }
+                        if (errorMessage != null) {
+                            showMessage(SOMETHING_WENT_WRONG)
+                        } else if(tracks.isEmpty()) {
+                            showMessage(NOTHING_FOUND)
+                        } else {
+                            showMessage(NO_MESSAGE)
+                        }
 
-        trackInteractor.searchTracks(query, object : TracksInteractor.TrackConsumer {
-            override fun consume(foundTracks: List<Track>) {
-                handler.post{
-                    progressBar.isVisible = false
-                    if (foundTracks.isNotEmpty()) {
-                        tracks.clear()
-                        rvTrackSearch.isVisible = true
-                        tracks.addAll(foundTracks)
-                        tracksAdapter.notifyDataSetChanged()
-                    } else {
-                        showMessage(NOTHING_FOUND)
+                        Toast.makeText(this@SearchActivity, "Запрос ${inputEditText.text}", Toast.LENGTH_SHORT).show()
                     }
                 }
-            }
-        })
+            })
+        }
     }
 
     private fun addSearchTrack(track: Track) {
