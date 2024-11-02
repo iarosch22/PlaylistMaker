@@ -14,6 +14,7 @@ material = "1.10.0"
 activity = "1.8.0"
 constraintlayout = "2.1.4"
 materialVersion = "1.6.1"
+moxyVersion = "2.2.2"
 retrofit = "2.9.0"
 
 [libraries]
@@ -32,6 +33,9 @@ androidx-activity = { group = "androidx.activity", name = "activity", version.re
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 material-v1120 = { module = "com.google.android.material:material", version.ref = "googleMaterial" }
 material-v161 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
+moxy = { module = "com.github.moxy-community:moxy", version.ref = "moxyVersion" }
+moxy-android = { module = "com.github.moxy-community:moxy-android", version.ref = "moxyVersion" }
+moxy-compiler = { module = "com.github.moxy-community:moxy-compiler", version.ref = "moxyVersion" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 
 [plugins]
