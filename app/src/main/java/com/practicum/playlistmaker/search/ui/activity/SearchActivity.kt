@@ -9,22 +9,24 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.domain.api.TracksInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.player.ui.PlayerActivity
+import com.practicum.playlistmaker.search.ui.models.ErrorMessageType
+import com.practicum.playlistmaker.search.ui.models.TracksState
+import com.practicum.playlistmaker.search.ui.view_model.TracksSearchViewModel
 
 const val TRACK = "TRACK"
 
@@ -38,8 +40,8 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var tracksAdapter: TracksAdapter
     private lateinit var searchTracksAdapter: TracksAdapter
     private val handler = Handler(Looper.getMainLooper())
-    private val searchRunnable = Runnable { performSearch() }
 
+    private lateinit var viewModel: TracksSearchViewModel
     private lateinit var trackInteractor: TracksInteractor
 
     private lateinit var inputMethodManager: InputMethodManager
@@ -65,6 +67,11 @@ class SearchActivity : AppCompatActivity() {
 
         inputMethodManager = (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)!!
 
+        viewModel = ViewModelProvider(this, TracksSearchViewModel.getViewModelFactory())[TracksSearchViewModel::class.java]
+        viewModel.observeState().observe(this) {
+            render(it)
+        }
+
         setViews()
 
         setAdapters()
@@ -72,17 +79,6 @@ class SearchActivity : AppCompatActivity() {
         setButtons()
 
         setTextWatcher()
-
-        inputEditText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-
-                if (inputEditText.text.isNotEmpty()) {
-                    performSearch()
-                }
-                true
-            }
-            false
-        }
 
         inputEditText.setOnFocusChangeListener { _, hasFocus -> showLatestSearch(hasFocus) }
     }
@@ -146,14 +142,14 @@ class SearchActivity : AppCompatActivity() {
             inputEditText.setText(TEXT_DEF)
             tracks.clear()
             tracksAdapter.notifyDataSetChanged()
-            showMessage(NO_MESSAGE)
+            showMessage(ErrorMessageType.NO_MESSAGE)
             inputMethodManager.hideSoftInputFromWindow(inputEditText.windowToken, 0)
         }
     }
     private fun setBtnReload() {
         reloadBtn.setOnClickListener {
             if (inputEditText.text.isNotEmpty()) {
-                performSearch()
+                viewModel.searchDebounce(changedText = inputEditText.text.toString())
             }
         }
     }
@@ -181,10 +177,9 @@ class SearchActivity : AppCompatActivity() {
                 textValue = s.toString()
                 clearBtn.visibility = clearButtonVisibility(s)
                 hintLatestSearch.visibility = if (inputEditText.hasFocus() && s?.isEmpty() == true && searchTracksAdapter.tracks.isNotEmpty()) {
-                    showMessage(NO_MESSAGE)
                     View.VISIBLE
                 } else {
-                    searchDebounce()
+                    viewModel.searchDebounce(changedText = s.toString())
                     View.GONE
                 }
 
@@ -196,53 +191,23 @@ class SearchActivity : AppCompatActivity() {
         inputEditText.addTextChangedListener(textWatcher)
     }
 
-    private fun showMessage(type: String) {
+    private fun showMessage(type: ErrorMessageType) {
         when(type) {
-            SOMETHING_WENT_WRONG -> {
+            ErrorMessageType.SOMETHING_WENT_WRONG -> {
                 phNothingFound.isVisible = false
                 phSomethingWentWrong.isVisible = true
             }
-            NOTHING_FOUND -> {
+            ErrorMessageType.NOTHING_FOUND -> {
                 phSomethingWentWrong.isVisible = false
                 phNothingFound.isVisible = true
             }
-            NO_MESSAGE -> {
+            ErrorMessageType.NO_MESSAGE -> {
                 phSomethingWentWrong.isVisible = false
                 phNothingFound.isVisible = false
             }
         }
-    }
 
-    private fun performSearch() {
-        if (inputEditText.text.isNotEmpty()) {
-            progressBar.isVisible = true
-            phNothingFound.isVisible = false
-            phSomethingWentWrong.isVisible = false
-            rvTrackSearch.isVisible = false
-
-            trackInteractor.searchTracks(inputEditText.text.toString(), object : TracksInteractor.TrackConsumer {
-                override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
-                    handler.post{
-                        progressBar.isVisible = false
-                        if (foundTracks != null) {
-                            tracks.clear()
-                            tracks.addAll(foundTracks)
-                            tracksAdapter.notifyDataSetChanged()
-                            rvTrackSearch.isVisible = true
-                        }
-                        if (errorMessage != null) {
-                            showMessage(SOMETHING_WENT_WRONG)
-                        } else if(tracks.isEmpty()) {
-                            showMessage(NOTHING_FOUND)
-                        } else {
-                            showMessage(NO_MESSAGE)
-                        }
-
-                        Toast.makeText(this@SearchActivity, "Запрос ${inputEditText.text}", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            })
-        }
+        progressBar.isVisible = false
     }
 
     private fun addSearchTrack(track: Track) {
@@ -296,21 +261,34 @@ class SearchActivity : AppCompatActivity() {
         return current
     }
 
-    private fun searchDebounce() {
-        handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY_MILLIS)
+    private fun showLoading() {
+        progressBar.isVisible = true
+        rvTrackSearch.isVisible = false
+    }
+
+    private fun showContent(foundTracks: List<Track>) {
+        progressBar.isVisible = false
+        tracks.clear()
+        tracks.addAll(foundTracks)
+        rvTrackSearch.isVisible = true
+        tracksAdapter.notifyDataSetChanged()
+    }
+
+    private fun render(state: TracksState) {
+        when(state) {
+            is TracksState.Content -> showContent(state.tracks)
+            is TracksState.EmptyContent -> TODO()
+            is TracksState.Error -> showMessage(state.errorMessage)
+            TracksState.Loading -> showLoading()
+        }
     }
 
     companion object {
         private const val INPUT_TEXT = "INPUT_TEXT"
         private const val TEXT_DEF = ""
         private const val LATEST_SEARCH_TRACKS_SIZE = 10
-        private const val SEARCH_DEBOUNCE_DELAY_MILLIS = 2000L
         private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
 
-        private const val SOMETHING_WENT_WRONG = "SOMETHING_WENT_WRONG"
-        private const val NOTHING_FOUND = "NOTHING_FOUND"
-        private const val NO_MESSAGE = "NO_MESSAGE"
     }
 
 }

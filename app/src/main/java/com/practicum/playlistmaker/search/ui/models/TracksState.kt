@@ -7,7 +7,7 @@ sealed interface TracksState {
 
     data class Content(val tracks: List<Track>) : TracksState
 
-    data class Error(val errorMessage: String): TracksState
+    data class Error(val errorMessage: ErrorMessageType): TracksState
 
-    data class Empty(val message: String): TracksState
+    data class EmptyContent(val errorMessage: String): TracksState
 }
