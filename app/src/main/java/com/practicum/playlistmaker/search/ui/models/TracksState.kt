@@ -9,5 +9,4 @@ sealed interface TracksState {
 
     data class Error(val errorMessage: ErrorMessageType): TracksState
 
-    data class EmptyContent(val errorMessage: String): TracksState
 }

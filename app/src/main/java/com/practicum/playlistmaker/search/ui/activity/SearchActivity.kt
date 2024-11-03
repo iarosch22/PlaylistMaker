@@ -280,7 +280,6 @@ class SearchActivity : ComponentActivity() {
     private fun render(state: TracksState) {
         when(state) {
             is TracksState.Content -> showContent(state.tracks)
-            is TracksState.EmptyContent -> TODO()
             is TracksState.Error -> showMessage(state.errorMessage)
             TracksState.Loading -> showLoading()
         }
