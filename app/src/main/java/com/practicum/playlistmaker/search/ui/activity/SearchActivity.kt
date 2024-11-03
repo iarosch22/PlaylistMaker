@@ -15,22 +15,22 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.creator.Creator
+import com.practicum.playlistmaker.player.ui.PlayerActivity
 import com.practicum.playlistmaker.search.domain.api.TracksInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.player.ui.PlayerActivity
 import com.practicum.playlistmaker.search.ui.models.ErrorMessageType
 import com.practicum.playlistmaker.search.ui.models.TracksState
 import com.practicum.playlistmaker.search.ui.view_model.TracksSearchViewModel
 
 const val TRACK = "TRACK"
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : ComponentActivity() {
 
     private var textValue = TEXT_DEF
 
@@ -40,6 +40,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var tracksAdapter: TracksAdapter
     private lateinit var searchTracksAdapter: TracksAdapter
     private val handler = Handler(Looper.getMainLooper())
+    private var textWatcher: TextWatcher? = null
 
     private lateinit var viewModel: TracksSearchViewModel
     private lateinit var trackInteractor: TracksInteractor
@@ -81,6 +82,11 @@ class SearchActivity : AppCompatActivity() {
         setTextWatcher()
 
         inputEditText.setOnFocusChangeListener { _, hasFocus -> showLatestSearch(hasFocus) }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        textWatcher?.let { inputEditText.removeTextChangedListener(it) }
     }
 
     override fun onStop() {
@@ -170,9 +176,8 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun setTextWatcher() {
-        val textWatcher = object: TextWatcher {
+        textWatcher = object: TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 textValue = s.toString()
                 clearBtn.visibility = clearButtonVisibility(s)
@@ -184,30 +189,9 @@ class SearchActivity : AppCompatActivity() {
                 }
 
             }
-
             override fun afterTextChanged(s: Editable?) {}
         }
-
         inputEditText.addTextChangedListener(textWatcher)
-    }
-
-    private fun showMessage(type: ErrorMessageType) {
-        when(type) {
-            ErrorMessageType.SOMETHING_WENT_WRONG -> {
-                phNothingFound.isVisible = false
-                phSomethingWentWrong.isVisible = true
-            }
-            ErrorMessageType.NOTHING_FOUND -> {
-                phSomethingWentWrong.isVisible = false
-                phNothingFound.isVisible = true
-            }
-            ErrorMessageType.NO_MESSAGE -> {
-                phSomethingWentWrong.isVisible = false
-                phNothingFound.isVisible = false
-            }
-        }
-
-        progressBar.isVisible = false
     }
 
     private fun addSearchTrack(track: Track) {
@@ -259,6 +243,25 @@ class SearchActivity : AppCompatActivity() {
             handler.postDelayed({ isClickAllowed = true}, CLICK_DEBOUNCE_DELAY_MILLIS)
         }
         return current
+    }
+
+    private fun showMessage(type: ErrorMessageType) {
+        when(type) {
+            ErrorMessageType.SOMETHING_WENT_WRONG -> {
+                phNothingFound.isVisible = false
+                phSomethingWentWrong.isVisible = true
+            }
+            ErrorMessageType.NOTHING_FOUND -> {
+                phSomethingWentWrong.isVisible = false
+                phNothingFound.isVisible = true
+            }
+            ErrorMessageType.NO_MESSAGE -> {
+                phSomethingWentWrong.isVisible = false
+                phNothingFound.isVisible = false
+            }
+        }
+
+        progressBar.isVisible = false
     }
 
     private fun showLoading() {
