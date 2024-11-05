@@ -13,19 +13,19 @@ class TrackManager(context: Context) {
     private val sharedPreferences = context.getSharedPreferences(APP_SEARCH_HISTORY, Context.MODE_PRIVATE)
     private val gson = Gson()
 
-    fun saveToSearchHistory(tracks: ArrayList<com.practicum.playlistmaker.search.domain.models.Track>) {
+    fun saveToSearchHistory(tracks: ArrayList<Track>) {
         sharedPreferences.edit()
             .putString(APP_SEARCH_TRACKS_KEY, createJsonFromTrackList(tracks))
             .apply()
     }
 
-    fun readTracksFromSearchHistory(): ArrayList<com.practicum.playlistmaker.search.domain.models.Track> {
+    fun readTracksFromSearchHistory(): ArrayList<Track> {
         val json = sharedPreferences.getString(APP_SEARCH_TRACKS_KEY, null) ?: return ArrayList()
-        val array = gson.fromJson(json, Array<com.practicum.playlistmaker.search.domain.models.Track>::class.java)
+        val array = gson.fromJson(json, Array<Track>::class.java)
         return ArrayList(array.toList())
     }
 
-    fun addTrackToHistory(track: com.practicum.playlistmaker.search.domain.models.Track) {
+    fun addTrackToHistory(track: Track) {
         sharedPreferences.edit()
             .putString(APP_NEW_TRACK_KEY, Gson().toJson(track))
             .apply()
@@ -37,11 +37,7 @@ class TrackManager(context: Context) {
             .apply()
     }
 
-    private fun createTrackFromJson(json: String): com.practicum.playlistmaker.search.domain.models.Track {
-        return gson.fromJson(json, com.practicum.playlistmaker.search.domain.models.Track::class.java)
-    }
-
-    private fun createJsonFromTrackList(tracks: ArrayList<com.practicum.playlistmaker.search.domain.models.Track>): String {
+    private fun createJsonFromTrackList(tracks: ArrayList<Track>): String {
         return gson.toJson(tracks)
     }
 

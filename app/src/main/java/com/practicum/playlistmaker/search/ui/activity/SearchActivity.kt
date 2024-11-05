@@ -37,6 +37,7 @@ class SearchActivity : ComponentActivity() {
     private var isClickAllowed = true
 
     private val tracks = ArrayList<Track>()
+    private val savedTracks = ArrayList<Track>()
     private lateinit var tracksAdapter: TracksAdapter
     private lateinit var searchTracksAdapter: TracksAdapter
     private val handler = Handler(Looper.getMainLooper())
@@ -93,6 +94,7 @@ class SearchActivity : ComponentActivity() {
         super.onStop()
 
         trackInteractor.saveSearchedTracks(searchTracksAdapter.tracks)
+        //viewModel.saveSearchedTracks(searchTracksAdapter.tracks)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -121,7 +123,7 @@ class SearchActivity : ComponentActivity() {
         tracksAdapter.tracks = tracks
         rvTrackSearch.adapter = tracksAdapter
 
-        searchTracksAdapter.tracks = trackInteractor.getSearchedTracks()
+        searchTracksAdapter.tracks = savedTracks
         rvLatestTrack.adapter = searchTracksAdapter
     }
 
@@ -182,6 +184,7 @@ class SearchActivity : ComponentActivity() {
                 textValue = s.toString()
                 clearBtn.visibility = clearButtonVisibility(s)
                 hintLatestSearch.visibility = if (inputEditText.hasFocus() && s?.isEmpty() == true && searchTracksAdapter.tracks.isNotEmpty()) {
+                    showMessage(ErrorMessageType.NO_MESSAGE)
                     View.VISIBLE
                 } else {
                     viewModel.searchDebounce(changedText = s.toString())
@@ -217,7 +220,9 @@ class SearchActivity : ComponentActivity() {
         searchTracksAdapter.notifyItemRangeChanged(position, searchTracksAdapter.tracks.size)
     }
 
-    private fun showLatestSearch(hasFocus: Boolean) { hintLatestSearch.isVisible = hasFocus && inputEditText.text.isEmpty() && searchTracksAdapter.tracks.isNotEmpty() }
+    private fun showLatestSearch(hasFocus: Boolean) {
+        hintLatestSearch.isVisible = hasFocus && inputEditText.text.isEmpty() && searchTracksAdapter.tracks.isNotEmpty()
+    }
 
     private fun createOnTrackClick(): OnTrackClickListener {
         val playerIntent = Intent(this@SearchActivity, PlayerActivity::class.java)
@@ -277,10 +282,15 @@ class SearchActivity : ComponentActivity() {
         tracksAdapter.notifyDataSetChanged()
     }
 
+    private fun addSearchedTracks(tracks: List<Track>) {
+        savedTracks.addAll(tracks)
+    }
+
     private fun render(state: TracksState) {
         when(state) {
             is TracksState.Content -> showContent(state.tracks)
             is TracksState.Error -> showMessage(state.errorMessage)
+            is TracksState.HistoryContent -> addSearchedTracks(state.savedTracks)
             TracksState.Loading -> showLoading()
         }
     }
@@ -290,7 +300,6 @@ class SearchActivity : ComponentActivity() {
         private const val TEXT_DEF = ""
         private const val LATEST_SEARCH_TRACKS_SIZE = 10
         private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
-
     }
 
 }

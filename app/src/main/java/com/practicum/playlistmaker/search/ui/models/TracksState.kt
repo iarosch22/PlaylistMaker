@@ -9,4 +9,5 @@ sealed interface TracksState {
 
     data class Error(val errorMessage: ErrorMessageType): TracksState
 
+    data class HistoryContent(val savedTracks: List<Track>) : TracksState
 }
