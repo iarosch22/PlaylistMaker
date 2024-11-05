@@ -16,7 +16,6 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.ComponentActivity
-import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
@@ -123,7 +122,7 @@ class SearchActivity : ComponentActivity() {
         tracksAdapter.tracks = tracks
         rvTrackSearch.adapter = tracksAdapter
 
-        searchTracksAdapter.tracks = savedTracks
+        searchTracksAdapter.tracks = trackInteractor.getSearchedTracks()
         rvLatestTrack.adapter = searchTracksAdapter
     }
 
@@ -166,7 +165,7 @@ class SearchActivity : ComponentActivity() {
             trackInteractor.clearHistory()
 
             searchTracksAdapter.tracks.clear()
-            hintLatestSearch.isVisible = true
+            hintLatestSearch.visibility = View.VISIBLE
             searchTracksAdapter.notifyDataSetChanged()
         }
     }
@@ -221,7 +220,11 @@ class SearchActivity : ComponentActivity() {
     }
 
     private fun showLatestSearch(hasFocus: Boolean) {
-        hintLatestSearch.isVisible = hasFocus && inputEditText.text.isEmpty() && searchTracksAdapter.tracks.isNotEmpty()
+        hintLatestSearch.visibility = if (hasFocus && inputEditText.text.isEmpty() && searchTracksAdapter.tracks.isNotEmpty()) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
     }
 
     private fun createOnTrackClick(): OnTrackClickListener {
@@ -253,32 +256,32 @@ class SearchActivity : ComponentActivity() {
     private fun showMessage(type: ErrorMessageType) {
         when(type) {
             ErrorMessageType.SOMETHING_WENT_WRONG -> {
-                phNothingFound.isVisible = false
-                phSomethingWentWrong.isVisible = true
+                phNothingFound.visibility = View.GONE
+                phSomethingWentWrong.visibility = View.VISIBLE
             }
             ErrorMessageType.NOTHING_FOUND -> {
-                phSomethingWentWrong.isVisible = false
-                phNothingFound.isVisible = true
+                phSomethingWentWrong.visibility = View.GONE
+                phNothingFound.visibility = View.VISIBLE
             }
             ErrorMessageType.NO_MESSAGE -> {
-                phSomethingWentWrong.isVisible = false
-                phNothingFound.isVisible = false
+                phSomethingWentWrong.visibility = View.GONE
+                phNothingFound.visibility = View.GONE
             }
         }
 
-        progressBar.isVisible = false
+        progressBar.visibility = View.GONE
     }
 
     private fun showLoading() {
-        progressBar.isVisible = true
-        rvTrackSearch.isVisible = false
+        progressBar.visibility = View.VISIBLE
+        rvTrackSearch.visibility = View.GONE
     }
 
     private fun showContent(foundTracks: List<Track>) {
-        progressBar.isVisible = false
+        progressBar.visibility = View.GONE
         tracks.clear()
         tracks.addAll(foundTracks)
-        rvTrackSearch.isVisible = true
+        rvTrackSearch.visibility = View.VISIBLE
         tracksAdapter.notifyDataSetChanged()
     }
 
