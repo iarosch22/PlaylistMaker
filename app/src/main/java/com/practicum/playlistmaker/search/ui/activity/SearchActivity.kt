@@ -15,7 +15,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
@@ -29,13 +29,13 @@ import com.practicum.playlistmaker.search.ui.view_model.TracksSearchViewModel
 
 const val TRACK = "TRACK"
 
-class SearchActivity : ComponentActivity() {
+class SearchActivity : AppCompatActivity() {
 
     private var textValue = TEXT_DEF
 
     private var isClickAllowed = true
 
-    private val tracks = ArrayList<Track>()
+    private val searchedTracks = ArrayList<Track>()
     private val savedTracks = ArrayList<Track>()
     private lateinit var tracksAdapter: TracksAdapter
     private lateinit var searchTracksAdapter: TracksAdapter
@@ -92,8 +92,7 @@ class SearchActivity : ComponentActivity() {
     override fun onStop() {
         super.onStop()
 
-        trackInteractor.saveSearchedTracks(searchTracksAdapter.tracks)
-        //viewModel.saveSearchedTracks(searchTracksAdapter.tracks)
+        viewModel.saveSearchedTracks(searchTracksAdapter.tracks)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -119,10 +118,11 @@ class SearchActivity : ComponentActivity() {
         tracksAdapter = TracksAdapter(createOnTrackClick())
         searchTracksAdapter = TracksAdapter(createOnTrackClick())
 
-        tracksAdapter.tracks = tracks
+        tracksAdapter.tracks = searchedTracks
         rvTrackSearch.adapter = tracksAdapter
 
-        searchTracksAdapter.tracks = trackInteractor.getSearchedTracks()
+        //searchTracksAdapter.tracks = trackInteractor.getSearchedTracks()
+        searchTracksAdapter.tracks = savedTracks
         rvLatestTrack.adapter = searchTracksAdapter
     }
 
@@ -147,7 +147,7 @@ class SearchActivity : ComponentActivity() {
     private fun setBtnClear() {
         clearBtn.setOnClickListener {
             inputEditText.setText(TEXT_DEF)
-            tracks.clear()
+            searchedTracks.clear()
             tracksAdapter.notifyDataSetChanged()
             showMessage(ErrorMessageType.NO_MESSAGE)
             inputMethodManager.hideSoftInputFromWindow(inputEditText.windowToken, 0)
@@ -279,19 +279,20 @@ class SearchActivity : ComponentActivity() {
 
     private fun showContent(foundTracks: List<Track>) {
         progressBar.visibility = View.GONE
-        tracks.clear()
-        tracks.addAll(foundTracks)
+        searchedTracks.clear()
+        searchedTracks.addAll(foundTracks)
         rvTrackSearch.visibility = View.VISIBLE
         tracksAdapter.notifyDataSetChanged()
     }
 
     private fun addSearchedTracks(tracks: List<Track>) {
         savedTracks.addAll(tracks)
+        searchTracksAdapter.notifyDataSetChanged()
     }
 
     private fun render(state: TracksState) {
         when(state) {
-            is TracksState.Content -> showContent(state.tracks)
+            is TracksState.SearchedContent -> showContent(state.searchedTracks)
             is TracksState.Error -> showMessage(state.errorMessage)
             is TracksState.HistoryContent -> addSearchedTracks(state.savedTracks)
             TracksState.Loading -> showLoading()

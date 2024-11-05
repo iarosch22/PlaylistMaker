@@ -90,7 +90,7 @@ class TracksSearchViewModel(application: Application): AndroidViewModel(applicat
                         }
                         else -> {
                             renderState(
-                                TracksState.Content(tracks = tracks)
+                                TracksState.SearchedContent(searchedTracks = tracks)
                             )
                         }
                     }
