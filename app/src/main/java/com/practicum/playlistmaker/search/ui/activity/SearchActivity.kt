@@ -121,7 +121,6 @@ class SearchActivity : AppCompatActivity() {
         tracksAdapter.tracks = searchedTracks
         rvTrackSearch.adapter = tracksAdapter
 
-        //searchTracksAdapter.tracks = trackInteractor.getSearchedTracks()
         searchTracksAdapter.tracks = savedTracks
         rvLatestTrack.adapter = searchTracksAdapter
     }
@@ -197,26 +196,26 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun addSearchTrack(track: Track) {
-        val duplicateTrackIndex = searchTracksAdapter.tracks.indexOfFirst { it.trackId == track.trackId }
+        val duplicateTrackIndex = savedTracks.indexOfFirst { it.trackId == track.trackId }
 
         if (duplicateTrackIndex !=  -1) {
             deleteSearchTrack(duplicateTrackIndex)
         }
 
-        if (searchTracksAdapter.itemCount == LATEST_SEARCH_TRACKS_SIZE) {
+        if (savedTracks.size == LATEST_SEARCH_TRACKS_SIZE) {
             val positionToRemove = LATEST_SEARCH_TRACKS_SIZE - 1
 
             deleteSearchTrack(positionToRemove)
         }
 
-        searchTracksAdapter.tracks.add(0, track)
+        savedTracks.add(0, track)
         searchTracksAdapter.notifyDataSetChanged()
     }
 
     private fun deleteSearchTrack(position: Int) {
-        searchTracksAdapter.tracks.removeAt(position)
+        savedTracks.removeAt(position)
         searchTracksAdapter.notifyItemRemoved(position)
-        searchTracksAdapter.notifyItemRangeChanged(position, searchTracksAdapter.tracks.size)
+        searchTracksAdapter.notifyItemRangeChanged(position, savedTracks.size)
     }
 
     private fun showLatestSearch(hasFocus: Boolean) {
