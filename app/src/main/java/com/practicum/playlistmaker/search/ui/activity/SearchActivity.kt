@@ -76,6 +76,7 @@ class SearchActivity : AppCompatActivity() {
 
         setTextWatcher()
 
+        showLatestSearch(false)
         inputEditText.setOnFocusChangeListener { _, hasFocus -> showLatestSearch(hasFocus) }
     }
 
@@ -175,13 +176,14 @@ class SearchActivity : AppCompatActivity() {
                 textValue = s.toString()
                 clearBtn.visibility = clearButtonVisibility(s)
                 if (s != null) {
-                    hintLatestSearch.visibility = if (inputEditText.hasFocus() && s.isEmpty() && searchTracksAdapter.tracks.isNotEmpty()) {
+                    hintLatestSearch.visibility = if (inputEditText.hasFocus() && s.isEmpty() && savedTracks.isNotEmpty()) {
                         showMessage(ErrorMessageType.NO_MESSAGE)
                         View.VISIBLE
                     } else {
-                        viewModel.searchDebounce(changedText = s.toString())
                         View.GONE
                     }
+
+                    viewModel.searchDebounce(changedText = s.toString())
                 }
 
             }
