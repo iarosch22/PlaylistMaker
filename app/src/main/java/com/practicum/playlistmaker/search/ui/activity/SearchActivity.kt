@@ -19,9 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.player.ui.PlayerActivity
-import com.practicum.playlistmaker.search.domain.api.TracksInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.models.ErrorMessageType
 import com.practicum.playlistmaker.search.ui.models.TracksState
@@ -43,7 +41,6 @@ class SearchActivity : AppCompatActivity() {
     private var textWatcher: TextWatcher? = null
 
     private lateinit var viewModel: TracksSearchViewModel
-    private lateinit var trackInteractor: TracksInteractor
 
     private lateinit var inputMethodManager: InputMethodManager
     private lateinit var phSomethingWentWrong: ViewGroup
@@ -63,8 +60,6 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-
-        trackInteractor = Creator.provideTracksInteractor(this)
 
         inputMethodManager = (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)!!
 
@@ -161,9 +156,7 @@ class SearchActivity : AppCompatActivity() {
     }
     private fun setClearHistoryBtn() {
         clearHistoryBtn.setOnClickListener {
-            trackInteractor.clearHistory()
-
-            searchTracksAdapter.tracks.clear()
+            savedTracks.clear()
             hintLatestSearch.visibility = View.VISIBLE
             searchTracksAdapter.notifyDataSetChanged()
         }
@@ -181,12 +174,14 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 textValue = s.toString()
                 clearBtn.visibility = clearButtonVisibility(s)
-                hintLatestSearch.visibility = if (inputEditText.hasFocus() && s?.isEmpty() == true && searchTracksAdapter.tracks.isNotEmpty()) {
-                    showMessage(ErrorMessageType.NO_MESSAGE)
-                    View.VISIBLE
-                } else {
-                    viewModel.searchDebounce(changedText = s.toString())
-                    View.GONE
+                if (s != null) {
+                    hintLatestSearch.visibility = if (inputEditText.hasFocus() && s.isEmpty() && searchTracksAdapter.tracks.isNotEmpty()) {
+                        showMessage(ErrorMessageType.NO_MESSAGE)
+                        View.VISIBLE
+                    } else {
+                        viewModel.searchDebounce(changedText = s.toString())
+                        View.GONE
+                    }
                 }
 
             }
@@ -230,7 +225,6 @@ class SearchActivity : AppCompatActivity() {
         val playerIntent = Intent(this@SearchActivity, PlayerActivity::class.java)
 
         val trackListener = OnTrackClickListener { track: Track ->
-            trackInteractor.addTrackToHistory(track)
             addSearchTrack(track)
 
             if (clickDebounce()) {
@@ -292,8 +286,8 @@ class SearchActivity : AppCompatActivity() {
     private fun render(state: TracksState) {
         when(state) {
             is TracksState.SearchedContent -> showContent(state.searchedTracks)
-            is TracksState.Error -> showMessage(state.errorMessage)
             is TracksState.HistoryContent -> addSearchedTracks(state.savedTracks)
+            is TracksState.Error -> showMessage(state.errorMessage)
             TracksState.Loading -> showLoading()
         }
     }
