@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.search.ui.view_model
+package com.practicum.playlistmaker.search.presentation.view_model
 
 import android.app.Application
 import android.os.Handler
@@ -16,7 +16,7 @@ import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.search.domain.api.TracksInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.models.ErrorMessageType
-import com.practicum.playlistmaker.search.ui.models.TracksState
+import com.practicum.playlistmaker.search.presentation.TracksState
 
 class TracksSearchViewModel(application: Application): AndroidViewModel(application) {
 

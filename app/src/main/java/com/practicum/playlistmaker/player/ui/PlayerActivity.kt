@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityPlayerBinding
+import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.activity.TRACK
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -57,6 +58,20 @@ class PlayerActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+        setViews()
+
+        setBackBtn()
+
+        setTrackValues()
+
+        preparePlayer()
+
+        playButton.setOnClickListener{
+            playbackControl()
+        }
+    }
+
+    private fun setViews() {
         backBtn = binding.btnBack
         cover = binding.cover
         trackName = binding.trackName
@@ -69,16 +84,6 @@ class PlayerActivity : AppCompatActivity() {
         countryValue = binding.countryValue
         playButton = binding.playButton
         duration = binding.duration
-
-        setBackBtn()
-
-        setTrackValues()
-
-        preparePlayer()
-
-        playButton.setOnClickListener{
-            playbackControl()
-        }
     }
 
     override fun onStop() {
@@ -100,9 +105,9 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun setTrackValues() {
         val track = if (VERSION.SDK_INT >= SDK_TIRAMISU) {
-            intent.getParcelableExtra(TRACK, com.practicum.playlistmaker.search.domain.models.Track::class.java)
+            intent.getParcelableExtra(TRACK, Track::class.java)
         } else {
-            intent.getParcelableExtra<com.practicum.playlistmaker.search.domain.models.Track>(TRACK)
+            intent.getParcelableExtra(TRACK)
         }
 
         if (track == null) {
@@ -194,7 +199,7 @@ class PlayerActivity : AppCompatActivity() {
             override fun run() {
                 when(playerState) {
                     STATE_PLAYING -> {
-                        duration.text =SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
+                        duration.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
                         handler.postDelayed(this, CHECK_INTERVAL)
                     }
                     STATE_PAUSED -> {
