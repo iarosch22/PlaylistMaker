@@ -7,5 +7,7 @@ interface PlayerRepository {
 
     fun pausePlayer()
 
+    fun releasePlayer()
+
     fun getCurrentPosition(): Int
 }

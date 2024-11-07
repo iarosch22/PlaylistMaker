@@ -1,22 +1,22 @@
 package com.practicum.playlistmaker.player.ui
 
 import android.content.Context
-import android.media.MediaPlayer
 import android.os.Build
 import android.os.Build.VERSION
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityPlayerBinding
+import com.practicum.playlistmaker.player.presentation.PlayerUiState
+import com.practicum.playlistmaker.player.presentation.view_model.PlayerViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.activity.TRACK
 import java.text.SimpleDateFormat
@@ -26,31 +26,17 @@ const val SDK_TIRAMISU = Build.VERSION_CODES.TIRAMISU
 
 class PlayerActivity : AppCompatActivity() {
 
-    private val mediaPlayer = MediaPlayer()
+    private var trackUrl: String = ""
 
-    private var playerState = STATE_DEFAULT
-
-    private var url: String = ""
+    private lateinit var viewModel: PlayerViewModel
 
     private val handler = Handler(Looper.getMainLooper())
 
+    private val timeFormatter by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
     private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
     private val runnableDuration by lazy { createAndUpdateDuration() }
 
     private lateinit var binding: ActivityPlayerBinding
-
-    private lateinit var backBtn: ImageButton
-    private lateinit var cover: ImageView
-    private lateinit var trackName: TextView
-    private lateinit var artistName: TextView
-    private lateinit var trackTimeValue: TextView
-    private lateinit var collectionNameField: TextView
-    private lateinit var collectionNameValue: TextView
-    private lateinit var releaseDateValue: TextView
-    private lateinit var primaryGenreNameValue: TextView
-    private lateinit var countryValue: TextView
-    private lateinit var playButton: ImageView
-    private lateinit var duration: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,47 +44,34 @@ class PlayerActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        setViews()
-
         setBackBtn()
 
         setTrackValues()
 
-        preparePlayer()
+        viewModel = ViewModelProvider(this, PlayerViewModel.getViewModelFactory(trackUrl))[PlayerViewModel::class.java]
 
-        playButton.setOnClickListener{
+        viewModel.observeState().observe(this) { state ->
+                handleStateChange(state)
+        }
+
+        binding.playButton.setOnClickListener{
             playbackControl()
         }
     }
 
-    private fun setViews() {
-        backBtn = binding.btnBack
-        cover = binding.cover
-        trackName = binding.trackName
-        artistName = binding.artistName
-        trackTimeValue = binding.trackTimeValue
-        collectionNameField = binding.collectionName
-        collectionNameValue = binding.collectionNameValue
-        releaseDateValue = binding.releaseDateValue
-        primaryGenreNameValue = binding.primaryGenreNameValue
-        countryValue = binding.countryValue
-        playButton = binding.playButton
-        duration = binding.duration
-    }
-
     override fun onStop() {
         super.onStop()
-        pausePlayer()
+        viewModel.pausePlayer()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.release()
+        viewModel.releasePlayer()
         handler.removeCallbacks(runnableDuration)
     }
 
     private fun setBackBtn() {
-        backBtn.setOnClickListener {
+        binding.btnBack.setOnClickListener {
             this.finish()
         }
     }
@@ -115,21 +88,22 @@ class PlayerActivity : AppCompatActivity() {
             return
         }
 
-        url = track.previewUrl
-        trackName.text = track.trackName
-        artistName.text = track.artistName
-        trackTimeValue.text = dateFormat.format(track.trackTimeMillis.toLong())
+        trackUrl = track.previewUrl
+
+        binding.trackName.text = track.trackName
+        binding.artistName.text = track.artistName
+        binding.trackTimeValue.text = dateFormat.format(track.trackTimeMillis.toLong())
 
         if (track.collectionName.isEmpty()) {
-            collectionNameValue.visibility = View.GONE
-            collectionNameField.visibility = View.GONE
+            binding.collectionNameValue.visibility = View.GONE
+            binding.collectionName.visibility = View.GONE
         } else {
-            collectionNameValue.text = track.collectionName
+            binding.collectionNameValue.text = track.collectionName
         }
 
-        releaseDateValue.text = track.releaseDate.take(4).takeIf { it.length == 4 } ?: ""
-        primaryGenreNameValue.text = track.primaryGenreName
-        countryValue.text = track.country
+        binding.releaseDateValue.text = track.releaseDate.take(4).takeIf { it.length == 4 } ?: ""
+        binding.primaryGenreNameValue.text = track.primaryGenreName
+        binding.countryValue.text = track.country
 
         loadArtWork(track.getCoverArtwork())
     }
@@ -143,7 +117,7 @@ class PlayerActivity : AppCompatActivity() {
             .centerCrop()
             .transform(RoundedCorners(cornersValuePx))
             .placeholder(R.drawable.ic_placeholder_large)
-            .into(cover)
+            .into(binding.cover)
     }
 
     private fun dpToPx(dp: Float, context: Context): Int {
@@ -153,43 +127,22 @@ class PlayerActivity : AppCompatActivity() {
             context.resources.displayMetrics).toInt()
     }
 
-    private fun preparePlayer() {
-        if (url.isNotEmpty()) {
-            mediaPlayer.setDataSource(url)
-            mediaPlayer.prepareAsync()
-            mediaPlayer.setOnPreparedListener {
-                playerState = STATE_PREPARED
-            }
-
-            mediaPlayer.setOnCompletionListener {
-                playerState = STATE_PREPARED
-                playButton.setImageResource(R.drawable.ic_play)
-                handler.removeCallbacks(createAndUpdateDuration())
-                duration.text = getString(R.string.app_duration)
-            }
-        }
-    }
-
     private fun startPlayer() {
-        mediaPlayer.start()
-        playButton.setImageResource(R.drawable.ic_pause)
-        playerState = STATE_PLAYING
+        binding.playButton.setImageResource(R.drawable.ic_pause)
+        viewModel.startPlayer()
         handler.post(runnableDuration)
     }
 
     private fun pausePlayer() {
-        mediaPlayer.pause()
-        playButton.setImageResource(R.drawable.ic_play)
-        playerState = STATE_PAUSED
+        viewModel.pausePlayer()
+        binding.playButton.setImageResource(R.drawable.ic_play)
     }
 
     private fun playbackControl() {
-        when(playerState) {
-            STATE_PLAYING -> {
-                pausePlayer()
-            }
-            STATE_PREPARED, STATE_PAUSED -> {
-                startPlayer()
+        when (viewModel.observeState().value) {
+            is PlayerUiState.Playing -> viewModel.pausePlayer()
+            else -> {
+                viewModel.startPlayer()
             }
         }
     }
@@ -197,26 +150,37 @@ class PlayerActivity : AppCompatActivity() {
     private fun createAndUpdateDuration(): Runnable {
         return object : Runnable {
             override fun run() {
-                when(playerState) {
-                    STATE_PLAYING -> {
-                        duration.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
-                        handler.postDelayed(this, CHECK_INTERVAL)
-                    }
-                    STATE_PAUSED -> {
-                        handler.removeCallbacks(this)
-                    }
+                if(viewModel.observeState().value is PlayerUiState.Playing) {
+                    binding.duration.text = timeFormatter.format(viewModel.getCurrentPosition())
+                    handler.postDelayed(this, CHECK_INTERVAL)
+                } else {
+                    handler.removeCallbacks(this)
                 }
             }
+        }
+    }
 
+    private fun handleStateChange(state: PlayerUiState) {
+        when(state) {
+            PlayerUiState.Prepared -> {
+                binding.duration.text = getString(R.string.app_duration)
+            }
+            PlayerUiState.Playing -> {
+                startPlayer()
+            }
+            PlayerUiState.Pause -> {
+                pausePlayer()
+            }
+            PlayerUiState.Default -> {
+                handler.removeCallbacks(createAndUpdateDuration())
+                binding.duration.text = getString(R.string.app_duration)
+                binding.playButton.setImageResource(R.drawable.ic_play)
+                viewModel.pausePlayer()
+            }
         }
     }
 
     companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
-
         private const val CHECK_INTERVAL = 300L
     }
 

@@ -19,6 +19,10 @@ class PlayerInteractorImpl(private val repository: PlayerRepository): PlayerInte
         repository.pausePlayer()
     }
 
+    override fun releasePlayer() {
+        repository.releasePlayer()
+    }
+
     override fun getCurrentPosition(): Int {
         return repository.getCurrentPosition()
     }

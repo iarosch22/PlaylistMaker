@@ -10,14 +10,14 @@ class PlayerRepositoryImpl(private val trackUrl: String): PlayerRepository {
 
     override fun preparePlayer(onPreparedListener: PlayerInteractor.OnPreparedListener, onCompletedListener: PlayerInteractor.OnCompletedListener) {
         mediaPlayer.setDataSource(trackUrl)
+        mediaPlayer.setOnPreparedListener{
+            onPreparedListener.onPrepared()
+        }
+        mediaPlayer.setOnCompletionListener {
+            onCompletedListener.onComplete()
+        }
         mediaPlayer.prepareAsync()
 
-        mediaPlayer.apply {
-            setDataSource(trackUrl)
-            setOnPreparedListener{ onPreparedListener.onPrepared() }
-            setOnCompletionListener { onCompletedListener.onComplete() }
-            prepareAsync()
-        }
     }
 
     override fun startPlayer() {
@@ -26,6 +26,10 @@ class PlayerRepositoryImpl(private val trackUrl: String): PlayerRepository {
 
     override fun pausePlayer() {
         mediaPlayer.pause()
+    }
+
+    override fun releasePlayer() {
+        mediaPlayer.release()
     }
 
     override fun getCurrentPosition(): Int {
