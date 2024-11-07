@@ -4,8 +4,11 @@ import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.player.domain.api.PlayerRepository
 
 class PlayerInteractorImpl(private val repository: PlayerRepository): PlayerInteractor {
-    override fun preparePlayer() {
-        repository.preparePlayer()
+    override fun preparePlayer(
+        onPrepared: PlayerInteractor.OnPreparedListener,
+        onCompleted: PlayerInteractor.OnCompletedListener
+    ) {
+        repository.preparePlayer(onPrepared, onCompleted)
     }
 
     override fun startPlayer() {

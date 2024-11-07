@@ -32,7 +32,6 @@ class TracksSearchViewModel(application: Application): AndroidViewModel(applicat
     private var latestSearchText: String? = null
 
     init {
-        Log.d("TracksSearchViewModel", "tracksInteractor initialized: $tracksInteractor")
         loadSearchedTracks()
     }
 
