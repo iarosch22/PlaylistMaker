@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.search.presentation.view_model
+package com.practicum.playlistmaker.search.ui.activity.view_model
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
