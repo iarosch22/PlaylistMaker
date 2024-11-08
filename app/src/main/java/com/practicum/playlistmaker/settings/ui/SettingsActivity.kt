@@ -6,9 +6,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
-import com.practicum.playlistmaker.settings.domain.SettingsInteractor
 import com.practicum.playlistmaker.settings.ui.view_model.SettingsViewModel
-import com.practicum.playlistmaker.utils.App
+import com.practicum.playlistmaker.App
 
 
 class SettingsActivity: AppCompatActivity() {
@@ -16,7 +15,6 @@ class SettingsActivity: AppCompatActivity() {
     private lateinit var binding: ActivitySettingsBinding
 
     private lateinit var themeSwitcher: SwitchMaterial
-    private lateinit var settingsInteractor: SettingsInteractor
 
     private lateinit var viewModel: SettingsViewModel
 
@@ -28,18 +26,16 @@ class SettingsActivity: AppCompatActivity() {
 
         themeSwitcher = binding.themeSwitcher
 
-        settingsInteractor = Creator.provideSettingsInteractor(this)
-
         viewModel = ViewModelProvider(this, SettingsViewModel.getViewModelFactory(
+            (applicationContext as App),
             Creator.provideSharingInteractor(this),
-            settingsInteractor
+            Creator.provideSettingsInteractor(this)
         ))[SettingsViewModel::class.java]
 
-        themeSwitcher.isChecked = (applicationContext as App).darkTheme
+        themeSwitcher.isChecked = viewModel.getThemePreference()
 
         themeSwitcher.setOnCheckedChangeListener { _, checked ->
-            (applicationContext as App).switchTheme(checked)
-            settingsInteractor.saveThemePreferences(checked)
+            viewModel.switchTheme(checked)
         }
 
         binding.btnBack.setOnClickListener { finish() }
