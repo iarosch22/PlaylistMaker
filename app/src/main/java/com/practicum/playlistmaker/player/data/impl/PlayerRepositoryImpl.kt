@@ -1,8 +1,8 @@
-package com.practicum.playlistmaker.player.data
+package com.practicum.playlistmaker.player.data.impl
 
 import android.media.MediaPlayer
+import com.practicum.playlistmaker.player.data.PlayerRepository
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
-import com.practicum.playlistmaker.player.domain.api.PlayerRepository
 
 class PlayerRepositoryImpl(private val trackUrl: String): PlayerRepository {
 

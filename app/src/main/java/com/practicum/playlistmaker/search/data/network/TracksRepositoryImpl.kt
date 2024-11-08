@@ -3,12 +3,13 @@ package com.practicum.playlistmaker.search.data.network
 import com.practicum.playlistmaker.search.data.NetworkClient
 import com.practicum.playlistmaker.search.data.dto.TrackSearchRequest
 import com.practicum.playlistmaker.search.data.dto.TrackSearchResponse
-import com.practicum.playlistmaker.search.domain.api.TracksRepository
+import com.practicum.playlistmaker.search.data.TracksRepository
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.data.dto.preferences.TrackManager
 import com.practicum.playlistmaker.search.util.Resource
 
-class TracksRepositoryImpl(private val networkClient: NetworkClient, private val trackManager: TrackManager) : TracksRepository {
+class TracksRepositoryImpl(private val networkClient: NetworkClient, private val trackManager: TrackManager) :
+    TracksRepository {
     override fun searchTracks(expression: String): Resource<List<Track>> {
         val response = networkClient.doRequest(TrackSearchRequest(expression))
 
