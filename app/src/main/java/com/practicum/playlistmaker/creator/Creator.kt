@@ -16,6 +16,10 @@ import com.practicum.playlistmaker.search.data.dto.preferences.TrackManager
 import com.practicum.playlistmaker.settings.domain.api.SettingsInteractor
 import com.practicum.playlistmaker.settings.data.SettingsRepository
 import com.practicum.playlistmaker.settings.domain.impl.SettingsInteractorImpl
+import com.practicum.playlistmaker.sharing.data.ExternalNavigator
+import com.practicum.playlistmaker.sharing.data.impl.ExternalNavigatorImpl
+import com.practicum.playlistmaker.sharing.domain.SharingInteractor
+import com.practicum.playlistmaker.sharing.domain.impl.SharingInteractorImpl
 
 object Creator {
 
@@ -37,6 +41,14 @@ object Creator {
     }
     fun provideSettingsInteractor(context: Context): SettingsInteractor {
         return SettingsInteractorImpl(getSettingsRepository(context))
+    }
+
+
+    private fun getExternalNavigator(context: Context): ExternalNavigator {
+        return ExternalNavigatorImpl(context)
+    }
+    fun provideSharingInteractor(context: Context): SharingInteractor {
+        return SharingInteractorImpl(getExternalNavigator(context))
     }
 
 
