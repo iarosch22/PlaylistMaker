@@ -6,7 +6,7 @@ import android.content.Context
 const val APP_THEME_PREFERENCES = "app_theme_preferences"
 const val DARK_THEME = "dark_theme"
 
-class SettingsManager(context: Context) {
+class  SettingsManager(context: Context) {
 
     private val sharedPreferences = context.getSharedPreferences(APP_THEME_PREFERENCES, MODE_PRIVATE)
 
