@@ -22,7 +22,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.player.ui.PlayerActivity
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.models.ErrorMessageType
-import com.practicum.playlistmaker.search.ui.activity.view_model.TracksSearchViewModel
+import com.practicum.playlistmaker.search.ui.view_model.TracksSearchViewModel
 
 const val TRACK = "TRACK"
 
@@ -157,7 +157,7 @@ class SearchActivity : AppCompatActivity() {
     private fun setClearHistoryBtn() {
         clearHistoryBtn.setOnClickListener {
             savedTracks.clear()
-            hintLatestSearch.visibility = View.VISIBLE
+            hintLatestSearch.visibility = View.GONE
             searchTracksAdapter.notifyDataSetChanged()
         }
     }

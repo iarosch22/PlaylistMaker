@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.settings.data
+package com.practicum.playlistmaker.settings.domain
 
 interface SettingsRepository {
     fun getThemePreference(): Boolean

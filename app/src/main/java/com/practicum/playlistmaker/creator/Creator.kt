@@ -1,20 +1,21 @@
 package com.practicum.playlistmaker.creator
 
 import android.content.Context
+import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.player.data.impl.PlayerRepositoryImpl
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
-import com.practicum.playlistmaker.player.data.PlayerRepository
+import com.practicum.playlistmaker.player.domain.PlayerRepository
 import com.practicum.playlistmaker.player.domain.impl.PlayerInteractorImpl
 import com.practicum.playlistmaker.search.data.network.RetrofitNetworkClient
 import com.practicum.playlistmaker.settings.data.impl.SettingsRepositoryImpl
-import com.practicum.playlistmaker.search.data.network.TracksRepositoryImpl
+import com.practicum.playlistmaker.search.data.TracksRepositoryImpl
 import com.practicum.playlistmaker.settings.data.SettingsManager
 import com.practicum.playlistmaker.search.domain.api.TracksInteractor
-import com.practicum.playlistmaker.search.data.TracksRepository
+import com.practicum.playlistmaker.search.domain.TracksRepository
 import com.practicum.playlistmaker.search.domain.impl.TracksInteractorImpl
 import com.practicum.playlistmaker.search.data.dto.preferences.TrackManager
 import com.practicum.playlistmaker.settings.domain.SettingsInteractor
-import com.practicum.playlistmaker.settings.data.SettingsRepository
+import com.practicum.playlistmaker.settings.domain.SettingsRepository
 import com.practicum.playlistmaker.settings.domain.impl.SettingsInteractorImpl
 import com.practicum.playlistmaker.sharing.data.ExternalNavigator
 import com.practicum.playlistmaker.sharing.data.impl.ExternalNavigatorImpl
@@ -23,24 +24,24 @@ import com.practicum.playlistmaker.sharing.domain.impl.SharingInteractorImpl
 
 object Creator {
 
-    private fun getTrackManager(context: Context): TrackManager {
-        return TrackManager(context)
+    private fun getTrackManager(): TrackManager {
+        return TrackManager(App.getAppContext())
     }
-    private fun getTracksRepository(context: Context): TracksRepository {
-        return TracksRepositoryImpl(RetrofitNetworkClient(context), getTrackManager(context))
+    private fun getTracksRepository(): TracksRepository {
+        return TracksRepositoryImpl(RetrofitNetworkClient(App.getAppContext()), getTrackManager())
     }
-    fun provideTracksInteractor(context: Context): TracksInteractor {
-        return TracksInteractorImpl(getTracksRepository(context))
+    fun provideTracksInteractor(): TracksInteractor {
+        return TracksInteractorImpl(getTracksRepository())
     }
 
-    private fun getSettingsManager(context: Context): SettingsManager {
-        return SettingsManager(context)
+    private fun getSettingsManager(): SettingsManager {
+        return SettingsManager(App.getAppContext())
     }
-    private fun getSettingsRepository(context: Context): SettingsRepository {
-        return SettingsRepositoryImpl(getSettingsManager(context))
+    private fun getSettingsRepository(): SettingsRepository {
+        return SettingsRepositoryImpl(getSettingsManager())
     }
-    fun provideSettingsInteractor(context: Context): SettingsInteractor {
-        return SettingsInteractorImpl(getSettingsRepository(context))
+    fun provideSettingsInteractor(): SettingsInteractor {
+        return SettingsInteractorImpl(getSettingsRepository())
     }
 
 

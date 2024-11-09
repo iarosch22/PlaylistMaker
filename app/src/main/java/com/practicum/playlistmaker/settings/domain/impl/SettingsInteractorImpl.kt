@@ -1,7 +1,7 @@
 package com.practicum.playlistmaker.settings.domain.impl
 
 import com.practicum.playlistmaker.settings.domain.SettingsInteractor
-import com.practicum.playlistmaker.settings.data.SettingsRepository
+import com.practicum.playlistmaker.settings.domain.SettingsRepository
 
 class SettingsInteractorImpl(private val repository: SettingsRepository): SettingsInteractor {
     override fun getThemePreference(): Boolean {

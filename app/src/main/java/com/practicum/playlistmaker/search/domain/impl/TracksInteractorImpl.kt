@@ -1,7 +1,7 @@
 package com.practicum.playlistmaker.search.domain.impl
 
 import com.practicum.playlistmaker.search.domain.api.TracksInteractor
-import com.practicum.playlistmaker.search.data.TracksRepository
+import com.practicum.playlistmaker.search.domain.TracksRepository
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.util.Resource
 

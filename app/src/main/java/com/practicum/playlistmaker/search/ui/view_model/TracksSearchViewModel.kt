@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.search.ui.activity.view_model
+package com.practicum.playlistmaker.search.ui.view_model
 
 import android.app.Application
 import android.os.Handler
@@ -20,7 +20,7 @@ import com.practicum.playlistmaker.search.ui.activity.TracksState
 class TracksSearchViewModel(application: Application): AndroidViewModel(application) {
 
     private val tracksInteractor: TracksInteractor by lazy {
-        Creator.provideTracksInteractor(getApplication<Application>())
+        Creator.provideTracksInteractor()
     }
 
     private val handler = Handler(Looper.getMainLooper())

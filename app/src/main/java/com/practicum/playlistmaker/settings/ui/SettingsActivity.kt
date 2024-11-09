@@ -29,7 +29,7 @@ class SettingsActivity: AppCompatActivity() {
         viewModel = ViewModelProvider(this, SettingsViewModel.getViewModelFactory(
             (applicationContext as App),
             Creator.provideSharingInteractor(this),
-            Creator.provideSettingsInteractor(this)
+            Creator.provideSettingsInteractor()
         ))[SettingsViewModel::class.java]
 
         themeSwitcher.isChecked = viewModel.getThemePreference()

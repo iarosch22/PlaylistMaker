@@ -1,9 +1,8 @@
-package com.practicum.playlistmaker.search.data.network
+package com.practicum.playlistmaker.search.data
 
-import com.practicum.playlistmaker.search.data.NetworkClient
 import com.practicum.playlistmaker.search.data.dto.TrackSearchRequest
 import com.practicum.playlistmaker.search.data.dto.TrackSearchResponse
-import com.practicum.playlistmaker.search.data.TracksRepository
+import com.practicum.playlistmaker.search.domain.TracksRepository
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.data.dto.preferences.TrackManager
 import com.practicum.playlistmaker.search.util.Resource

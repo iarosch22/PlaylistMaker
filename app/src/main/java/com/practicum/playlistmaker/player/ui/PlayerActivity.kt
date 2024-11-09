@@ -31,7 +31,6 @@ class PlayerActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
 
     private val timeFormatter by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
-    private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
     private val runnableDuration by lazy { createAndUpdateDuration() }
 
     private lateinit var binding: ActivityPlayerBinding
@@ -90,7 +89,7 @@ class PlayerActivity : AppCompatActivity() {
 
         binding.trackName.text = track.trackName
         binding.artistName.text = track.artistName
-        binding.trackTimeValue.text = dateFormat.format(track.trackTimeMillis.toLong())
+        binding.trackTimeValue.text = timeFormatter.format(track.trackTimeMillis.toLong())
 
         if (track.collectionName.isEmpty()) {
             binding.collectionNameValue.visibility = View.GONE
