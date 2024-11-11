@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-parcelize")
+    kotlin("kapt")
 }
 
 android {
@@ -40,6 +41,8 @@ android {
     }
 }
 
+val moxyVersion = "2.2.2"
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -56,4 +59,8 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.androidx.constraintlayout.v200)
+    implementation(libs.androidx.core.ktx.v190)
+    implementation(libs.moxy)
+    implementation(libs.moxy.android)
+    kapt(libs.moxy.compiler)
 }
