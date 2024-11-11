@@ -27,12 +27,12 @@ object Creator {
     private fun getTrackManager(): TrackManager {
         return TrackManager(App.getAppContext())
     }
-    private fun getTracksRepository(): TracksRepository {
-        return TracksRepositoryImpl(RetrofitNetworkClient(App.getAppContext()), getTrackManager())
-    }
-    fun provideTracksInteractor(): TracksInteractor {
-        return TracksInteractorImpl(getTracksRepository())
-    }
+//    private fun getTracksRepository(): TracksRepository {
+//        return TracksRepositoryImpl(RetrofitNetworkClient(App.getAppContext()), getTrackManager())
+//    }
+//    fun provideTracksInteractor(): TracksInteractor {
+//        return TracksInteractorImpl(getTracksRepository())
+//    }
 
     private fun getSettingsManager(): SettingsManager {
         return SettingsManager(App.getAppContext())

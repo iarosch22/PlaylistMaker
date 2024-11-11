@@ -23,6 +23,7 @@ import com.practicum.playlistmaker.player.ui.PlayerActivity
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.models.ErrorMessageType
 import com.practicum.playlistmaker.search.ui.view_model.TracksSearchViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val TRACK = "TRACK"
 
@@ -39,7 +40,7 @@ class SearchActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private var textWatcher: TextWatcher? = null
 
-    private lateinit var viewModel: TracksSearchViewModel
+    private val viewModel by viewModel<TracksSearchViewModel>()
 
     private lateinit var inputMethodManager: InputMethodManager
     private lateinit var phSomethingWentWrong: ViewGroup
@@ -62,7 +63,6 @@ class SearchActivity : AppCompatActivity() {
 
         inputMethodManager = (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)!!
 
-        viewModel = ViewModelProvider(this, TracksSearchViewModel.getViewModelFactory())[TracksSearchViewModel::class.java]
         viewModel.observeState().observe(this) {
             render(it)
         }
