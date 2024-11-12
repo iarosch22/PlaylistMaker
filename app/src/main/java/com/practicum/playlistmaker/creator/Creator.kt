@@ -24,9 +24,9 @@ import com.practicum.playlistmaker.sharing.domain.impl.SharingInteractorImpl
 
 object Creator {
 
-    private fun getTrackManager(): TrackManager {
-        return TrackManager(App.getAppContext())
-    }
+//    private fun getTrackManager(): TrackManager {
+//        return TrackManager(App.getAppContext())
+//    }
 //    private fun getTracksRepository(): TracksRepository {
 //        return TracksRepositoryImpl(RetrofitNetworkClient(App.getAppContext()), getTrackManager())
 //    }
