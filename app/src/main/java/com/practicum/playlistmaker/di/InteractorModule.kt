@@ -15,14 +15,14 @@ val interactorModule = module {
     single<TracksInteractor> {
         TracksInteractorImpl(get())
     }
-    single<TrackManager> {
-        TrackManager(get())
-    }
+//    single<TrackManager> {
+//        TrackManager(get())
+//    }
 
-    single<SettingsInteractor> {
-        SettingsInteractorImpl(get())
-    }
-    single<SharingInteractor> {
-        SharingInteractorImpl(get())
-    }
+//    single<SettingsInteractor> {
+//        SettingsInteractorImpl(get())
+//    }
+//    single<SharingInteractor> {
+//        SharingInteractorImpl(get())
+//    }
 }

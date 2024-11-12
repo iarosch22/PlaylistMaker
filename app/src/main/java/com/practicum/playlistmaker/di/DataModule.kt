@@ -30,22 +30,22 @@ val dataModule = module {
     }
     factory { Gson() }
     single<TrackManager> {
-        TrackManager(get(named("app_search_history")))
+        TrackManager(get(named("app_search_history")), get())
     }
     single<NetworkClient> {
         RetrofitNetworkClient(get(), androidContext())
     }
 
 
-    single(named("app_theme_preferences")) {
-        androidContext()
-            .getSharedPreferences("app_theme_preferences", Context.MODE_PRIVATE)
-    }
-    single<SettingsManager> {
-        SettingsManager(get(named("app_theme_preferences")))
-    }
-    single<ExternalNavigator> {
-        ExternalNavigatorImpl(get())
-    }
+//    single(named("app_theme_preferences")) {
+//        androidContext()
+//            .getSharedPreferences("app_theme_preferences", Context.MODE_PRIVATE)
+//    }
+//    single<SettingsManager> {
+//        SettingsManager(get(named("app_theme_preferences")))
+//    }
+//    single<ExternalNavigator> {
+//        ExternalNavigatorImpl(get())
+//    }
 
 }
