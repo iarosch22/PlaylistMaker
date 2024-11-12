@@ -1,7 +1,9 @@
 package com.practicum.playlistmaker.di
 
+import android.app.Application
 import android.content.Context
 import com.google.gson.Gson
+import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.search.data.NetworkClient
 import com.practicum.playlistmaker.search.data.dto.preferences.TrackManager
 import com.practicum.playlistmaker.search.data.network.ItunesApi
@@ -36,16 +38,16 @@ val dataModule = module {
         RetrofitNetworkClient(get(), androidContext())
     }
 
-
-//    single(named("app_theme_preferences")) {
-//        androidContext()
-//            .getSharedPreferences("app_theme_preferences", Context.MODE_PRIVATE)
-//    }
-//    single<SettingsManager> {
-//        SettingsManager(get(named("app_theme_preferences")))
-//    }
-//    single<ExternalNavigator> {
-//        ExternalNavigatorImpl(get())
-//    }
+    single { get<Application>() as App }
+    single {
+        androidContext()
+            .getSharedPreferences("app_theme_preferences", Context.MODE_PRIVATE)
+    }
+    single<SettingsManager> {
+        SettingsManager(get())
+    }
+    single<ExternalNavigator> {
+        ExternalNavigatorImpl(get())
+    }
 
 }

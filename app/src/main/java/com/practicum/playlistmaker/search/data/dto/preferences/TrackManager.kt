@@ -1,19 +1,14 @@
 package com.practicum.playlistmaker.search.data.dto.preferences
 
-import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.practicum.playlistmaker.search.domain.models.Track
 
-const val APP_SEARCH_HISTORY = "app_search_history"
 const val APP_SEARCH_TRACKS_KEY = "app_search_tracks_key"
 const val APP_NEW_TRACK_KEY = "app_new_track_key"
 
 class TrackManager(private val sharedPreferences: SharedPreferences,
                    private val gson: Gson) {
-
-//    private val sharedPreferences = context.getSharedPreferences(APP_SEARCH_HISTORY, Context.MODE_PRIVATE)
-//    private val gson = Gson()
 
     fun saveToSearchHistory(tracks: ArrayList<Track>) {
         sharedPreferences.edit()

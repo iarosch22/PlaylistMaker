@@ -34,15 +34,15 @@ object Creator {
 //        return TracksInteractorImpl(getTracksRepository())
 //    }
 
-    private fun getSettingsManager(): SettingsManager {
-        return SettingsManager(App.getAppContext())
-    }
-    private fun getSettingsRepository(): SettingsRepository {
-        return SettingsRepositoryImpl(getSettingsManager())
-    }
-    fun provideSettingsInteractor(): SettingsInteractor {
-        return SettingsInteractorImpl(getSettingsRepository())
-    }
+//    private fun getSettingsManager(): SettingsManager {
+//        return SettingsManager(App.getAppContext())
+//    }
+//    private fun getSettingsRepository(): SettingsRepository {
+//        return SettingsRepositoryImpl(getSettingsManager())
+//    }
+//    fun provideSettingsInteractor(): SettingsInteractor {
+//        return SettingsInteractorImpl(getSettingsRepository())
+//    }
 
 
     private fun getExternalNavigator(context: Context): ExternalNavigator {

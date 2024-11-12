@@ -13,14 +13,9 @@ val repositoryModule = module {
     single<TracksRepository> {
         TracksRepositoryImpl(get(), get())
     }
-//    single<TrackManager> {
-//        TrackManager(get(), get())
-//    }
 
-//    single<SettingsRepository> {
-//        SettingsRepositoryImpl(get())
-//    }
-//    single<SettingsManager> {
-//        SettingsManager(get())
-//    }
+    single<SettingsRepository> {
+        SettingsRepositoryImpl(get())
+    }
+
 }
