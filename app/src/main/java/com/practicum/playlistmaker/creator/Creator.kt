@@ -45,18 +45,18 @@ object Creator {
 //    }
 
 
-    private fun getExternalNavigator(context: Context): ExternalNavigator {
-        return ExternalNavigatorImpl(context)
-    }
-    fun provideSharingInteractor(context: Context): SharingInteractor {
-        return SharingInteractorImpl(getExternalNavigator(context))
-    }
-
-
-    private fun getPlayerRepository(trackUrl: String): PlayerRepository {
-        return PlayerRepositoryImpl(trackUrl)
-    }
-    fun providePlayerInteractor(trackUrl: String): PlayerInteractor {
-        return PlayerInteractorImpl(getPlayerRepository(trackUrl))
-    }
+//    private fun getExternalNavigator(context: Context): ExternalNavigator {
+//        return ExternalNavigatorImpl(context)
+//    }
+//    fun provideSharingInteractor(context: Context): SharingInteractor {
+//        return SharingInteractorImpl(getExternalNavigator(context))
+//    }
+//
+//
+//    private fun getPlayerRepository(trackUrl: String): PlayerRepository {
+//        return PlayerRepositoryImpl(trackUrl)
+//    }
+//    fun providePlayerInteractor(trackUrl: String): PlayerInteractor {
+//        return PlayerInteractorImpl(getPlayerRepository(trackUrl))
+//    }
 }

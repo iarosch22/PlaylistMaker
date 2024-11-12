@@ -5,10 +5,11 @@ import com.practicum.playlistmaker.player.domain.PlayerRepository
 
 class PlayerInteractorImpl(private val repository: PlayerRepository): PlayerInteractor {
     override fun preparePlayer(
+        trackUrl: String,
         onPrepared: PlayerInteractor.OnPreparedListener,
         onCompleted: PlayerInteractor.OnCompletedListener
     ) {
-        repository.preparePlayer(onPrepared, onCompleted)
+        repository.preparePlayer(trackUrl, onPrepared, onCompleted)
     }
 
     override fun startPlayer() {

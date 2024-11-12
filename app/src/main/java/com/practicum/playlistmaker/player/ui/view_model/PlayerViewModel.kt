@@ -10,17 +10,14 @@ import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.player.ui.PlayerUiState
 
-class PlayerViewModel(private val trackUrl: String): ViewModel() {
+class PlayerViewModel(trackUrl: String, private val playerInteractor: PlayerInteractor): ViewModel() {
 
     private val stateLiveData = MutableLiveData<PlayerUiState>()
     fun observeState(): LiveData<PlayerUiState> = stateLiveData
 
-    private val playerInteractor: PlayerInteractor by lazy {
-        Creator.providePlayerInteractor(trackUrl)
-    }
-
     init {
         playerInteractor.preparePlayer(
+            trackUrl,
             onPrepared = object : PlayerInteractor.OnPreparedListener {
                 override fun onPrepared() {
                     updateState(PlayerUiState.Prepared)
@@ -54,14 +51,6 @@ class PlayerViewModel(private val trackUrl: String): ViewModel() {
 
     private fun updateState(state: PlayerUiState) {
         stateLiveData.postValue(state)
-    }
-
-    companion object {
-        fun getViewModelFactory(trackUrl: String): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                PlayerViewModel(trackUrl)
-            }
-        }
     }
 
 }

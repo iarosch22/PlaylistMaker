@@ -15,14 +15,6 @@ import org.koin.core.context.startKoin
 
 class App: Application() {
 
-    companion object {
-        private lateinit var appContext: App
-
-        fun getAppContext(): Context {
-            return appContext.applicationContext
-        }
-    }
-
     private var darkTheme = false
 
     override fun onCreate() {
@@ -33,10 +25,6 @@ class App: Application() {
         }
 
         val settingsInteractor: SettingsInteractor by inject()
-
-        appContext = this
-
-        //val settingsInteractor = Creator.provideSettingsInteractor()
 
         darkTheme = settingsInteractor.getThemePreference()
 

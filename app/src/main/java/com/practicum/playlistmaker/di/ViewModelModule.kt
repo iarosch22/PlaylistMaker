@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.di
 
+import com.practicum.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.practicum.playlistmaker.search.ui.view_model.TracksSearchViewModel
 import com.practicum.playlistmaker.settings.ui.view_model.SettingsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -13,5 +14,9 @@ val viewModule = module {
 
     viewModel {
         SettingsViewModel(get(), get(), get())
+    }
+
+    viewModel { (trackUrl: String) ->
+        PlayerViewModel(trackUrl, get())
     }
 }
