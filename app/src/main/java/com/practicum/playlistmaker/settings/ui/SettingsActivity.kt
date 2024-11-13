@@ -17,7 +17,6 @@ class SettingsActivity: AppCompatActivity() {
 
     private lateinit var themeSwitcher: SwitchMaterial
 
-    //private lateinit var viewModel: SettingsViewModel
     private val viewModel by viewModel<SettingsViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,12 +26,6 @@ class SettingsActivity: AppCompatActivity() {
         setContentView(view)
 
         themeSwitcher = binding.themeSwitcher
-
-//        viewModel = ViewModelProvider(this, SettingsViewModel.getViewModelFactory(
-//            (applicationContext as App),
-//            Creator.provideSharingInteractor(this),
-//            Creator.provideSettingsInteractor()
-//        ))[SettingsViewModel::class.java]
 
         themeSwitcher.isChecked = viewModel.getThemePreference()
 

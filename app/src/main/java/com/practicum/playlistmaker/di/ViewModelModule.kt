@@ -19,4 +19,5 @@ val viewModule = module {
     viewModel { (trackUrl: String) ->
         PlayerViewModel(trackUrl, get())
     }
+
 }
