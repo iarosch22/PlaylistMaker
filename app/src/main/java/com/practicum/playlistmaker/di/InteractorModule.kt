@@ -1,7 +1,5 @@
 package com.practicum.playlistmaker.di
 
-import android.content.Context
-import com.practicum.playlistmaker.player.data.impl.PlayerRepositoryImpl
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.player.domain.impl.PlayerInteractorImpl
 import com.practicum.playlistmaker.search.domain.api.TracksInteractor

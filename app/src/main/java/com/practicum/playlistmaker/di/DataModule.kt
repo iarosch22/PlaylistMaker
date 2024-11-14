@@ -2,13 +2,14 @@ package com.practicum.playlistmaker.di
 
 import android.app.Application
 import android.content.Context
+import android.media.MediaPlayer
 import com.google.gson.Gson
 import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.search.data.NetworkClient
-import com.practicum.playlistmaker.search.data.dto.preferences.TrackManager
+import com.practicum.playlistmaker.search.data.dto.preferences.LocalDataSource
 import com.practicum.playlistmaker.search.data.network.ItunesApi
 import com.practicum.playlistmaker.search.data.network.RetrofitNetworkClient
-import com.practicum.playlistmaker.settings.data.SettingsManager
+import com.practicum.playlistmaker.settings.data.SettingsLocalDataSource
 import com.practicum.playlistmaker.sharing.data.ExternalNavigator
 import com.practicum.playlistmaker.sharing.data.impl.ExternalNavigatorImpl
 import org.koin.android.ext.koin.androidContext
@@ -31,8 +32,8 @@ val dataModule = module {
             .getSharedPreferences("app_search_history", Context.MODE_PRIVATE)
     }
     factory { Gson() }
-    single<TrackManager> {
-        TrackManager(get(named("app_search_history")), get())
+    single<LocalDataSource> {
+        LocalDataSource(get(named("app_search_history")), get())
     }
     single<NetworkClient> {
         RetrofitNetworkClient(get(), androidContext())
@@ -43,11 +44,13 @@ val dataModule = module {
         androidContext()
             .getSharedPreferences("app_theme_preferences", Context.MODE_PRIVATE)
     }
-    single<SettingsManager> {
-        SettingsManager(get())
+    single<SettingsLocalDataSource> {
+        SettingsLocalDataSource(get())
     }
     single<ExternalNavigator> {
         ExternalNavigatorImpl(get())
     }
+
+    factory { MediaPlayer() }
 
 }

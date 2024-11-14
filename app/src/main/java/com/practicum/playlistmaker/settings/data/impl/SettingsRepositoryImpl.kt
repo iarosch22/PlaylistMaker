@@ -1,14 +1,14 @@
 package com.practicum.playlistmaker.settings.data.impl
 
-import com.practicum.playlistmaker.settings.data.SettingsManager
+import com.practicum.playlistmaker.settings.data.SettingsLocalDataSource
 import com.practicum.playlistmaker.settings.domain.SettingsRepository
 
-class SettingsRepositoryImpl(private val settingsManager: SettingsManager): SettingsRepository {
+class SettingsRepositoryImpl(private val settingsLocalDataSource: SettingsLocalDataSource): SettingsRepository {
     override fun getThemePreference(): Boolean {
-        return settingsManager.getThemePreference()
+        return settingsLocalDataSource.getThemePreference()
     }
 
     override fun saveThemePreferences(isDarkTheme: Boolean) {
-        settingsManager.saveThemePreferences(isDarkTheme)
+        settingsLocalDataSource.saveThemePreferences(isDarkTheme)
     }
 }
