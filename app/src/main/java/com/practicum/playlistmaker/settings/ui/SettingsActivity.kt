@@ -2,12 +2,10 @@ package com.practicum.playlistmaker.settings.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.switchmaterial.SwitchMaterial
-import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
 import com.practicum.playlistmaker.settings.ui.view_model.SettingsViewModel
-import com.practicum.playlistmaker.App
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class SettingsActivity: AppCompatActivity() {
@@ -16,7 +14,7 @@ class SettingsActivity: AppCompatActivity() {
 
     private lateinit var themeSwitcher: SwitchMaterial
 
-    private lateinit var viewModel: SettingsViewModel
+    private val viewModel by viewModel<SettingsViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,12 +23,6 @@ class SettingsActivity: AppCompatActivity() {
         setContentView(view)
 
         themeSwitcher = binding.themeSwitcher
-
-        viewModel = ViewModelProvider(this, SettingsViewModel.getViewModelFactory(
-            (applicationContext as App),
-            Creator.provideSharingInteractor(this),
-            Creator.provideSettingsInteractor()
-        ))[SettingsViewModel::class.java]
 
         themeSwitcher.isChecked = viewModel.getThemePreference()
 

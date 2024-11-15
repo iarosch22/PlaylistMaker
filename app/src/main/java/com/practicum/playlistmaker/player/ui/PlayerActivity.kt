@@ -9,7 +9,6 @@ import android.os.Looper
 import android.util.TypedValue
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
@@ -17,6 +16,8 @@ import com.practicum.playlistmaker.databinding.ActivityPlayerBinding
 import com.practicum.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.activity.TRACK
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -26,7 +27,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private var trackUrl: String = ""
 
-    private lateinit var viewModel: PlayerViewModel
+    private val viewModel by viewModel<PlayerViewModel> { parametersOf(trackUrl) }
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -44,8 +45,6 @@ class PlayerActivity : AppCompatActivity() {
         setBackBtn()
 
         setTrackValues()
-
-        viewModel = ViewModelProvider(this, PlayerViewModel.getViewModelFactory(trackUrl))[PlayerViewModel::class.java]
 
         viewModel.observeState().observe(this) { state ->
                 handleStateChange(state)
