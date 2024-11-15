@@ -6,7 +6,7 @@ import android.media.MediaPlayer
 import com.google.gson.Gson
 import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.search.data.NetworkClient
-import com.practicum.playlistmaker.search.data.dto.preferences.LocalDataSource
+import com.practicum.playlistmaker.search.data.dto.preferences.SearchHistoryLocalDataSource
 import com.practicum.playlistmaker.search.data.network.ItunesApi
 import com.practicum.playlistmaker.search.data.network.RetrofitNetworkClient
 import com.practicum.playlistmaker.settings.data.SettingsLocalDataSource
@@ -32,8 +32,8 @@ val dataModule = module {
             .getSharedPreferences("app_search_history", Context.MODE_PRIVATE)
     }
     factory { Gson() }
-    single<LocalDataSource> {
-        LocalDataSource(get(named("app_search_history")), get())
+    single<SearchHistoryLocalDataSource> {
+        SearchHistoryLocalDataSource(get(named("app_search_history")), get())
     }
     single<NetworkClient> {
         RetrofitNetworkClient(get(), androidContext())

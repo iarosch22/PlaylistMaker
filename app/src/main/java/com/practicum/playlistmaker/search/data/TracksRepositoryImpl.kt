@@ -4,10 +4,10 @@ import com.practicum.playlistmaker.search.data.dto.TrackSearchRequest
 import com.practicum.playlistmaker.search.data.dto.TrackSearchResponse
 import com.practicum.playlistmaker.search.domain.TracksRepository
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.data.dto.preferences.LocalDataSource
+import com.practicum.playlistmaker.search.data.dto.preferences.SearchHistoryLocalDataSource
 import com.practicum.playlistmaker.search.util.Resource
 
-class TracksRepositoryImpl(private val networkClient: NetworkClient, private val localDataSource: LocalDataSource) :
+class TracksRepositoryImpl(private val networkClient: NetworkClient, private val searchHistoryLocalDataSource: SearchHistoryLocalDataSource) :
     TracksRepository {
     override fun searchTracks(expression: String): Resource<List<Track>> {
         val response = networkClient.doRequest(TrackSearchRequest(expression))
@@ -37,19 +37,19 @@ class TracksRepositoryImpl(private val networkClient: NetworkClient, private val
     }
 
     override fun getSearchedTracks(): ArrayList<Track> {
-        return localDataSource.readTracksFromSearchHistory()
+        return searchHistoryLocalDataSource.readTracksFromSearchHistory()
     }
 
     override fun saveSearchedTracks(tracks: ArrayList<Track>) {
-        localDataSource.saveToSearchHistory(tracks)
+        searchHistoryLocalDataSource.saveToSearchHistory(tracks)
     }
 
     override fun addTrackToHistory(track: Track) {
-        localDataSource.addTrackToHistory(track)
+        searchHistoryLocalDataSource.addTrackToHistory(track)
     }
 
     override fun clearHistory() {
-        localDataSource.clearHistory()
+        searchHistoryLocalDataSource.clearHistory()
     }
 
 }
