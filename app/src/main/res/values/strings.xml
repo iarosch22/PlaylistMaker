@@ -28,4 +28,6 @@
     <string name="app_duration">0:00</string>
     <string name="app_favorite_tab">Избранные треки</string>
     <string name="app_playlists_tab">Плейлисты</string>
+    <string name="app_library_empty">Ваша медиатека пуста</string>
+    <string name="app_playslits_empty">Вы не создали \n ни одного плейлиста</string>
 </resources>
