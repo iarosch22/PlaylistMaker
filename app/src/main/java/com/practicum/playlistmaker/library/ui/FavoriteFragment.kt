@@ -5,8 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.practicum.playlistmaker.databinding.FragmentFavoriteBinding
+import com.practicum.playlistmaker.library.ui.view_models.FavoriteViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoriteFragment: BindingFragment<FragmentFavoriteBinding>() {
+
+    private val favoriteViewModel: FavoriteViewModel by viewModel {
+        TODO()
+    }
 
     override fun createBinding(
         inflater: LayoutInflater,
