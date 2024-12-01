@@ -39,7 +39,10 @@
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/AdditionalTextStyle" />
+        android:background="?attr/colorSecondary"
+        app:tabTextColor="?attr/colorOnSecondary"
+        app:tabIndicatorColor="?attr/colorOnSecondary"
+        app:tabTextAppearance="@style/CustomTabText"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/pager"

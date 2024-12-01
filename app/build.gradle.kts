@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout.v200)
     implementation(libs.androidx.core.ktx.v190)
     implementation(libs.koin.android)
+    implementation(libs.material.v110)
     implementation("androidx.fragment:fragment-ktx:1.6.1")
     implementation("androidx.viewpager2:viewpager2:1.1.0")
 }
