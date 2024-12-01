@@ -17,10 +17,13 @@
     <dimen name="margin_26">26dp</dimen>
     <dimen name="margin_28">28dp</dimen>
     <dimen name="margin_30">30dp</dimen>
+    <dimen name="margin_46dp">46dp</dimen>
+    <dimen name="margin_106">106dp</dimen>
     <dimen name="margin_110">110dp</dimen>
     <dimen name="margin_124">124dp</dimen>
 
     <dimen name="size_32">32dp</dimen>
+    <dimen name="size_36dp">36dp</dimen>
 
     <dimen name="btn_radius">16dp</dimen>
     <dimen name="placeholder_btn_radius">54dp</dimen>
