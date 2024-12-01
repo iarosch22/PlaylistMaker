@@ -28,6 +28,8 @@ class LibraryActivity : AppCompatActivity() {
         }
 
         tabMediator.attach()
+
+
     }
 
     private fun setListener() {
