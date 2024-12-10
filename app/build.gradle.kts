@@ -41,8 +41,6 @@ android {
     }
 }
 
-val moxyVersion = "2.2.2"
-
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -60,8 +58,8 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.androidx.constraintlayout.v200)
     implementation(libs.androidx.core.ktx.v190)
-    implementation(libs.moxy)
-    implementation(libs.moxy.android)
-    kapt(libs.moxy.compiler)
     implementation(libs.koin.android)
+    implementation(libs.material.v110)
+    implementation("androidx.fragment:fragment-ktx:1.6.1")
+    implementation("androidx.viewpager2:viewpager2:1.1.0")
 }
