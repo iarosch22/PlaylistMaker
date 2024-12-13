@@ -6,7 +6,6 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.library.ui.LibraryActivity
-import com.practicum.playlistmaker.settings.ui.SettingsActivity
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,10 +19,5 @@ class MainActivity : AppCompatActivity() {
             startActivity(libraryIntent)
         }
 
-        val btnSettings = findViewById<Button>(R.id.btn_settings)
-        btnSettings.setOnClickListener{
-            val settingsIntent = Intent(this@MainActivity, SettingsActivity::class.java)
-            startActivity(settingsIntent)
-        }
     }
 }

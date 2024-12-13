@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityRootBinding
-import com.practicum.playlistmaker.search.ui.view_model.SearchFragment
+import com.practicum.playlistmaker.search.ui.SearchFragment
 
 class RootActivity : AppCompatActivity() {
 

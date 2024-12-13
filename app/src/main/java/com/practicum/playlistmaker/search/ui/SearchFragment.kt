@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.search.ui.view_model
+package com.practicum.playlistmaker.search.ui
 
 import android.content.Context
 import android.content.Intent
@@ -15,10 +15,8 @@ import androidx.fragment.app.Fragment
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.player.ui.PlayerActivity
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.OnTrackClickListener
-import com.practicum.playlistmaker.search.ui.TracksAdapter
-import com.practicum.playlistmaker.search.ui.TracksState
 import com.practicum.playlistmaker.search.ui.models.ErrorMessageType
+import com.practicum.playlistmaker.search.ui.view_model.TracksSearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment: Fragment() {
