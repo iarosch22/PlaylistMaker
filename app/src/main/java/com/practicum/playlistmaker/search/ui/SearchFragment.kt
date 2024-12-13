@@ -207,13 +207,11 @@ class SearchFragment: Fragment() {
     }
 
     private fun createOnTrackClick(): OnTrackClickListener {
-        val playerIntent = Intent(requireContext(), PlayerActivity::class.java)
-
         val trackListener = OnTrackClickListener { track: Track ->
             addSearchTrack(track)
 
             if (clickDebounce()) {
-                playerIntent.putExtra(TRACK, track)
+                val playerIntent = PlayerActivity.newInstance(requireContext(), track = track)
 
                 startActivity(playerIntent)
             }

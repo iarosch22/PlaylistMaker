@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.player.ui
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Build.VERSION
 import android.os.Bundle
@@ -179,6 +180,12 @@ class PlayerActivity : AppCompatActivity() {
         private const val CHECK_INTERVAL = 300L
 
         private const val TRACK = "TRACK"
+
+        fun newInstance(context: Context, track: Track?): Intent {
+            return Intent(context, PlayerActivity::class.java).apply {
+                putExtra(TRACK, track)
+            }
+        }
     }
 
 }
