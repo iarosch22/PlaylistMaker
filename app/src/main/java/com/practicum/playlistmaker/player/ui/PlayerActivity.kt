@@ -15,7 +15,6 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityPlayerBinding
 import com.practicum.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.activity.TRACK
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.text.SimpleDateFormat
@@ -178,6 +177,8 @@ class PlayerActivity : AppCompatActivity() {
 
     companion object {
         private const val CHECK_INTERVAL = 300L
+
+        private const val TRACK = "TRACK"
     }
 
 }
