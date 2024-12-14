@@ -11,7 +11,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.player.ui.PlayerActivity
 import com.practicum.playlistmaker.search.domain.models.Track
@@ -211,9 +214,10 @@ class SearchFragment: Fragment() {
             addSearchTrack(track)
 
             if (clickDebounce()) {
-                val playerIntent = PlayerActivity.newInstance(requireContext(), track = track)
-
-                startActivity(playerIntent)
+                findNavController().navigate(
+                    R.id.action_searchFragment_to_playerActivity,
+                    bundleOf(TRACK to track)
+                )
             }
         }
 
