@@ -16,13 +16,14 @@ class SettingsViewModel(
     private val stateLiveData = MutableLiveData<Boolean>()
     fun observeThemeState(): LiveData<Boolean> = stateLiveData
 
-    fun getThemePreference() {
+    init {
         stateLiveData.value = settingsInteractor.getThemePreference()
     }
 
     fun switchTheme(darkThemeEnabled: Boolean) {
         app.switchTheme(darkThemeEnabled)
         settingsInteractor.saveThemePreferences(darkThemeEnabled)
+        stateLiveData.value = darkThemeEnabled
     }
 
     fun shareApp() {
