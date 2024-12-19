@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.practicum.playlistmaker.search.domain.api.TracksInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.activity.TracksState
+import com.practicum.playlistmaker.search.ui.TracksState
 import com.practicum.playlistmaker.search.ui.models.ErrorMessageType
 
 class TracksSearchViewModel(private val tracksInteractor: TracksInteractor): ViewModel() {
