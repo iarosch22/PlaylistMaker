@@ -26,6 +26,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
 
+        android:background="?attr/colorSecondary"
+        app:elevation="0dp"
+
         app:itemIconTint="@color/bottom_nav_colors"
         app:itemTextAppearanceActive="@style/ActiveTextAppearance"
         app:itemTextAppearanceInactive="@style/InactiveTextAppearance"
