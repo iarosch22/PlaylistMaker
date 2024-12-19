@@ -1,11 +1,10 @@
 package com.practicum.playlistmaker.player.ui
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Build.VERSION
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.TypedValue
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -15,7 +14,6 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityPlayerBinding
 import com.practicum.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.activity.TRACK
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.text.SimpleDateFormat
@@ -29,10 +27,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private val viewModel by viewModel<PlayerViewModel> { parametersOf(trackUrl) }
 
-    private val handler = Handler(Looper.getMainLooper())
-
     private val timeFormatter by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
-    private val runnableDuration by lazy { createAndUpdateDuration() }
 
     private lateinit var binding: ActivityPlayerBinding
 
@@ -47,7 +42,7 @@ class PlayerActivity : AppCompatActivity() {
         setTrackValues()
 
         viewModel.observeState().observe(this) { state ->
-                handleStateChange(state)
+            handleStateChange(state)
         }
 
         binding.playButton.setOnClickListener{
@@ -63,7 +58,6 @@ class PlayerActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         viewModel.releasePlayer()
-        handler.removeCallbacks(runnableDuration)
     }
 
     private fun setBackBtn() {
@@ -124,9 +118,8 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun startPlayer() {
-        binding.playButton.setImageResource(R.drawable.ic_pause)
         viewModel.startPlayer()
-        handler.post(runnableDuration)
+        binding.playButton.setImageResource(R.drawable.ic_pause)
     }
 
     private fun pausePlayer() {
@@ -143,41 +136,35 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun createAndUpdateDuration(): Runnable {
-        return object : Runnable {
-            override fun run() {
-                if(viewModel.observeState().value is PlayerUiState.Playing) {
-                    binding.duration.text = timeFormatter.format(viewModel.getCurrentPosition())
-                    handler.postDelayed(this, CHECK_INTERVAL)
-                } else {
-                    handler.removeCallbacks(this)
-                }
-            }
-        }
-    }
-
     private fun handleStateChange(state: PlayerUiState) {
         when(state) {
             PlayerUiState.Prepared -> {
                 binding.duration.text = getString(R.string.app_duration)
             }
-            PlayerUiState.Playing -> {
+            is PlayerUiState.Playing -> {
                 startPlayer()
+                binding.duration.text = timeFormatter.format(state.trackTime)
             }
             PlayerUiState.Pause -> {
                 pausePlayer()
             }
             PlayerUiState.Default -> {
-                handler.removeCallbacks(createAndUpdateDuration())
+                pausePlayer()
                 binding.duration.text = getString(R.string.app_duration)
-                binding.playButton.setImageResource(R.drawable.ic_play)
-                viewModel.pausePlayer()
             }
         }
     }
 
     companion object {
         private const val CHECK_INTERVAL = 300L
+
+        private const val TRACK = "TRACK"
+
+        fun newInstance(context: Context, track: Track?): Intent {
+            return Intent(context, PlayerActivity::class.java).apply {
+                putExtra(TRACK, track)
+            }
+        }
     }
 
 }
