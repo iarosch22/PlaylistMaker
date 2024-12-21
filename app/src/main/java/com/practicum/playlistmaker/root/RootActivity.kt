@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.root
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import androidx.navigation.fragment.NavHostFragment
@@ -24,5 +25,14 @@ class RootActivity : AppCompatActivity() {
 
         val bottomNavigationView = binding.bottomNavigationView
         bottomNavigationView.setupWithNavController(navController)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when(destination.id) {
+                R.id.action_searchFragment_to_playerActivity -> {
+                    binding.bottomNavigationView.visibility = View.GONE
+                    binding.bottomNavDivider.visibility = View.GONE
+                }
+            }
+        }
     }
 }
