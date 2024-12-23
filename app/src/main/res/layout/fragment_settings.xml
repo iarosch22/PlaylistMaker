@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".settings.ui.SettingsActivity"
+    tools:context=".settings.ui.SettingsFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorSecondary"
@@ -15,18 +15,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_24">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="@dimen/padding_12"
-            android:paddingBottom="@dimen/padding_12"
-            android:src="@drawable/ic_back"
-            app:tint="?attr/colorOnSecondary"/>
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="48dp"
             android:paddingTop="10dp"
             android:paddingBottom="@dimen/padding_12"
             android:text="@string/app_settings"
