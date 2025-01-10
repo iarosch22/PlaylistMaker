@@ -24,6 +24,10 @@ class PlayerInteractorImpl(private val repository: PlayerRepository): PlayerInte
         repository.releasePlayer()
     }
 
+    override fun getStatePlaying(): Boolean {
+        return repository.getStatePlaying()
+    }
+
     override fun getCurrentPosition(): Int {
         return repository.getCurrentPosition()
     }
