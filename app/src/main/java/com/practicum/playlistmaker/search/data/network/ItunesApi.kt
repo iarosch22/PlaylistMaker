@@ -9,7 +9,7 @@ interface ItunesApi {
 
     @GET("/search?entity=song ")
 
-    fun searchTracks(@Query("term") text: String): Call<TrackSearchResponse>
+    suspend fun searchTracks(@Query("term") text: String): TrackSearchResponse
 
 
 }
