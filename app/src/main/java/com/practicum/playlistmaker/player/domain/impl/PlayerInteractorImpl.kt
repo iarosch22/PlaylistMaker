@@ -4,6 +4,7 @@ import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.player.domain.PlayerRepository
 
 class PlayerInteractorImpl(private val repository: PlayerRepository): PlayerInteractor {
+
     override fun preparePlayer(
         trackUrl: String,
         onPrepared: PlayerInteractor.OnPreparedListener,
@@ -31,4 +32,5 @@ class PlayerInteractorImpl(private val repository: PlayerRepository): PlayerInte
     override fun getCurrentPosition(): Int {
         return repository.getCurrentPosition()
     }
+
 }

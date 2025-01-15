@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Build.VERSION
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -40,23 +41,23 @@ class PlayerActivity : AppCompatActivity() {
 
         setTrackValues()
 
-        viewModel.observeState().observe(this) { state ->
-            handleStateChange(state)
+        viewModel.observeState().observe(this) {
+            binding.duration.text = it.progress
+            if (it is PlayerUiState.Playing) {
+                binding.playButton.setImageResource(R.drawable.ic_pause)
+            } else {
+                binding.playButton.setImageResource(R.drawable.ic_play)
+            }
         }
 
         binding.playButton.setOnClickListener{
-            playbackControl()
+            viewModel.onPlayButtonClicked()
         }
     }
 
     override fun onStop() {
         super.onStop()
-        viewModel.pausePlayer()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.releasePlayer()
+        viewModel.onPause()
     }
 
     private fun setBackBtn() {
@@ -114,44 +115,6 @@ class PlayerActivity : AppCompatActivity() {
             TypedValue.COMPLEX_UNIT_DIP,
             dp,
             context.resources.displayMetrics).toInt()
-    }
-
-    private fun startPlayer() {
-        viewModel.startPlayer()
-        binding.playButton.setImageResource(R.drawable.ic_pause)
-    }
-
-    private fun pausePlayer() {
-        viewModel.pausePlayer()
-        binding.playButton.setImageResource(R.drawable.ic_play)
-    }
-
-    private fun playbackControl() {
-        when (viewModel.observeState().value) {
-            is PlayerUiState.Playing -> viewModel.pausePlayer()
-            else -> {
-                viewModel.startPlayer()
-            }
-        }
-    }
-
-    private fun handleStateChange(state: PlayerUiState) {
-        when(state) {
-            PlayerUiState.Prepared -> {
-                binding.duration.text = getString(R.string.app_duration)
-            }
-            is PlayerUiState.Playing -> {
-                startPlayer()
-                binding.duration.text = timeFormatter.format(state.trackTime)
-            }
-            PlayerUiState.Pause -> {
-                pausePlayer()
-            }
-            PlayerUiState.Default -> {
-                pausePlayer()
-                binding.duration.text = getString(R.string.app_duration)
-            }
-        }
     }
 
     companion object {
