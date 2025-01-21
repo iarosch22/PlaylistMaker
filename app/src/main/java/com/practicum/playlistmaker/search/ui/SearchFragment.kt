@@ -1,10 +1,7 @@
 package com.practicum.playlistmaker.search.ui
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -13,13 +10,15 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
-import com.practicum.playlistmaker.player.ui.PlayerActivity
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.models.ErrorMessageType
 import com.practicum.playlistmaker.search.ui.view_model.TracksSearchViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment: Fragment() {
@@ -34,7 +33,6 @@ class SearchFragment: Fragment() {
     private val savedTracks = ArrayList<Track>()
     private lateinit var tracksAdapter: TracksAdapter
     private lateinit var searchTracksAdapter: TracksAdapter
-    private val handler = Handler(Looper.getMainLooper())
     private var textWatcher: TextWatcher? = null
 
     private val viewModel by viewModel<TracksSearchViewModel>()
@@ -226,12 +224,16 @@ class SearchFragment: Fragment() {
 
     private fun clickDebounce(): Boolean {
         val current = isClickAllowed
+
         if (isClickAllowed) {
             isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true},
-                CLICK_DEBOUNCE_DELAY_MILLIS
-            )
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                delay(CLICK_DEBOUNCE_DELAY_MILLIS)
+                isClickAllowed = true
+            }
         }
+
         return current
     }
 

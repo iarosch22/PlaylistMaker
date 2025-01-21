@@ -11,5 +11,7 @@ interface PlayerRepository {
 
     fun releasePlayer()
 
+    fun getStatePlaying(): Boolean
+
     fun getCurrentPosition(): Int
 }

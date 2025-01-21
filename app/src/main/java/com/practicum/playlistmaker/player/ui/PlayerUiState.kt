@@ -1,8 +1,13 @@
 package com.practicum.playlistmaker.player.ui
 
-sealed interface PlayerUiState {
-    data object Prepared : PlayerUiState
-    data class Playing(val trackTime: Int = 0): PlayerUiState
-    data object Pause: PlayerUiState
-    data object Default: PlayerUiState
+sealed class PlayerUiState(val isPlayButtonEnabled: Boolean, val progress: String) {
+
+    class Default : PlayerUiState(false, "00:00")
+
+    class Prepared : PlayerUiState(true, "00:00")
+
+    class Playing(progress: String) : PlayerUiState(true, progress)
+
+    class Paused(progress: String) : PlayerUiState(true, progress)
+
 }
