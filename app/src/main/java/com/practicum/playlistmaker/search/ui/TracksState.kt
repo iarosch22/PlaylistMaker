@@ -1,7 +1,7 @@
 package com.practicum.playlistmaker.search.ui
 
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.models.ErrorMessageType
+import com.practicum.playlistmaker.util.ErrorMessageType
 
 sealed interface TracksState {
     object Loading: TracksState

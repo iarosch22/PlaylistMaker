@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.library.ui
+package com.practicum.playlistmaker.util
 
 import android.os.Bundle
 import android.view.LayoutInflater

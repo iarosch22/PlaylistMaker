@@ -15,7 +15,7 @@ import androidx.navigation.fragment.findNavController
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.models.ErrorMessageType
+import com.practicum.playlistmaker.util.ErrorMessageType
 import com.practicum.playlistmaker.search.ui.view_model.TracksSearchViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

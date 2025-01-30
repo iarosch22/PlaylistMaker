@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.practicum.playlistmaker.databinding.FragmentFavoriteBinding
 import com.practicum.playlistmaker.library.ui.view_models.FavoriteViewModel
+import com.practicum.playlistmaker.util.BindingFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
