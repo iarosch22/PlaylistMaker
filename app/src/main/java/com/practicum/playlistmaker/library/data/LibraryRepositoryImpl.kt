@@ -6,16 +6,16 @@ import com.practicum.playlistmaker.library.data.db.entity.TrackEntity
 import com.practicum.playlistmaker.library.domain.db.LibraryRepository
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 class LibraryRepositoryImpl(
     private val appDatabase: AppDatabase,
     private val convertor: TrackDbConvertor
 ): LibraryRepository {
 
-    override fun favoriteTracks(): Flow<List<Track>> = flow {
-        val tracks = appDatabase.trackDao().getTracks()
-        emit(convertFromTracksEntities(tracks))
+    override fun favoriteTracks(): Flow<List<Track>> {
+        return appDatabase.trackDao().getTracks()
+            .map { tracks ->  convertFromTracksEntities(tracks)}
     }
 
     override suspend fun addToFavoriteTracks(track: Track) {
@@ -26,8 +26,23 @@ class LibraryRepositoryImpl(
         appDatabase.trackDao().deleteTrack(convertor.map(track))
     }
 
-    private fun convertFromTracksEntities(tracks: List<TrackEntity>): List<Track> {
-        return tracks.map { track -> convertor.map(track) }
+    private suspend fun convertFromTracksEntities(tracks: List<TrackEntity>): List<Track> {
+        val indexes = appDatabase.trackDao().getTracksId()
+
+        return tracks.map { Track(
+                trackId = it.trackId,
+                trackName = it.trackName,
+                artistName = it.artistName,
+                trackTimeMillis = it.trackTimeMillis,
+                artworkUrl100 = it.artworkUrl100,
+                collectionName = it.collectionName,
+                releaseDate = it.releaseDate,
+                primaryGenreName = it.primaryGenreName,
+                country = it.country,
+                previewUrl = it.previewUrl,
+                isFavorite = it.trackId in indexes
+            )
+        }
     }
 
 }

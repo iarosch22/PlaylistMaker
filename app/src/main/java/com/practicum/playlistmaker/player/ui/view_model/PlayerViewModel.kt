@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.player.ui.view_model
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,7 +16,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerViewModel(
-    private val trackUrl: String,
+    private val track: Track,
     private val playerInteractor: PlayerInteractor,
     private val libraryInteractor: LibraryInteractor
 ): ViewModel() {
@@ -25,16 +26,17 @@ class PlayerViewModel(
     private val stateLiveData = MutableLiveData<PlayerUiState>(PlayerUiState.Default())
     fun observeState(): LiveData<PlayerUiState> = stateLiveData
 
-    private val favoriteLiveData = MutableLiveData<Boolean>(false)
+    private val favoriteLiveData = MutableLiveData<Boolean>()
     fun observeFavorite(): LiveData<Boolean> = favoriteLiveData
 
     init {
         initPlayer()
+        favoriteLiveData.postValue(track.isFavorite)
     }
 
     private fun initPlayer() {
         playerInteractor.preparePlayer(
-            trackUrl,
+            track.previewUrl,
             onPrepared = object : PlayerInteractor.OnPreparedListener {
                 override fun onPrepared() {
                     updateState(PlayerUiState.Prepared())
@@ -109,14 +111,14 @@ class PlayerViewModel(
         stateLiveData.postValue(state)
     }
 
-    private fun onFavoriteClicked(track: Track) {
+    fun onFavoriteClicked(track: Track) {
         viewModelScope.launch {
             if (favoriteLiveData.value == true) {
-                favoriteLiveData.postValue(false)
-                libraryInteractor.addToFavoriteTracks(track)
-            } else {
-                favoriteLiveData.postValue(true)
                 libraryInteractor.deleteFromFavoriteTracks(track)
+                favoriteLiveData.postValue(false)
+            } else {
+                libraryInteractor.addToFavoriteTracks(track)
+                favoriteLiveData.postValue(true)
             }
         }
     }

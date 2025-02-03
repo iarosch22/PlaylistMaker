@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.library.ui.view_models
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.library.domain.db.LibraryInteractor
 import com.practicum.playlistmaker.library.ui.FavoriteState
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.TracksState
 import kotlinx.coroutines.launch
 
 class FavoriteViewModel(private val libraryInteractor: LibraryInteractor): ViewModel() {
@@ -16,6 +16,7 @@ class FavoriteViewModel(private val libraryInteractor: LibraryInteractor): ViewM
     fun observeState(): LiveData<FavoriteState> = stateLiveData
 
     init {
+        Log.d("INIT_FAVORITE", "INIT")
         getFavoriteTrack()
     }
 
