@@ -62,7 +62,7 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         binding.saveToFavorites.setOnClickListener {
-            track?.let { it1 -> viewModel.onFavoriteClicked(it1) }
+            track?.let { viewModel.onFavoriteClicked(it) }
         }
     }
 

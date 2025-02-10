@@ -33,7 +33,7 @@ class FavoriteViewModel(private val libraryInteractor: LibraryInteractor): ViewM
     }
 
     private fun processResult(tracks: List<Track>?) {
-        if (tracks != null) {
+        if (!tracks.isNullOrEmpty()) {
             setState(FavoriteState.Content(tracks))
         } else {
             setState(FavoriteState.Empty)
