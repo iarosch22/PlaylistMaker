@@ -45,25 +45,19 @@ class PlayerActivity : AppCompatActivity() {
             binding.duration.text = it.progress
             if (it is PlayerUiState.Playing) {
                 binding.playButton.setImageResource(R.drawable.ic_pause)
+                setFavoriteIcon(it.isFavorite)
             } else {
                 binding.playButton.setImageResource(R.drawable.ic_play)
+                setFavoriteIcon(it.isFavorite)
             }
+
         }
 
         binding.playButton.setOnClickListener{
             viewModel.onPlayButtonClicked()
         }
 
-        viewModel.observeFavorite().observe(this) {
-            when(it) {
-                true -> binding.saveToFavorites.setImageResource(R.drawable.ic_savetofavorite_active)
-                false -> binding.saveToFavorites.setImageResource(R.drawable.ic_savetofavorite_inactive)
-            }
-        }
-
-        binding.saveToFavorites.setOnClickListener {
-            track?.let { viewModel.onFavoriteClicked(it) }
-        }
+        binding.saveToFavorites.setOnClickListener { viewModel.onFavoriteClicked() }
     }
 
     override fun onStop() {
@@ -125,6 +119,14 @@ class PlayerActivity : AppCompatActivity() {
             .transform(RoundedCorners(cornersValuePx))
             .placeholder(R.drawable.ic_placeholder_large)
             .into(binding.cover)
+    }
+
+    private fun setFavoriteIcon(isFavorite: Boolean) {
+        if (isFavorite) {
+            binding.saveToFavorites.setImageResource(R.drawable.ic_savetofavorite_active)
+        } else {
+            binding.saveToFavorites.setImageResource(R.drawable.ic_savetofavorite_inactive)
+        }
     }
 
     private fun dpToPx(dp: Float, context: Context): Int {
