@@ -16,7 +16,6 @@ class FavoriteViewModel(private val libraryInteractor: LibraryInteractor): ViewM
     fun observeState(): LiveData<FavoriteState> = stateLiveData
 
     init {
-        Log.d("INIT_FAVORITE", "INIT")
         getFavoriteTrack()
     }
 
