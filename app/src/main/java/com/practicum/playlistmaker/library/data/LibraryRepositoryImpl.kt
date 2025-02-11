@@ -18,6 +18,10 @@ class LibraryRepositoryImpl(
             .map { tracks ->  convertFromTracksEntities(tracks)}
     }
 
+    override suspend fun getTracksId(): List<String> {
+        return appDatabase.trackDao().getTracksId()
+    }
+
     override suspend fun addToFavoriteTracks(track: Track) {
         appDatabase.trackDao().insertTrack(convertor.map(track))
     }
@@ -27,7 +31,7 @@ class LibraryRepositoryImpl(
     }
 
     private suspend fun convertFromTracksEntities(tracks: List<TrackEntity>): List<Track> {
-        val indexes = appDatabase.trackDao().getTracksId()
+        val indexes = getTracksId()
 
         return tracks.map { Track(
                 trackId = it.trackId,

@@ -16,10 +16,12 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerViewModel(
-    private var track: Track,
+    private val track: Track,
     private val playerInteractor: PlayerInteractor,
     private val libraryInteractor: LibraryInteractor
 ): ViewModel() {
+
+    private var isFavorite = track.isFavorite
 
     private var timerJob: Job? = null
 
@@ -27,6 +29,7 @@ class PlayerViewModel(
     fun observeState(): LiveData<PlayerUiState> = stateLiveData
 
     init {
+        setFavoriteValue()
         initPlayer()
     }
 
@@ -35,13 +38,13 @@ class PlayerViewModel(
             track.previewUrl,
             onPrepared = object : PlayerInteractor.OnPreparedListener {
                 override fun onPrepared() {
-                    updateState(PlayerUiState.Prepared(isFavorite()))
+                    updateState(PlayerUiState.Prepared(isFavorite))
                 }
             },
             onCompleted = object : PlayerInteractor.OnCompletedListener {
                 override fun onComplete() {
                     timerJob?.cancel()
-                    updateState(PlayerUiState.Prepared(isFavorite()))
+                    updateState(PlayerUiState.Prepared(isFavorite))
                 }
             }
         )
@@ -67,19 +70,19 @@ class PlayerViewModel(
 
     private fun startPlayer() {
         playerInteractor.startPlayer()
-        updateState(PlayerUiState.Playing(getCurrentPlayerPosition(), isFavorite()))
+        updateState(PlayerUiState.Playing(getCurrentPlayerPosition(), isFavorite))
         startTimer()
     }
 
     private fun pausePlayer() {
             playerInteractor.pausePlayer()
             timerJob?.cancel()
-            updateState(PlayerUiState.Paused(getCurrentPlayerPosition(), isFavorite()))
+            updateState(PlayerUiState.Paused(getCurrentPlayerPosition(), isFavorite))
     }
 
     private fun releasePlayer() {
         playerInteractor.releasePlayer()
-        stateLiveData.value = PlayerUiState.Default(isFavorite())
+        stateLiveData.value = PlayerUiState.Default(isFavorite)
     }
 
     override fun onCleared() {
@@ -92,8 +95,15 @@ class PlayerViewModel(
         timerJob = viewModelScope.launch {
             while (playerInteractor.getStatePlaying()) {
                 delay(CHECK_INTERVAL)
-                updateState(PlayerUiState.Playing(getCurrentPlayerPosition(), isFavorite()))
+                updateState(PlayerUiState.Playing(getCurrentPlayerPosition(), isFavorite))
             }
+        }
+    }
+
+    private fun setFavoriteValue() {
+        viewModelScope.launch {
+            val trackIdList = libraryInteractor.getTracksId()
+            isFavorite = track.trackId in trackIdList
         }
     }
 
@@ -107,22 +117,18 @@ class PlayerViewModel(
         stateLiveData.postValue(state)
     }
 
-    private fun isFavorite(): Boolean {
-        return track.isFavorite
-    }
-
     fun onFavoriteClicked() {
         viewModelScope.launch {
-            if (isFavorite()) {
+            if (isFavorite) {
                 libraryInteractor.deleteFromFavoriteTracks(track)
-                track = track.copy(isFavorite = !isFavorite())
             } else {
                 libraryInteractor.addToFavoriteTracks(track)
-                track = track.copy(isFavorite = !isFavorite())
             }
 
+            isFavorite = !isFavorite
+
             stateLiveData.value?.let { currentState ->
-                currentState.isFavorite = isFavorite()
+                currentState.isFavorite = isFavorite
                 updateState(currentState)
             }
 
