@@ -102,8 +102,7 @@ class PlayerViewModel(
 
     private fun setFavoriteValue() {
         viewModelScope.launch {
-            val trackIdList = libraryInteractor.getTracksId()
-            isFavorite = track.trackId in trackIdList
+            isFavorite = libraryInteractor.getTrackFavoriteValue(track.trackId)
         }
     }
 

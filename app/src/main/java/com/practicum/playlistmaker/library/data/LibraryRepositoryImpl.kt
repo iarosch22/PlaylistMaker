@@ -18,6 +18,11 @@ class LibraryRepositoryImpl(
             .map { tracks ->  convertFromTracksEntities(tracks)}
     }
 
+    override suspend fun getTrackFavoriteValue(trackId: String): Boolean {
+        val trackIds = getTracksId()
+        return trackId in trackIds
+    }
+
     override suspend fun getTracksId(): List<String> {
         return appDatabase.trackDao().getTracksId()
     }
@@ -31,7 +36,7 @@ class LibraryRepositoryImpl(
     }
 
     private suspend fun convertFromTracksEntities(tracks: List<TrackEntity>): List<Track> {
-        val indexes = getTracksId()
+        val trackIds = getTracksId()
 
         return tracks.map { Track(
                 trackId = it.trackId,
@@ -44,7 +49,7 @@ class LibraryRepositoryImpl(
                 primaryGenreName = it.primaryGenreName,
                 country = it.country,
                 previewUrl = it.previewUrl,
-                isFavorite = it.trackId in indexes
+                isFavorite = it.trackId in trackIds
             )
         }
     }

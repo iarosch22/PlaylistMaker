@@ -7,6 +7,8 @@ interface LibraryInteractor {
 
     fun favoriteTracks(): Flow<List<Track>>
 
+    suspend fun getTrackFavoriteValue(trackId: String): Boolean
+
     suspend fun getTracksId(): List<String>
 
     suspend fun addToFavoriteTracks(track: Track)

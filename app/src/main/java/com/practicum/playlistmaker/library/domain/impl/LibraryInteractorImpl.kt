@@ -14,6 +14,10 @@ class LibraryInteractorImpl(private val repository: LibraryRepository): LibraryI
         }
     }
 
+    override suspend fun getTrackFavoriteValue(trackId: String): Boolean {
+        return repository.getTrackFavoriteValue(trackId)
+    }
+
     override suspend fun getTracksId(): List<String> {
         return repository.getTracksId()
     }
