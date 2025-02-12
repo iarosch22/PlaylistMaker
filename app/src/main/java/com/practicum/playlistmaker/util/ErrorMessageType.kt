@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.search.ui.models
+package com.practicum.playlistmaker.util
 
 enum class ErrorMessageType {
 

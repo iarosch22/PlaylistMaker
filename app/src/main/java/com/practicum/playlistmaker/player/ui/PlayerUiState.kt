@@ -1,13 +1,13 @@
 package com.practicum.playlistmaker.player.ui
 
-sealed class PlayerUiState(val isPlayButtonEnabled: Boolean, val progress: String) {
+sealed class PlayerUiState(val progress: String, var isFavorite: Boolean) {
 
-    class Default : PlayerUiState(false, "00:00")
+    class Default(isFavorite: Boolean) : PlayerUiState("00:00", isFavorite)
 
-    class Prepared : PlayerUiState(true, "00:00")
+    class Prepared(isFavorite: Boolean) : PlayerUiState("00:00", isFavorite)
 
-    class Playing(progress: String) : PlayerUiState(true, progress)
+    class Playing(progress: String, isFavorite: Boolean) : PlayerUiState(progress, isFavorite)
 
-    class Paused(progress: String) : PlayerUiState(true, progress)
+    class Paused(progress: String, isFavorite: Boolean) : PlayerUiState(progress, isFavorite)
 
 }

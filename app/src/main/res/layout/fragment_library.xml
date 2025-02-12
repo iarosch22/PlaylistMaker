@@ -7,11 +7,11 @@
     android:layout_height="match_parent"
     android:background="?attr/colorSecondary"
     android:orientation="vertical"
-    tools:context=".library.ui.LibraryFragment"
-    style="@style/LayoutPadding">
+    tools:context=".library.ui.LibraryFragment">
 
     <FrameLayout
         android:id="@+id/btn_back"
+        style="@style/LayoutPadding"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -33,7 +33,8 @@
         android:background="?attr/colorSecondary"
         app:tabTextColor="?attr/colorOnSecondary"
         app:tabIndicatorColor="?attr/colorOnSecondary"
-        app:tabTextAppearance="@style/CustomTabText"/>
+        app:tabTextAppearance="@style/CustomTabText"
+        style="@style/LayoutPadding" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/pager"

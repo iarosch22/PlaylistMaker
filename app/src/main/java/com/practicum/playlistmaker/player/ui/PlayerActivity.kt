@@ -23,9 +23,9 @@ const val SDK_TIRAMISU = Build.VERSION_CODES.TIRAMISU
 
 class PlayerActivity : AppCompatActivity() {
 
-    private var trackUrl: String = ""
+    private var track: Track? = null
 
-    private val viewModel by viewModel<PlayerViewModel> { parametersOf(trackUrl) }
+    private val viewModel by viewModel<PlayerViewModel> { parametersOf(track) }
 
     private val timeFormatter by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
 
@@ -45,14 +45,19 @@ class PlayerActivity : AppCompatActivity() {
             binding.duration.text = it.progress
             if (it is PlayerUiState.Playing) {
                 binding.playButton.setImageResource(R.drawable.ic_pause)
+                setFavoriteIcon(it.isFavorite)
             } else {
                 binding.playButton.setImageResource(R.drawable.ic_play)
+                setFavoriteIcon(it.isFavorite)
             }
+
         }
 
         binding.playButton.setOnClickListener{
             viewModel.onPlayButtonClicked()
         }
+
+        binding.saveToFavorites.setOnClickListener { viewModel.onFavoriteClicked() }
     }
 
     override fun onStop() {
@@ -67,7 +72,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun setTrackValues() {
-        val track = if (VERSION.SDK_INT >= SDK_TIRAMISU) {
+        track = if (VERSION.SDK_INT >= SDK_TIRAMISU) {
             intent.getParcelableExtra(TRACK, Track::class.java)
         } else {
             intent.getParcelableExtra(TRACK)
@@ -78,24 +83,30 @@ class PlayerActivity : AppCompatActivity() {
             return
         }
 
-        trackUrl = track.previewUrl
+        binding.trackName.text = track!!.trackName
+        binding.artistName.text = track!!.artistName
+        binding.trackTimeValue.text = timeFormatter.format(track!!.trackTimeMillis.toLong())
 
-        binding.trackName.text = track.trackName
-        binding.artistName.text = track.artistName
-        binding.trackTimeValue.text = timeFormatter.format(track.trackTimeMillis.toLong())
-
-        if (track.collectionName.isEmpty()) {
+        if (track!!.collectionName.isEmpty()) {
             binding.collectionNameValue.visibility = View.GONE
             binding.collectionName.visibility = View.GONE
         } else {
-            binding.collectionNameValue.text = track.collectionName
+            binding.collectionNameValue.text = track!!.collectionName
         }
 
-        binding.releaseDateValue.text = track.releaseDate.take(4).takeIf { it.length == 4 } ?: ""
-        binding.primaryGenreNameValue.text = track.primaryGenreName
-        binding.countryValue.text = track.country
+        binding.releaseDateValue.text = track!!.releaseDate.take(4).takeIf { it.length == 4 } ?: ""
+        binding.primaryGenreNameValue.text = track!!.primaryGenreName
+        binding.countryValue.text = track!!.country
 
-        loadArtWork(track.getCoverArtwork())
+        Log.d("IS ACTIVE", "${track!!.isFavorite}")
+
+        if (track!!.isFavorite) {
+            binding.saveToFavorites.setImageResource(R.drawable.ic_savetofavorite_active)
+        } else {
+            binding.saveToFavorites.setImageResource(R.drawable.ic_savetofavorite_inactive)
+        }
+
+        loadArtWork(track!!.getCoverArtwork())
     }
 
     private fun loadArtWork(artworkUrl: String) {
@@ -108,6 +119,14 @@ class PlayerActivity : AppCompatActivity() {
             .transform(RoundedCorners(cornersValuePx))
             .placeholder(R.drawable.ic_placeholder_large)
             .into(binding.cover)
+    }
+
+    private fun setFavoriteIcon(isFavorite: Boolean) {
+        if (isFavorite) {
+            binding.saveToFavorites.setImageResource(R.drawable.ic_savetofavorite_active)
+        } else {
+            binding.saveToFavorites.setImageResource(R.drawable.ic_savetofavorite_inactive)
+        }
     }
 
     private fun dpToPx(dp: Float, context: Context): Int {

@@ -5,37 +5,46 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.practicum.playlistmaker.library.domain.db.LibraryInteractor
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.player.ui.PlayerUiState
+import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PlayerViewModel(private val trackUrl: String, private val playerInteractor: PlayerInteractor): ViewModel() {
+class PlayerViewModel(
+    private val track: Track,
+    private val playerInteractor: PlayerInteractor,
+    private val libraryInteractor: LibraryInteractor
+): ViewModel() {
+
+    private var isFavorite = track.isFavorite
 
     private var timerJob: Job? = null
 
-    private val stateLiveData = MutableLiveData<PlayerUiState>(PlayerUiState.Default())
+    private val stateLiveData = MutableLiveData<PlayerUiState>()
     fun observeState(): LiveData<PlayerUiState> = stateLiveData
 
     init {
+        setFavoriteValue()
         initPlayer()
     }
 
     private fun initPlayer() {
         playerInteractor.preparePlayer(
-            trackUrl,
+            track.previewUrl,
             onPrepared = object : PlayerInteractor.OnPreparedListener {
                 override fun onPrepared() {
-                    updateState(PlayerUiState.Prepared())
+                    updateState(PlayerUiState.Prepared(isFavorite))
                 }
             },
             onCompleted = object : PlayerInteractor.OnCompletedListener {
                 override fun onComplete() {
                     timerJob?.cancel()
-                    updateState(PlayerUiState.Prepared())
+                    updateState(PlayerUiState.Prepared(isFavorite))
                 }
             }
         )
@@ -61,19 +70,19 @@ class PlayerViewModel(private val trackUrl: String, private val playerInteractor
 
     private fun startPlayer() {
         playerInteractor.startPlayer()
-        updateState(PlayerUiState.Playing(getCurrentPlayerPosition()))
+        updateState(PlayerUiState.Playing(getCurrentPlayerPosition(), isFavorite))
         startTimer()
     }
 
     private fun pausePlayer() {
             playerInteractor.pausePlayer()
             timerJob?.cancel()
-            updateState(PlayerUiState.Paused(getCurrentPlayerPosition()))
+            updateState(PlayerUiState.Paused(getCurrentPlayerPosition(), isFavorite))
     }
 
     private fun releasePlayer() {
         playerInteractor.releasePlayer()
-        stateLiveData.value = PlayerUiState.Default()
+        stateLiveData.value = PlayerUiState.Default(isFavorite)
     }
 
     override fun onCleared() {
@@ -86,8 +95,14 @@ class PlayerViewModel(private val trackUrl: String, private val playerInteractor
         timerJob = viewModelScope.launch {
             while (playerInteractor.getStatePlaying()) {
                 delay(CHECK_INTERVAL)
-                updateState(PlayerUiState.Playing(getCurrentPlayerPosition()))
+                updateState(PlayerUiState.Playing(getCurrentPlayerPosition(), isFavorite))
             }
+        }
+    }
+
+    private fun setFavoriteValue() {
+        viewModelScope.launch {
+            isFavorite = libraryInteractor.getTrackFavoriteValue(track.trackId)
         }
     }
 
@@ -99,6 +114,24 @@ class PlayerViewModel(private val trackUrl: String, private val playerInteractor
 
     private fun updateState(state: PlayerUiState) {
         stateLiveData.postValue(state)
+    }
+
+    fun onFavoriteClicked() {
+        viewModelScope.launch {
+            if (isFavorite) {
+                libraryInteractor.deleteFromFavoriteTracks(track)
+            } else {
+                libraryInteractor.addToFavoriteTracks(track)
+            }
+
+            isFavorite = !isFavorite
+
+            stateLiveData.value?.let { currentState ->
+                currentState.isFavorite = isFavorite
+                updateState(currentState)
+            }
+
+        }
     }
 
 

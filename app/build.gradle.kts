@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.practicum.playlistmaker"
-    compileSdk = 34
+    compileSdk = 35
 
     buildFeatures {
         viewBinding = true
@@ -56,8 +56,6 @@ dependencies {
     annotationProcessor(libs.compiler)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
-    implementation(libs.androidx.constraintlayout.v200)
-    implementation(libs.androidx.core.ktx.v190)
     implementation(libs.koin.android)
     implementation(libs.material.v110)
     implementation("androidx.fragment:fragment-ktx:1.6.1")
@@ -67,4 +65,7 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
     implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+    implementation(libs.androidx.room.runtime)
+    kapt(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
 }

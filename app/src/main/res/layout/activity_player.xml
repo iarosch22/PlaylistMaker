@@ -127,7 +127,7 @@
         app:layout_constraintEnd_toStartOf="@id/right_guideline"
         app:layout_constraintStart_toEndOf="@id/playButton"
         app:layout_constraintTop_toTopOf="@id/playButton"
-        app:srcCompat="@drawable/ic_like" />
+        app:srcCompat="@drawable/ic_savetofavorite_inactive" />
 
     <TextView
         android:id="@+id/duration"
