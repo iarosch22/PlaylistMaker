@@ -98,8 +98,6 @@ class PlayerActivity : AppCompatActivity() {
         binding.primaryGenreNameValue.text = track!!.primaryGenreName
         binding.countryValue.text = track!!.country
 
-        Log.d("IS ACTIVE", "${track!!.isFavorite}")
-
         if (track!!.isFavorite) {
             binding.saveToFavorites.setImageResource(R.drawable.ic_savetofavorite_active)
         } else {
