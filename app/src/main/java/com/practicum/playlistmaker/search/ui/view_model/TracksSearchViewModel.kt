@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.search.domain.api.TracksInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.TracksState
-import com.practicum.playlistmaker.search.ui.models.ErrorMessageType
+import com.practicum.playlistmaker.util.ErrorMessageType
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

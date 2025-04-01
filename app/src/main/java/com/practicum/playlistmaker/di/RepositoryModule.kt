@@ -1,5 +1,7 @@
 package com.practicum.playlistmaker.di
 
+import com.practicum.playlistmaker.library.data.LibraryRepositoryImpl
+import com.practicum.playlistmaker.library.domain.db.LibraryRepository
 import com.practicum.playlistmaker.player.data.impl.PlayerRepositoryImpl
 import com.practicum.playlistmaker.player.domain.PlayerRepository
 import com.practicum.playlistmaker.search.data.TracksRepositoryImpl
@@ -11,7 +13,7 @@ import org.koin.dsl.module
 val repositoryModule = module {
 
     single<TracksRepository> {
-        TracksRepositoryImpl(get(), get())
+        TracksRepositoryImpl(get(), get(), get())
     }
 
     single<SettingsRepository> {
@@ -20,6 +22,10 @@ val repositoryModule = module {
 
     factory<PlayerRepository> {
         PlayerRepositoryImpl(get())
+    }
+
+    single<LibraryRepository> {
+        LibraryRepositoryImpl(get(), get())
     }
 
 }

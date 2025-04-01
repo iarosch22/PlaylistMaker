@@ -1,5 +1,7 @@
 package com.practicum.playlistmaker.search.data
 
+import android.util.Log
+import com.practicum.playlistmaker.library.data.db.AppDatabase
 import com.practicum.playlistmaker.search.data.dto.TrackSearchRequest
 import com.practicum.playlistmaker.search.data.dto.TrackSearchResponse
 import com.practicum.playlistmaker.search.domain.TracksRepository
@@ -9,7 +11,11 @@ import com.practicum.playlistmaker.search.util.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class TracksRepositoryImpl(private val networkClient: NetworkClient, private val searchHistoryLocalDataSource: SearchHistoryLocalDataSource) :
+class TracksRepositoryImpl(
+    private val networkClient: NetworkClient,
+    private val searchHistoryLocalDataSource: SearchHistoryLocalDataSource,
+    private val appDatabase: AppDatabase
+) :
     TracksRepository {
     override fun searchTracks(expression: String): Flow<Resource<List<Track>>> = flow {
         val response = networkClient.doRequest(TrackSearchRequest(expression))
@@ -18,20 +24,27 @@ class TracksRepositoryImpl(private val networkClient: NetworkClient, private val
             -1 ->  emit(Resource.Error("Проверьте подключение к интернету"))
 
             200 -> {
-                emit(Resource.Success((response as TrackSearchResponse).results.map {
+                val loadedData = Resource.Success((response as TrackSearchResponse)).data?.results
+
+                val savedData = appDatabase.trackDao().getTracksId()
+
+                val data = loadedData?.map {
                     Track(
-                        it.trackId,
-                        it.trackName,
-                        it.artistName,
-                        it.trackTimeMillis,
-                        it.artworkUrl100,
-                        it.collectionName,
-                        it.releaseDate,
-                        it.primaryGenreName,
-                        it.country,
-                        it.previewUrl
+                        trackId = it.trackId,
+                        trackName = it.trackName,
+                        artistName = it.artistName,
+                        trackTimeMillis = it.trackTimeMillis,
+                        artworkUrl100 = it.artworkUrl100,
+                        collectionName = it.collectionName,
+                        releaseDate = it.releaseDate,
+                        primaryGenreName = it.primaryGenreName,
+                        country = it.country,
+                        previewUrl = it.previewUrl,
+                        isFavorite = it.trackId in savedData,
                     )
-                }))
+                }
+
+                emit(Resource.Success(data))
             }
             else -> emit(Resource.Error("Ошибка сервера"))
         }
