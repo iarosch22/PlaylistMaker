@@ -27,7 +27,7 @@
                 style="@style/HeadingTextStyles"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="10dp"
+                android:paddingTop="@dimen/padding_10"
                 android:paddingBottom="@dimen/padding_12"
                 android:text="@string/app_search" />
 

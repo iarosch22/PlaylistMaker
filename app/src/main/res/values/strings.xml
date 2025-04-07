@@ -30,4 +30,8 @@
     <string name="app_playlists_tab">Плейлисты</string>
     <string name="app_library_empty">Ваша медиатека пуста</string>
     <string name="app_playslits_empty">Вы не создали \n ни одного плейлиста</string>
+    <string name="app_new_playlist">Новый плейлист</string>
+    <string name="app_btn_name">Название*</string>
+    <string name="app_btn_description">Описание</string>
+    <string name="app_btn_add">Создать</string>
 </resources>
