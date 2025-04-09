@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
+import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.practicum.playlistmaker.library.ui.view_models.PlaylistsViewModel
 import com.practicum.playlistmaker.util.BindingFragment
@@ -25,6 +27,12 @@ class PlaylistsFragment: BindingFragment<FragmentPlaylistsBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.addPlaylist.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_libraryFragment_to_newPlaylistFragment
+            )
+        }
     }
 
     companion object {

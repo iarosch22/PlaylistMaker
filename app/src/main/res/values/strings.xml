@@ -34,4 +34,5 @@
     <string name="app_btn_name">Название*</string>
     <string name="app_btn_description">Описание</string>
     <string name="app_btn_add">Создать</string>
+    <string name="app_new_playlist_btn">Новый плейлист</string>
 </resources>
