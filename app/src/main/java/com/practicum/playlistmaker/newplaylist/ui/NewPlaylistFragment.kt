@@ -10,10 +10,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentNewplaylistBinding
 import org.w3c.dom.Text
@@ -24,6 +27,8 @@ class NewPlaylistFragment: Fragment() {
 
     private lateinit var nameTextWatcher: TextWatcher
     private lateinit var descriptionTextWatcher: TextWatcher
+
+    private lateinit var confirmDialog: MaterialAlertDialogBuilder
 
     private var isPhotoSelected = false
     private var isNameEntered = false
@@ -44,6 +49,7 @@ class NewPlaylistFragment: Fragment() {
         binding.btnCreatePlaylist.isEnabled = false
 
         setTextWatchers()
+        setDialog()
 
         val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
@@ -57,6 +63,17 @@ class NewPlaylistFragment: Fragment() {
         binding.ivCover.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
+
+        binding.btnBack.setOnClickListener {
+            closeFragment()
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                closeFragment()
+            }
+
+        })
     }
 
     private fun setTextWatchers() {
@@ -94,6 +111,25 @@ class NewPlaylistFragment: Fragment() {
 
         binding.name.addTextChangedListener(nameTextWatcher)
         binding.description.addTextChangedListener(descriptionTextWatcher)
+    }
+
+    private fun setDialog() {
+        confirmDialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.app_title_dialog))
+            .setMessage(getString(R.string.app_message_dialog))
+            .setNeutralButton(getString(R.string.app_cancel_dialog)) { _, _ -> }
+            .setPositiveButton(getString(R.string.app_finish_dialog)) { _, _ ->
+                findNavController().popBackStack()
+            }
+
+    }
+
+    private fun closeFragment() {
+        if (isPhotoSelected && isNameEntered || isDescriptionEntered) {
+            confirmDialog.show()
+        } else {
+            findNavController().popBackStack()
+        }
     }
 
 }

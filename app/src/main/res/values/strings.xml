@@ -35,4 +35,8 @@
     <string name="app_btn_description">Описание</string>
     <string name="app_btn_add">Создать</string>
     <string name="app_new_playlist_btn">Новый плейлист</string>
+    <string name="app_title_dialog">Завершить создание плейлиста?</string>
+    <string name="app_message_dialog">Все несохраненные данные будут потеряны</string>
+    <string name="app_cancel_dialog">Отмена</string>
+    <string name="app_finish_dialog">Завершить</string>
 </resources>
