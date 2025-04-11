@@ -172,7 +172,10 @@ class CreationPlaylistFragment: Fragment() {
                     findNavController().popBackStack()
                 }
             }
-            PlaylistUiState.SavingPlaylist -> findNavController().popBackStack()
+            is PlaylistUiState.SavingPlaylist -> {
+                Toast.makeText(requireContext(), "Плейлист ${state.name} создан", Toast.LENGTH_SHORT).show()
+                findNavController().popBackStack()
+            }
         }
     }
 

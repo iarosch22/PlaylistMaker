@@ -89,7 +89,7 @@ class CreationPlaylistViewModel(
                 )
             )
 
-            updateState(PlaylistUiState.SavingPlaylist)
+            updateState(PlaylistUiState.SavingPlaylist(enteredName))
         }
     }
 
