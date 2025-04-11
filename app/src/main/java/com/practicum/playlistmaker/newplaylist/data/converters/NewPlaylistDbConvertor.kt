@@ -22,6 +22,17 @@ class NewPlaylistDbConvertor {
         )
     }
 
+    fun map(playlist: PlaylistEntity): Playlist {
+        return Playlist(
+            id = playlist.id,
+            name = playlist.name,
+            description = playlist.description,
+            pathToCover = playlist.pathToCover,
+            tracksId = gson.fromJson(playlist.tracksId, listType),
+            size = playlist.size
+        )
+    }
+
     fun map(playlists: List<PlaylistEntity>): List<Playlist> {
         return playlists.map {
             Playlist(

@@ -17,8 +17,12 @@
             android:name="TRACK"
             app:argType="com.practicum.playlistmaker.search.domain.models.Track" />
         <action
-            android:id="@+id/action_libraryFragment_to_newPlaylistFragment"
-            app:destination="@id/newPlaylistFragment" />
+            android:id="@+id/action_libraryFragment_to_creationPlaylistFragment"
+            app:destination="@id/creationPlaylistFragment" />
+        <argument
+            android:name="PLAYLIST"
+            app:argType="com.practicum.playlistmaker.newplaylist.domain.models.Playlist"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
@@ -50,10 +54,10 @@
         android:label="FavoriteFragment" >
     </fragment>
     <fragment
-        android:id="@+id/newPlaylistFragment"
-        android:name="com.practicum.playlistmaker.newplaylist.ui.NewPlaylistFragment"
+        android:id="@+id/creationPlaylistFragment"
+        android:name="com.practicum.playlistmaker.newplaylist.ui.CreationPlaylistFragment"
         android:label="fragment_newplaylist"
-        tools:layout="@layout/fragment_newplaylist" />
+        tools:layout="@layout/fragment_creationplaylist" />
 
 
 </navigation>

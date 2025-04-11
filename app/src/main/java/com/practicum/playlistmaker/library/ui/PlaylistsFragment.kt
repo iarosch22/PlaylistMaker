@@ -8,6 +8,7 @@ import androidx.navigation.fragment.findNavController
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.practicum.playlistmaker.library.ui.view_models.PlaylistsViewModel
+import com.practicum.playlistmaker.newplaylist.ui.CreationPlaylistFragment
 import com.practicum.playlistmaker.util.BindingFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -30,12 +31,15 @@ class PlaylistsFragment: BindingFragment<FragmentPlaylistsBinding>() {
 
         binding.addPlaylist.setOnClickListener {
             findNavController().navigate(
-                R.id.action_libraryFragment_to_newPlaylistFragment
+                R.id.action_libraryFragment_to_creationPlaylistFragment,
+                CreationPlaylistFragment.createArgs(NEW_PLAYLIST_MODE)
             )
         }
     }
 
     companion object {
+        const val NEW_PLAYLIST_MODE = -1L
+
         fun newInstance(): PlaylistsFragment = PlaylistsFragment().apply {  }
     }
 

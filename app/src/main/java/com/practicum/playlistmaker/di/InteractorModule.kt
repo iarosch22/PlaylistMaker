@@ -2,8 +2,8 @@ package com.practicum.playlistmaker.di
 
 import com.practicum.playlistmaker.library.domain.db.LibraryInteractor
 import com.practicum.playlistmaker.library.domain.impl.LibraryInteractorImpl
-import com.practicum.playlistmaker.newplaylist.domain.db.NewPlaylistInteractor
-import com.practicum.playlistmaker.newplaylist.domain.impl.NewPlaylistInteractorImpl
+import com.practicum.playlistmaker.newplaylist.domain.db.CreationPlaylistInteractor
+import com.practicum.playlistmaker.newplaylist.domain.impl.CreationPlaylistInteractorImpl
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.player.domain.impl.PlayerInteractorImpl
 import com.practicum.playlistmaker.search.domain.api.TracksInteractor
@@ -13,7 +13,6 @@ import com.practicum.playlistmaker.settings.domain.impl.SettingsInteractorImpl
 import com.practicum.playlistmaker.sharing.domain.SharingInteractor
 import com.practicum.playlistmaker.sharing.domain.impl.SharingInteractorImpl
 import org.koin.dsl.module
-import kotlin.math.sin
 
 val interactorModule = module {
 
@@ -36,8 +35,8 @@ val interactorModule = module {
         LibraryInteractorImpl(get())
     }
 
-    single<NewPlaylistInteractor> {
-        NewPlaylistInteractorImpl(get())
+    single<CreationPlaylistInteractor> {
+        CreationPlaylistInteractorImpl(get())
     }
 
 }

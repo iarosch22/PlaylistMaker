@@ -29,7 +29,7 @@ class RootActivity : AppCompatActivity() {
                     binding.bottomNavigationView.visibility = View.GONE
                     binding.bottomNavDivider.visibility = View.GONE
                 }
-                R.id.newPlaylistFragment -> {
+                R.id.creationPlaylistFragment -> {
                     binding.bottomNavigationView.visibility = View.GONE
                     binding.bottomNavDivider.visibility = View.GONE
                 }
