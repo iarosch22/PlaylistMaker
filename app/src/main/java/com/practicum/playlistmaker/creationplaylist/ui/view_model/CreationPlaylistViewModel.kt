@@ -1,13 +1,13 @@
-package com.practicum.playlistmaker.newplaylist.ui.view_model
+package com.practicum.playlistmaker.creationplaylist.ui.view_model
 
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.practicum.playlistmaker.newplaylist.domain.db.CreationPlaylistInteractor
-import com.practicum.playlistmaker.newplaylist.domain.models.Playlist
-import com.practicum.playlistmaker.newplaylist.ui.PlaylistUiState
+import com.practicum.playlistmaker.creationplaylist.domain.db.CreationPlaylistInteractor
+import com.practicum.playlistmaker.creationplaylist.domain.models.Playlist
+import com.practicum.playlistmaker.creationplaylist.ui.CreationPlaylistUiState
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,8 +22,8 @@ class CreationPlaylistViewModel(
     private var enteredDescription = ""
     private val tracks: List<Track> = mutableListOf()
 
-    private val stateLiveData = MutableLiveData<PlaylistUiState>()
-    fun observeState(): LiveData<PlaylistUiState> = stateLiveData
+    private val stateLiveData = MutableLiveData<CreationPlaylistUiState>()
+    fun observeState(): LiveData<CreationPlaylistUiState> = stateLiveData
 
     init {
         initState()
@@ -31,32 +31,32 @@ class CreationPlaylistViewModel(
 
     private fun initState() {
         if (playlistId == -1L) {
-            updateState(PlaylistUiState.NewPlaylistMode)
+            updateState(CreationPlaylistUiState.NewCreationPlaylistMode)
         } else {
             viewModelScope.launch(Dispatchers.IO) {
                 val playlist = interactor.getPlaylistById(playlistId)
-                updateState(PlaylistUiState.EditPlaylistMode(playlist))
+                updateState(CreationPlaylistUiState.EditCreationPlaylistMode(playlist))
             }
         }
     }
 
     fun setNameValue(name: String = "") {
         if (name.isEmpty()) {
-            updateState(PlaylistUiState.SaveButtonEnabled(isEnabled = false))
+            updateState(CreationPlaylistUiState.SaveButtonEnabled(isEnabled = false))
             enteredName = ""
         } else {
             enteredName = name
-            updateState(PlaylistUiState.SaveButtonEnabled(isEnabled = true))
+            updateState(CreationPlaylistUiState.SaveButtonEnabled(isEnabled = true))
         }
     }
 
     fun setDescriptionValue(description: String = "") {
         if (description.isEmpty()) {
-            updateState(PlaylistUiState.SaveButtonEnabled(isEnabled = false))
+            updateState(CreationPlaylistUiState.SaveButtonEnabled(isEnabled = false))
             enteredDescription = ""
         } else {
             enteredDescription = description
-            updateState(PlaylistUiState.SaveButtonEnabled(isEnabled = true))
+            updateState(CreationPlaylistUiState.SaveButtonEnabled(isEnabled = true))
         }
     }
 
@@ -70,9 +70,9 @@ class CreationPlaylistViewModel(
             enteredName.isNotEmpty() ||
             enteredDescription.isNotEmpty()
             ) {
-            updateState(PlaylistUiState.CloseWithConfirmation(true))
+            updateState(CreationPlaylistUiState.CloseWithConfirmation(true))
         } else {
-            updateState(PlaylistUiState.CloseWithConfirmation(false))
+            updateState(CreationPlaylistUiState.CloseWithConfirmation(false))
         }
     }
 
@@ -89,11 +89,11 @@ class CreationPlaylistViewModel(
                 )
             )
 
-            updateState(PlaylistUiState.SavingPlaylist(enteredName))
+            updateState(CreationPlaylistUiState.SavingCreationPlaylist(enteredName))
         }
     }
 
-    private fun updateState(state: PlaylistUiState) {
+    private fun updateState(state: CreationPlaylistUiState) {
         stateLiveData.postValue(state)
     }
 }

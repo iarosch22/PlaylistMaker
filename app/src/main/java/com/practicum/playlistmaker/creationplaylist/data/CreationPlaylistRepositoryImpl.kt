@@ -1,10 +1,9 @@
-package com.practicum.playlistmaker.newplaylist.data
+package com.practicum.playlistmaker.creationplaylist.data
 
 import com.practicum.playlistmaker.library.data.db.AppDatabase
-import com.practicum.playlistmaker.newplaylist.data.converters.NewPlaylistDbConvertor
-import com.practicum.playlistmaker.newplaylist.data.db.entity.PlaylistEntity
-import com.practicum.playlistmaker.newplaylist.domain.db.CreationPlaylistRepository
-import com.practicum.playlistmaker.newplaylist.domain.models.Playlist
+import com.practicum.playlistmaker.creationplaylist.data.converters.NewPlaylistDbConvertor
+import com.practicum.playlistmaker.creationplaylist.domain.db.CreationPlaylistRepository
+import com.practicum.playlistmaker.creationplaylist.domain.models.Playlist
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

@@ -1,10 +1,9 @@
-package com.practicum.playlistmaker.newplaylist.domain.db
+package com.practicum.playlistmaker.creationplaylist.domain.db
 
-import com.practicum.playlistmaker.newplaylist.data.db.entity.PlaylistEntity
-import com.practicum.playlistmaker.newplaylist.domain.models.Playlist
+import com.practicum.playlistmaker.creationplaylist.domain.models.Playlist
 import kotlinx.coroutines.flow.Flow
 
-interface CreationPlaylistInteractor {
+interface CreationPlaylistRepository {
 
     fun getPlaylists(): Flow<List<Playlist>>
 
@@ -13,6 +12,5 @@ interface CreationPlaylistInteractor {
     suspend fun updatePlaylist(playlist: Playlist)
 
     suspend fun savePlaylist(playlist: Playlist)
-
 
 }

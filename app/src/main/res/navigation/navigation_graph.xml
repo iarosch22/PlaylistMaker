@@ -21,7 +21,7 @@
             app:destination="@id/creationPlaylistFragment" />
         <argument
             android:name="PLAYLIST"
-            app:argType="com.practicum.playlistmaker.newplaylist.domain.models.Playlist"
+            app:argType="com.practicum.playlistmaker.creationplaylist.domain.models.Playlist"
             app:nullable="true" />
     </fragment>
     <fragment
@@ -50,12 +50,12 @@
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/favoriteFragment"
-        android:name="com.practicum.playlistmaker.library.ui.FavoriteFragment"
+        android:name="com.practicum.playlistmaker.library.ui.favorite.FavoriteFragment"
         android:label="FavoriteFragment" >
     </fragment>
     <fragment
         android:id="@+id/creationPlaylistFragment"
-        android:name="com.practicum.playlistmaker.newplaylist.ui.CreationPlaylistFragment"
+        android:name="com.practicum.playlistmaker.creationplaylist.ui.CreationPlaylistFragment"
         android:label="fragment_newplaylist"
         tools:layout="@layout/fragment_creationplaylist" />
 

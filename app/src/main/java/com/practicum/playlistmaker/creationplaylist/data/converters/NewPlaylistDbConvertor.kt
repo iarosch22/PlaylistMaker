@@ -1,9 +1,9 @@
-package com.practicum.playlistmaker.newplaylist.data.converters
+package com.practicum.playlistmaker.creationplaylist.data.converters
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.practicum.playlistmaker.newplaylist.data.db.entity.PlaylistEntity
-import com.practicum.playlistmaker.newplaylist.domain.models.Playlist
+import com.practicum.playlistmaker.creationplaylist.data.db.entity.PlaylistEntity
+import com.practicum.playlistmaker.creationplaylist.domain.models.Playlist
 
 class NewPlaylistDbConvertor {
 

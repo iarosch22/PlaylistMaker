@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.newplaylist.ui
+package com.practicum.playlistmaker.creationplaylist.ui
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -20,7 +20,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentCreationplaylistBinding
-import com.practicum.playlistmaker.newplaylist.ui.view_model.CreationPlaylistViewModel
+import com.practicum.playlistmaker.creationplaylist.ui.view_model.CreationPlaylistViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.io.File
@@ -138,7 +138,7 @@ class CreationPlaylistFragment: Fragment() {
 
         }
 
-        binding.name.addTextChangedListener(nameTextWatcher)
+        binding.tvNamePlaylist.addTextChangedListener(nameTextWatcher)
         binding.description.addTextChangedListener(descriptionTextWatcher)
     }
 
@@ -153,26 +153,26 @@ class CreationPlaylistFragment: Fragment() {
 
     }
 
-    private fun renderState(state: PlaylistUiState) {
+    private fun renderState(state: CreationPlaylistUiState) {
         when(state) {
-            PlaylistUiState.NewPlaylistMode -> binding.btnCreatePlaylist.isEnabled = false
-            is PlaylistUiState.EditPlaylistMode -> {
+            CreationPlaylistUiState.NewCreationPlaylistMode -> binding.btnCreatePlaylist.isEnabled = false
+            is CreationPlaylistUiState.EditCreationPlaylistMode -> {
                 binding.btnCreatePlaylist.isEnabled = true
                 binding.ivCover.setImageURI(Uri.parse(state.playlist.pathToCover))
-                binding.name.setText(state.playlist.name)
+                binding.tvNamePlaylist.setText(state.playlist.name)
                 binding.description.setText(state.playlist.description)
             }
-            is PlaylistUiState.SaveButtonEnabled -> {
+            is CreationPlaylistUiState.SaveButtonEnabled -> {
                 binding.btnCreatePlaylist.isEnabled = state.isEnabled
             }
-            is PlaylistUiState.CloseWithConfirmation -> {
+            is CreationPlaylistUiState.CloseWithConfirmation -> {
                 if (state.isShowDialog) {
                     confirmDialog.show()
                 } else {
                     findNavController().popBackStack()
                 }
             }
-            is PlaylistUiState.SavingPlaylist -> {
+            is CreationPlaylistUiState.SavingCreationPlaylist -> {
                 Toast.makeText(requireContext(), "Плейлист ${state.name} создан", Toast.LENGTH_SHORT).show()
                 findNavController().popBackStack()
             }

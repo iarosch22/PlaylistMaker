@@ -122,4 +122,10 @@
         <item name="android:fontFamily">@font/ys_display_regular</item>
     </style>
 
+    <style name="PlaylistTextStyle" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textSize">@dimen/text_size_12</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+    </style>
+
 </resources>

@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorSecondary"
-    tools:context=".newplaylist.ui.CreationPlaylistFragment">
+    tools:context=".creationplaylist.ui.CreationPlaylistFragment">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/left_guideline"
@@ -65,7 +65,7 @@
         app:layout_constraintStart_toStartOf="@id/left_guideline"
         app:layout_constraintTop_toBottomOf="@id/title"
         app:layout_constraintEnd_toStartOf="@id/right_guideline"
-        app:layout_constraintBottom_toTopOf="@id/name"
+        app:layout_constraintBottom_toTopOf="@id/tvNamePlaylist"
         android:background="@drawable/rounded_dashed_rectangle">
 
         <ImageView
@@ -78,7 +78,7 @@
     </FrameLayout>
 
     <EditText
-        android:id="@+id/name"
+        android:id="@+id/tvNamePlaylist"
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_marginTop="@dimen/size_32"
@@ -95,7 +95,7 @@
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_marginTop="@dimen/margin_16"
-        app:layout_constraintTop_toBottomOf="@id/name"
+        app:layout_constraintTop_toBottomOf="@id/tvNamePlaylist"
         app:layout_constraintStart_toStartOf="@id/left_guideline"
         app:layout_constraintEnd_toEndOf="@id/right_guideline"
         android:paddingHorizontal="@dimen/padding_16"

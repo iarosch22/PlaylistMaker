@@ -1,8 +1,8 @@
-package com.practicum.playlistmaker.newplaylist.domain.impl
+package com.practicum.playlistmaker.creationplaylist.domain.impl
 
-import com.practicum.playlistmaker.newplaylist.domain.db.CreationPlaylistInteractor
-import com.practicum.playlistmaker.newplaylist.domain.db.CreationPlaylistRepository
-import com.practicum.playlistmaker.newplaylist.domain.models.Playlist
+import com.practicum.playlistmaker.creationplaylist.domain.db.CreationPlaylistInteractor
+import com.practicum.playlistmaker.creationplaylist.domain.db.CreationPlaylistRepository
+import com.practicum.playlistmaker.creationplaylist.domain.models.Playlist
 import kotlinx.coroutines.flow.Flow
 
 class CreationPlaylistInteractorImpl(private val repository: CreationPlaylistRepository): CreationPlaylistInteractor {
