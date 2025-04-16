@@ -40,4 +40,5 @@
     <string name="app_cancel_dialog">Отмена</string>
     <string name="app_finish_dialog">Завершить</string>
     <string name="app_tracks_size">%1$d %2$s</string>
+    <string name="app_add_to_playlist">Добавить в плейлист</string>
 </resources>

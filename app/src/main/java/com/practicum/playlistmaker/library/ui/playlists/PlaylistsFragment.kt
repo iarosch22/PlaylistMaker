@@ -33,7 +33,7 @@ class PlaylistsFragment: BindingFragment<FragmentPlaylistsBinding>() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.rvPlaylists.layoutManager = GridLayoutManager(requireContext(), 2)
-        adapter.playlist = playlists
+        adapter.playlists = playlists
         binding.rvPlaylists.adapter = adapter
 
         binding.addPlaylist.setOnClickListener {

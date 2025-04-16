@@ -4,10 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.practicum.playlistmaker.creationplaylist.domain.db.CreationPlaylistInteractor
+import com.practicum.playlistmaker.creationplaylist.domain.models.Playlist
 import com.practicum.playlistmaker.library.domain.db.LibraryInteractor
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.player.ui.PlayerUiState
 import com.practicum.playlistmaker.search.domain.models.Track
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -17,7 +20,8 @@ import java.util.Locale
 class PlayerViewModel(
     private val track: Track,
     private val playerInteractor: PlayerInteractor,
-    private val libraryInteractor: LibraryInteractor
+    private val libraryInteractor: LibraryInteractor,
+    private val creationPlaylistInteractor: CreationPlaylistInteractor
 ): ViewModel() {
 
     private var isFavorite = track.isFavorite
@@ -27,9 +31,13 @@ class PlayerViewModel(
     private val stateLiveData = MutableLiveData<PlayerUiState>()
     fun observeState(): LiveData<PlayerUiState> = stateLiveData
 
+    private val playlistsLiveData = MutableLiveData<List<Playlist>>(emptyList())
+    fun observePlaylistsState(): LiveData<List<Playlist>> = playlistsLiveData
+
     init {
         setFavoriteValue()
         initPlayer()
+        getPlaylists()
     }
 
     private fun initPlayer() {
@@ -130,6 +138,13 @@ class PlayerViewModel(
                 updateState(currentState)
             }
 
+        }
+    }
+
+    private fun getPlaylists() {
+        viewModelScope.launch(Dispatchers.IO) {
+            creationPlaylistInteractor.getPlaylists()
+                .collect { playlistsLiveData.postValue(it) }
         }
     }
 

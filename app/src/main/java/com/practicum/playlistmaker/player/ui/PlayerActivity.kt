@@ -4,14 +4,17 @@ import android.content.Context
 import android.os.Build
 import android.os.Build.VERSION
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.View
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.creationplaylist.domain.models.Playlist
 import com.practicum.playlistmaker.databinding.ActivityPlayerBinding
+import com.practicum.playlistmaker.library.ui.playlists.PlaylistsAdapter
 import com.practicum.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -25,11 +28,17 @@ class PlayerActivity : AppCompatActivity() {
 
     private var track: Track? = null
 
+    private val playlists = mutableListOf<Playlist>()
+
     private val viewModel by viewModel<PlayerViewModel> { parametersOf(track) }
 
     private val timeFormatter by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
 
     private lateinit var binding: ActivityPlayerBinding
+
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+
+    private lateinit var playerAdapter: PlayerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +50,14 @@ class PlayerActivity : AppCompatActivity() {
 
         setTrackValues()
 
+        setBottomSheet()
+
+        setPlaylistsAdapter()
+
+        binding.saveToPlaylist.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
         viewModel.observeState().observe(this) {
             binding.duration.text = it.progress
             if (it is PlayerUiState.Playing) {
@@ -51,6 +68,12 @@ class PlayerActivity : AppCompatActivity() {
                 setFavoriteIcon(it.isFavorite)
             }
 
+        }
+
+        viewModel.observePlaylistsState().observe(this) {
+            playlists.clear()
+            playlists.addAll(it)
+            playerAdapter.notifyDataSetChanged()
         }
 
         binding.playButton.setOnClickListener{
@@ -69,6 +92,33 @@ class PlayerActivity : AppCompatActivity() {
         binding.btnBack.setOnClickListener {
             this.finish()
         }
+    }
+
+    private fun setPlaylistsAdapter() {
+        playerAdapter = PlayerAdapter()
+        playerAdapter.playlists = playlists
+        binding.rvBottomSheetPlaylist.adapter = playerAdapter
+    }
+
+    private fun setBottomSheet() {
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.playlistsBottomSheet).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when(newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.visibility = View.GONE
+                    } else -> {
+                        binding.overlay.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+
+        })
     }
 
     private fun setTrackValues() {
