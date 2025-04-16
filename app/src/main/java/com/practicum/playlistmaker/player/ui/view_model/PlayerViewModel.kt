@@ -13,6 +13,8 @@ import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -31,8 +33,8 @@ class PlayerViewModel(
     private val stateLiveData = MutableLiveData<PlayerUiState>()
     fun observeState(): LiveData<PlayerUiState> = stateLiveData
 
-    private val playlistsLiveData = MutableLiveData<List<Playlist>>(emptyList())
-    fun observePlaylistsState(): LiveData<List<Playlist>> = playlistsLiveData
+    private val playlistsLiveData = MutableStateFlow<List<Playlist>>(emptyList())
+    fun observePlaylistsState(): StateFlow<List<Playlist>> = playlistsLiveData
 
     init {
         setFavoriteValue()
@@ -144,7 +146,9 @@ class PlayerViewModel(
     private fun getPlaylists() {
         viewModelScope.launch(Dispatchers.IO) {
             creationPlaylistInteractor.getPlaylists()
-                .collect { playlistsLiveData.postValue(it) }
+                .collect { playlists ->
+                    playlistsLiveData.value = playlists
+                }
         }
     }
 

@@ -8,6 +8,9 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -17,6 +20,8 @@ import com.practicum.playlistmaker.databinding.ActivityPlayerBinding
 import com.practicum.playlistmaker.library.ui.playlists.PlaylistsAdapter
 import com.practicum.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.text.SimpleDateFormat
@@ -70,11 +75,16 @@ class PlayerActivity : AppCompatActivity() {
 
         }
 
-        viewModel.observePlaylistsState().observe(this) {
-            playlists.clear()
-            playlists.addAll(it)
-            playerAdapter.notifyDataSetChanged()
-        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.observePlaylistsState()
+                    .collect { list ->
+                        playlists.clear()
+                        playlists.addAll(list)
+                        playerAdapter.notifyDataSetChanged()
+                    }
+            }
+         }
 
         binding.playButton.setOnClickListener{
             viewModel.onPlayButtonClicked()
