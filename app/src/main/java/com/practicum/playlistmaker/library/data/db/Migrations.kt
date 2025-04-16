@@ -16,5 +16,24 @@ val MIGRATION_1_TO_2 = object : Migration(1, 2) {
             )
         """.trimIndent())
     }
+}
 
+val MIGRATION_2_TO_3 = object : Migration(2, 3) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("""
+            CREATE TABLE IF NOT EXISTS `playlist_tracks_table` (
+            trackId TEXT NOT NULL PRIMARY KEY,
+                trackName TEXT NOT NULL,
+                artistName TEXT NOT NULL,
+                trackTimeMillis TEXT NOT NULL,
+                artworkUrl100 TEXT NOT NULL,
+                coverArtwork TEXT NOT NULL,
+                collectionName TEXT NOT NULL,
+                releaseDate TEXT NOT NULL,
+                primaryGenreName TEXT NOT NULL,
+                country TEXT NOT NULL,
+                previewUrl TEXT NOT NULL
+            )
+        """.trimIndent())
+    }
 }

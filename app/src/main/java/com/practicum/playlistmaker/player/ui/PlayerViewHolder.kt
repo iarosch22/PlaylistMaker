@@ -18,13 +18,13 @@ class PlayerViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     private val size: TextView = itemView.findViewById(R.id.tvSize)
 
     fun bind(item: Playlist) {
-        val tracksSize = item.tracksId.size
+        val tracksSize = item.size
 
         val cornersValueDp = 2F
         val cornersValuePx = dpToPx(cornersValueDp, itemView.context)
 
         name.text = item.name
-        size.text = itemView.context.getString(R.string.app_tracks_size, tracksSize, getTrackDeclension(tracksSize))
+        size.text = itemView.context.getString(R.string.app_tracks_size, tracksSize, getTrackDeclension(tracksSize.toInt()))
 
         Glide
             .with(itemView)

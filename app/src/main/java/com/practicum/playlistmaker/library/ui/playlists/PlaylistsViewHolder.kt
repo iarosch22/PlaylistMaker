@@ -19,13 +19,13 @@ class PlaylistsViewHolder(view: View): RecyclerView.ViewHolder(view) {
     private val cover: ImageView = itemView.findViewById(R.id.ivPlaylistCover)
 
     fun bind(playlist: Playlist) {
-        val tracksSize = playlist.tracksId.size
+        val tracksSize = playlist.size
 
         val cornersValueDp = 8F
         val cornersValuePx = dpToPx(cornersValueDp, itemView.context)
 
         name.text = playlist.name
-        size.text = itemView.context.getString(R.string.app_tracks_size, tracksSize, getTrackDeclension(tracksSize))
+        size.text = itemView.context.getString(R.string.app_tracks_size, tracksSize, getTrackDeclension(tracksSize.toInt()))
 
         Glide.with(itemView)
             .load(playlist.pathToCover)

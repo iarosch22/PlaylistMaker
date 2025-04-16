@@ -4,6 +4,7 @@ import com.practicum.playlistmaker.library.data.db.AppDatabase
 import com.practicum.playlistmaker.creationplaylist.data.converters.NewPlaylistDbConvertor
 import com.practicum.playlistmaker.creationplaylist.domain.db.CreationPlaylistRepository
 import com.practicum.playlistmaker.creationplaylist.domain.models.Playlist
+import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -31,6 +32,12 @@ class CreationPlaylistRepositoryImpl(
     override suspend fun savePlaylist(playlist: Playlist) {
         appDatabase.playlistsDao().insertPlaylist(
             converter.map(playlist)
+        )
+    }
+
+    override suspend fun addTrackToPlaylist(track: Track) {
+        appDatabase.playlistsTrackDao().insertTrack(
+            converter.map(track)
         )
     }
 
