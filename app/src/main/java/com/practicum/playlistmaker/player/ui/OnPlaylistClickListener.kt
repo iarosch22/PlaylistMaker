@@ -2,6 +2,6 @@ package com.practicum.playlistmaker.player.ui
 
 fun interface OnPlaylistClickListener {
 
-    fun onPlaylistClick(tracksId: List<String>)
+    fun onPlaylistClick(playlistName: String, tracksId: List<String>)
 
 }

@@ -64,16 +64,8 @@ class PlayerActivity : AppCompatActivity() {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
-        viewModel.observeState().observe(this) {
-            binding.duration.text = it.progress
-            if (it is PlayerUiState.Playing) {
-                binding.playButton.setImageResource(R.drawable.ic_pause)
-                setFavoriteIcon(it.isFavorite)
-            } else {
-                binding.playButton.setImageResource(R.drawable.ic_play)
-                setFavoriteIcon(it.isFavorite)
-            }
-
+        viewModel.observeState().observe(this) { state ->
+            renderState(state)
         }
 
         lifecycleScope.launch {
@@ -85,7 +77,7 @@ class PlayerActivity : AppCompatActivity() {
                         playerAdapter.notifyDataSetChanged()
                     }
             }
-         }
+        }
 
         binding.playButton.setOnClickListener{
             viewModel.onPlayButtonClicked()
@@ -125,7 +117,6 @@ class PlayerActivity : AppCompatActivity() {
                     }
                 }
             }
-
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
 
         })
@@ -188,15 +179,47 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun createOnPlaylistListener(): OnPlaylistClickListener {
-        val playlistListener = OnPlaylistClickListener { tracksId: List<String> ->
-            if (viewModel.hasTrackInPlaylist(tracksId)) {
-                Toast.makeText(this@PlayerActivity, "TRACK IS IN PLAYLIST", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this@PlayerActivity, "TRACK IS NOT IN PLAYLIST", Toast.LENGTH_SHORT).show()
-            }
+        val playlistListener = OnPlaylistClickListener { name, tracksId: List<String> ->
+            viewModel.hasTrackInPlaylist(name, tracksId)
         }
 
         return playlistListener
+    }
+
+    private fun renderState(state: PlayerUiState) {
+        when (state) {
+            is PlayerUiState.Playing -> {
+                binding.playButton.setImageResource(R.drawable.ic_pause)
+                binding.duration.text = state.progress
+                setFavoriteIcon(state.isFavorite)
+            }
+
+            is PlayerUiState.Paused -> {
+                binding.playButton.setImageResource(R.drawable.ic_play)
+                binding.duration.text = state.progress
+                setFavoriteIcon(state.isFavorite)
+            }
+
+            is PlayerUiState.Prepared -> {
+                binding.playButton.setImageResource(R.drawable.ic_play)
+                binding.duration.text = DEFAULT_TIMER
+            }
+
+            is PlayerUiState.Default -> {
+                binding.playButton.setImageResource(R.drawable.ic_play)
+                binding.duration.text = DEFAULT_TIMER
+            }
+
+            is PlayerUiState.AddingToPlaylist -> {
+                if (state.isSuccess) {
+                    Toast.makeText(this, "Добавлено в плейлист [${state.playlistName}]", Toast.LENGTH_SHORT).show()
+                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                } else {
+                    Toast.makeText(this, "Трек уже добавлен в плейлист [${state.playlistName}]", Toast.LENGTH_SHORT).show()
+                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                }
+            }
+        }
     }
 
     private fun dpToPx(dp: Float, context: Context): Int {
@@ -208,6 +231,8 @@ class PlayerActivity : AppCompatActivity() {
 
     companion object {
         private const val TRACK = "TRACK"
+
+        private const val DEFAULT_TIMER = "00:00"
     }
 
 }

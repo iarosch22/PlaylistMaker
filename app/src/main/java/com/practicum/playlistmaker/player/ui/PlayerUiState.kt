@@ -1,15 +1,17 @@
 package com.practicum.playlistmaker.player.ui
 
-sealed class PlayerUiState(val progress: String, var isFavorite: Boolean) {
+import com.practicum.playlistmaker.creationplaylist.domain.models.Playlist
 
-    class Default(isFavorite: Boolean) : PlayerUiState("00:00", isFavorite)
+sealed class PlayerUiState {
 
-    class Prepared(isFavorite: Boolean) : PlayerUiState("00:00", isFavorite)
+    object Default : PlayerUiState()
 
-    class Playing(progress: String, isFavorite: Boolean) : PlayerUiState(progress, isFavorite)
+    object Prepared : PlayerUiState()
 
-    class Paused(progress: String, isFavorite: Boolean) : PlayerUiState(progress, isFavorite)
+    class AddingToPlaylist(val playlistName:String, val isSuccess: Boolean): PlayerUiState()
 
-    class BottomSheetShowing()
+    data class Playing(val progress: String, val isFavorite: Boolean) : PlayerUiState()
+
+    data class Paused(val progress: String, val isFavorite: Boolean) : PlayerUiState()
 
 }

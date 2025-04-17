@@ -24,10 +24,9 @@ class PlayerViewModel(
     private val playerInteractor: PlayerInteractor,
     private val libraryInteractor: LibraryInteractor,
     private val creationPlaylistInteractor: CreationPlaylistInteractor
-): ViewModel() {
+) : ViewModel() {
 
     private var isFavorite = track.isFavorite
-
     private var timerJob: Job? = null
 
     private val stateLiveData = MutableLiveData<PlayerUiState>()
@@ -47,29 +46,25 @@ class PlayerViewModel(
             track.previewUrl,
             onPrepared = object : PlayerInteractor.OnPreparedListener {
                 override fun onPrepared() {
-                    updateState(PlayerUiState.Prepared(isFavorite))
+                    updateState(PlayerUiState.Prepared)
                 }
             },
             onCompleted = object : PlayerInteractor.OnCompletedListener {
                 override fun onComplete() {
                     timerJob?.cancel()
-                    updateState(PlayerUiState.Prepared(isFavorite))
+                    updateState(PlayerUiState.Prepared)
                 }
             }
         )
     }
 
     fun onPlayButtonClicked() {
-        when(stateLiveData.value) {
-            is PlayerUiState.Playing -> {
-                pausePlayer()
-            }
+        when (stateLiveData.value) {
+            is PlayerUiState.Playing -> pausePlayer()
             is PlayerUiState.Prepared,
             is PlayerUiState.Paused,
-            is PlayerUiState.Default -> {
-                startPlayer()
-            }
-            else -> { }
+            is PlayerUiState.Default -> startPlayer()
+            else -> {}
         }
     }
 
@@ -84,14 +79,14 @@ class PlayerViewModel(
     }
 
     private fun pausePlayer() {
-            playerInteractor.pausePlayer()
-            timerJob?.cancel()
-            updateState(PlayerUiState.Paused(getCurrentPlayerPosition(), isFavorite))
+        playerInteractor.pausePlayer()
+        timerJob?.cancel()
+        updateState(PlayerUiState.Paused(getCurrentPlayerPosition(), isFavorite))
     }
 
     private fun releasePlayer() {
         playerInteractor.releasePlayer()
-        stateLiveData.value = PlayerUiState.Default(isFavorite)
+        stateLiveData.value = PlayerUiState.Default
     }
 
     override fun onCleared() {
@@ -116,9 +111,8 @@ class PlayerViewModel(
     }
 
     private fun getCurrentPlayerPosition(): String {
-        return SimpleDateFormat(
-            "mm:ss", Locale.getDefault()).format(playerInteractor.getCurrentPosition()
-            ) ?: "00:00"
+        return SimpleDateFormat("mm:ss", Locale.getDefault())
+            .format(playerInteractor.getCurrentPosition()) ?: DEFAULT_TIMER
     }
 
     private fun updateState(state: PlayerUiState) {
@@ -135,11 +129,20 @@ class PlayerViewModel(
 
             isFavorite = !isFavorite
 
-            stateLiveData.value?.let { currentState ->
-                currentState.isFavorite = isFavorite
-                updateState(currentState)
+            val currentState = stateLiveData.value
+            val progress = when (currentState) {
+                is PlayerUiState.Playing -> currentState.progress
+                is PlayerUiState.Paused -> currentState.progress
+                else -> DEFAULT_TIMER
             }
 
+            when (currentState) {
+                is PlayerUiState.Playing -> updateState(PlayerUiState.Playing(progress, isFavorite))
+                is PlayerUiState.Paused -> updateState(PlayerUiState.Paused(progress, isFavorite))
+                is PlayerUiState.Prepared -> updateState(PlayerUiState.Prepared)
+                is PlayerUiState.Default -> updateState(PlayerUiState.Default)
+                else -> {}
+            }
         }
     }
 
@@ -152,13 +155,17 @@ class PlayerViewModel(
         }
     }
 
-    fun hasTrackInPlaylist(tracksId: List<String>): Boolean {
-        return tracksId.contains(track.trackId)
+    fun hasTrackInPlaylist(playlistName: String, tracksId: List<String>) {
+        if (tracksId.contains(track.trackId)) {
+            updateState(PlayerUiState.AddingToPlaylist(playlistName, false))
+        } else {
+            updateState(PlayerUiState.AddingToPlaylist(playlistName, true))
+        }
     }
-
 
     companion object {
         private const val CHECK_INTERVAL = 300L
-    }
 
+        private const val DEFAULT_TIMER = "00:00"
+    }
 }
