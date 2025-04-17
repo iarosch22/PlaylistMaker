@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -43,7 +44,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
-    private lateinit var playerAdapter: PlayerAdapter
+    private val playerAdapter by lazy { PlayerAdapter( createOnPlaylistListener() ) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,7 +106,6 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun setPlaylistsAdapter() {
-        playerAdapter = PlayerAdapter()
         playerAdapter.playlists = playlists
         binding.rvBottomSheetPlaylist.adapter = playerAdapter
     }
@@ -185,6 +185,18 @@ class PlayerActivity : AppCompatActivity() {
         } else {
             binding.saveToFavorites.setImageResource(R.drawable.ic_savetofavorite_inactive)
         }
+    }
+
+    private fun createOnPlaylistListener(): OnPlaylistClickListener {
+        val playlistListener = OnPlaylistClickListener { tracksId: List<String> ->
+            if (viewModel.hasTrackInPlaylist(tracksId)) {
+                Toast.makeText(this@PlayerActivity, "TRACK IS IN PLAYLIST", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this@PlayerActivity, "TRACK IS NOT IN PLAYLIST", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        return playlistListener
     }
 
     private fun dpToPx(dp: Float, context: Context): Int {

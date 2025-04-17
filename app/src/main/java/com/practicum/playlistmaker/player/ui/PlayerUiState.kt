@@ -10,4 +10,6 @@ sealed class PlayerUiState(val progress: String, var isFavorite: Boolean) {
 
     class Paused(progress: String, isFavorite: Boolean) : PlayerUiState(progress, isFavorite)
 
+    class BottomSheetShowing()
+
 }

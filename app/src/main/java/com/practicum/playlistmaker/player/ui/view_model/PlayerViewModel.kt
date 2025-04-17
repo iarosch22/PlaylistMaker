@@ -152,6 +152,10 @@ class PlayerViewModel(
         }
     }
 
+    fun hasTrackInPlaylist(tracksId: List<String>): Boolean {
+        return tracksId.contains(track.trackId)
+    }
+
 
     companion object {
         private const val CHECK_INTERVAL = 300L
