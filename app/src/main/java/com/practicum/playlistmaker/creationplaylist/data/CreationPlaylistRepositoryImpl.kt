@@ -23,19 +23,26 @@ class CreationPlaylistRepositoryImpl(
         return converter.map(appDatabase.playlistsDao().getPlaylistById(playlistId))
     }
 
-    override suspend fun updatePlaylist(playlist: Playlist) {
-        appDatabase.playlistsDao().updatePlaylist(
-            converter.map(playlist)
-        )
-    }
-
     override suspend fun savePlaylist(playlist: Playlist) {
         appDatabase.playlistsDao().insertPlaylist(
             converter.map(playlist)
         )
     }
 
-    override suspend fun addTrackToPlaylist(track: Track) {
+    override suspend fun addTrackToPlaylist(playlist: Playlist, track: Track) {
+        val tracksId = track.trackId
+
+        val newTracksId = playlist.tracksId.toMutableList().apply {
+            add(tracksId)
+        }
+
+        val updatedPlaylist = playlist.copy(
+            tracksId = newTracksId,
+            size = (playlist.size.toInt() + 1).toString()
+        )
+
+        appDatabase.playlistsDao().updatePlaylist( converter.map(updatedPlaylist))
+
         appDatabase.playlistsTrackDao().insertTrack(
             converter.map(track)
         )

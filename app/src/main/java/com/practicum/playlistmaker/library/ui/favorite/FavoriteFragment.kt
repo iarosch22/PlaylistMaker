@@ -66,7 +66,7 @@ class FavoriteFragment: BindingFragment<FragmentFavoriteBinding>() {
         val trackListener = OnTrackClickListener { track: Track ->
             if (clickDebounce()) {
                 findNavController().navigate(
-                    R.id.action_libraryFragment_to_playerActivity,
+                    R.id.action_libraryFragment_to_playerFragment,
                     bundleOf(TRACK to track)
                 )
             }

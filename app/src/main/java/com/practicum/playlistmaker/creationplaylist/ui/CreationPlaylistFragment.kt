@@ -40,8 +40,6 @@ class CreationPlaylistFragment: Fragment() {
     }
 
     private var isPhotoSelected = false
-    private var isNameEntered = false
-    private var isDescriptionEntered = false
 
     override fun onCreateView(
         inflater: LayoutInflater,

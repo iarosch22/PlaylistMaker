@@ -5,15 +5,15 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/yp_white"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".player.ui.PlayerFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/playerContainer"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/colorSecondary"
-        tools:context=".player.ui.PlayerActivity">
+        android:background="?attr/colorSecondary">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/left_guideline"
@@ -341,7 +341,7 @@
             style="@style/MediumTextStyle"/>
 
         <Button
-            android:id="@+id/addPlaylist"
+            android:id="@+id/newPlaylist"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/size_36dp"
             android:layout_marginTop="@dimen/margin_16"

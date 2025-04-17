@@ -23,7 +23,7 @@ class PlayerAdapter(val listener: OnPlaylistClickListener): RecyclerView.Adapter
         holder.bind(playlists[position])
 
         holder.itemView.setOnClickListener {
-            listener.onPlaylistClick(playlists[position].name, playlists[position].tracksId)
+            listener.onPlaylistClick(playlists[position], playlists[position].tracksId)
         }
     }
 

@@ -213,7 +213,7 @@ class SearchFragment: Fragment() {
 
             if (clickDebounce()) {
                 findNavController().navigate(
-                    R.id.action_searchFragment_to_playerActivity,
+                    R.id.action_searchFragment_to_playerFragment,
                     bundleOf(TRACK to track)
                 )
             }

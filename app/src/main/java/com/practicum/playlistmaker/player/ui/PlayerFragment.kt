@@ -5,23 +5,26 @@ import android.os.Build
 import android.os.Build.VERSION
 import android.os.Bundle
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.creationplaylist.domain.models.Playlist
-import com.practicum.playlistmaker.databinding.ActivityPlayerBinding
-import com.practicum.playlistmaker.library.ui.playlists.PlaylistsAdapter
+import com.practicum.playlistmaker.creationplaylist.ui.CreationPlaylistFragment
+import com.practicum.playlistmaker.databinding.FragmentPlayerBinding
+import com.practicum.playlistmaker.library.ui.playlists.PlaylistsFragment.Companion.NEW_PLAYLIST_MODE
 import com.practicum.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -30,7 +33,7 @@ import java.util.Locale
 
 const val SDK_TIRAMISU = Build.VERSION_CODES.TIRAMISU
 
-class PlayerActivity : AppCompatActivity() {
+class PlayerFragment : Fragment() {
 
     private var track: Track? = null
 
@@ -40,17 +43,24 @@ class PlayerActivity : AppCompatActivity() {
 
     private val timeFormatter by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
 
-    private lateinit var binding: ActivityPlayerBinding
+    private lateinit var binding: FragmentPlayerBinding
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
     private val playerAdapter by lazy { PlayerAdapter( createOnPlaylistListener() ) }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityPlayerBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentPlayerBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setBackBtn()
 
@@ -64,7 +74,7 @@ class PlayerActivity : AppCompatActivity() {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
-        viewModel.observeState().observe(this) { state ->
+        viewModel.observeState().observe(viewLifecycleOwner) { state ->
             renderState(state)
         }
 
@@ -84,6 +94,13 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         binding.saveToFavorites.setOnClickListener { viewModel.onFavoriteClicked() }
+
+        binding.newPlaylist.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_playerFragment_to_creationPlaylistFragment,
+                CreationPlaylistFragment.createArgs(NEW_PLAYLIST_MODE)
+            )
+        }
     }
 
     override fun onStop() {
@@ -93,7 +110,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun setBackBtn() {
         binding.btnBack.setOnClickListener {
-            this.finish()
+            findNavController().popBackStack()
         }
     }
 
@@ -124,13 +141,11 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun setTrackValues() {
         track = if (VERSION.SDK_INT >= SDK_TIRAMISU) {
-            intent.getParcelableExtra(TRACK, Track::class.java)
+            arguments?.getParcelable(TRACK, Track::class.java)
         } else {
-            intent.getParcelableExtra(TRACK)
-        }
-
-        if (track == null) {
-            finish()
+            arguments?.getParcelable(TRACK)
+        } ?: run {
+            findNavController().popBackStack()
             return
         }
 
@@ -160,7 +175,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun loadArtWork(artworkUrl: String) {
         val cornersValueDp = 8F
-        val cornersValuePx = dpToPx(cornersValueDp, this)
+        val cornersValuePx = dpToPx(cornersValueDp, requireContext())
 
         Glide.with(this)
             .load(artworkUrl)
@@ -212,11 +227,10 @@ class PlayerActivity : AppCompatActivity() {
 
             is PlayerUiState.AddingToPlaylist -> {
                 if (state.isSuccess) {
-                    Toast.makeText(this, "Добавлено в плейлист [${state.playlistName}]", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Добавлено в плейлист [${state.playlistName}]", Toast.LENGTH_SHORT).show()
                     bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                 } else {
-                    Toast.makeText(this, "Трек уже добавлен в плейлист [${state.playlistName}]", Toast.LENGTH_SHORT).show()
-                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                    Toast.makeText(requireContext(), "Трек уже добавлен в плейлист [${state.playlistName}]", Toast.LENGTH_SHORT).show()
                 }
             }
         }

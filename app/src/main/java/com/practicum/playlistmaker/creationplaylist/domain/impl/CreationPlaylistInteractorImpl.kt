@@ -16,16 +16,12 @@ class CreationPlaylistInteractorImpl(private val repository: CreationPlaylistRep
         return repository.getPlaylistById(playlistId)
     }
 
-    override suspend fun updatePlaylist(playlist: Playlist) {
-        repository.updatePlaylist(playlist)
-    }
-
     override suspend fun savePlaylist(playlist: Playlist) {
         repository.savePlaylist(playlist)
     }
 
-    override suspend fun addTrackToPlaylist(track: Track) {
-        repository.addTrackToPlaylist(track)
+    override suspend fun addTrackToPlaylist(playlist: Playlist, track: Track) {
+        repository.addTrackToPlaylist(playlist, track)
     }
 
 }

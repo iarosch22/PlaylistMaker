@@ -155,11 +155,14 @@ class PlayerViewModel(
         }
     }
 
-    fun hasTrackInPlaylist(playlistName: String, tracksId: List<String>) {
+    fun hasTrackInPlaylist(playlist: Playlist, tracksId: List<String>) {
         if (tracksId.contains(track.trackId)) {
-            updateState(PlayerUiState.AddingToPlaylist(playlistName, false))
+            updateState(PlayerUiState.AddingToPlaylist(playlist.name, false))
         } else {
-            updateState(PlayerUiState.AddingToPlaylist(playlistName, true))
+            viewModelScope.launch(Dispatchers.IO) {
+                creationPlaylistInteractor.addTrackToPlaylist(playlist, track)
+                updateState(PlayerUiState.AddingToPlaylist(playlist.name, true))
+            }
         }
     }
 

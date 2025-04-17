@@ -10,10 +10,8 @@ interface CreationPlaylistInteractor {
 
     suspend fun getPlaylistById(playlistId: Long): Playlist
 
-    suspend fun updatePlaylist(playlist: Playlist)
-
     suspend fun savePlaylist(playlist: Playlist)
 
-    suspend fun addTrackToPlaylist(track: Track)
+    suspend fun addTrackToPlaylist(playlist: Playlist, track: Track)
 
 }
