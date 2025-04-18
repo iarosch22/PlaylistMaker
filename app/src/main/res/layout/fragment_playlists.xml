@@ -7,9 +7,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_gravity="center_horizontal"
-    android:paddingStart="@dimen/padding_16"
-    android:paddingEnd="8dp">
+    android:layout_gravity="center_horizontal">
 
     <Button
         android:id="@+id/addPlaylist"
@@ -26,6 +24,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/margin_16"
+        android:layout_marginStart="@dimen/margin_16"
+        android:layout_marginEnd="@dimen/margin_8"
         tools:listitem="@layout/playlist_library_item"
         tools:itemCount="5"/>
 

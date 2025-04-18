@@ -78,7 +78,8 @@ class CreationPlaylistFragment: Fragment() {
                 }
 
             } else {
-                Toast.makeText(requireContext(), "Фото не выбрано", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.app_no_photo_selected), Toast.LENGTH_SHORT).show()
             }
         }
 

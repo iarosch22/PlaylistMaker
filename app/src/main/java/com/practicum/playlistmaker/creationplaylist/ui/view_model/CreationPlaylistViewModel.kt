@@ -30,7 +30,7 @@ class CreationPlaylistViewModel(
     }
 
     private fun initState() {
-        if (playlistId == -1L) {
+        if (playlistId == NEW_PLAYLIST_MODE) {
             updateState(CreationPlaylistUiState.NewCreationPlaylistMode)
         } else {
             viewModelScope.launch(Dispatchers.IO) {
@@ -95,5 +95,9 @@ class CreationPlaylistViewModel(
 
     private fun updateState(state: CreationPlaylistUiState) {
         stateLiveData.postValue(state)
+    }
+
+    companion object {
+        const val NEW_PLAYLIST_MODE = -1L
     }
 }
