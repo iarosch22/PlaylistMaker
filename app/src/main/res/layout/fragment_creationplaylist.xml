@@ -55,7 +55,7 @@
         app:layout_constraintStart_toEndOf="@id/btn_back"/>
 
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/btnAddContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -70,12 +70,14 @@
 
         <ImageView
             android:id="@+id/ivCover"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="centerInside"
             android:layout_gravity="center"
             android:src="@drawable/ic_add_photo"/>
 
-    </FrameLayout>
+    </LinearLayout>
 
     <EditText
         android:id="@+id/tvNamePlaylist"

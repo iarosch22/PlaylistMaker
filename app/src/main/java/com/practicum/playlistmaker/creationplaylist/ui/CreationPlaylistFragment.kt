@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.creationplaylist.ui
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -7,6 +8,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +19,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentCreationplaylistBinding
@@ -62,7 +67,7 @@ class CreationPlaylistFragment: Fragment() {
 
         val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
-                binding.ivCover.setImageURI(uri)
+                setImageCover(uri)
                 isPhotoSelected = true
                 saveImageToPrivateStore(uri)
             } else {
@@ -175,6 +180,26 @@ class CreationPlaylistFragment: Fragment() {
                 findNavController().popBackStack()
             }
         }
+    }
+
+    private fun setImageCover(uri: Uri) {
+        val cornersValueDp = 8F
+        val cornersValuePx = dpToPx(cornersValueDp, requireContext())
+
+        Glide.with(this)
+            .load(uri)
+            .transform(
+                CenterCrop(),
+                RoundedCorners(cornersValuePx)
+            )
+            .into(binding.ivCover)
+    }
+
+    private fun dpToPx(dp: Float, context: Context): Int {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dp,
+            context.resources.displayMetrics).toInt()
     }
 
     companion object {
