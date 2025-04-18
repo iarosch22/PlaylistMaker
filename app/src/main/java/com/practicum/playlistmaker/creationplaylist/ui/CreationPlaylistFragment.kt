@@ -18,6 +18,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -26,6 +27,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentCreationplaylistBinding
 import com.practicum.playlistmaker.creationplaylist.ui.view_model.CreationPlaylistViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.io.File
@@ -69,7 +73,10 @@ class CreationPlaylistFragment: Fragment() {
             if (uri != null) {
                 setImageCover(uri)
                 isPhotoSelected = true
-                saveImageToPrivateStore(uri)
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                    saveImageToPrivateStore(uri)
+                }
+
             } else {
                 Toast.makeText(requireContext(), "Фото не выбрано", Toast.LENGTH_SHORT).show()
             }
@@ -94,7 +101,7 @@ class CreationPlaylistFragment: Fragment() {
         })
     }
 
-    private fun saveImageToPrivateStore(uri: Uri) {
+    private suspend fun saveImageToPrivateStore(uri: Uri) {
         val filePath = File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "playlist_album")
 
         if (!filePath.exists()) {
@@ -111,7 +118,9 @@ class CreationPlaylistFragment: Fragment() {
             .decodeStream(inputStream)
             .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
 
-        viewModel.setPathToPhoto(Uri.fromFile(file))
+        withContext(Dispatchers.Main) {
+            viewModel.setPathToPhoto(Uri.fromFile(file))
+        }
     }
 
     private fun setTextWatchers() {
