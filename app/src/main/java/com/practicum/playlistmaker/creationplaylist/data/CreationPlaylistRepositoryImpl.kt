@@ -6,6 +6,8 @@ import com.practicum.playlistmaker.creationplaylist.domain.db.CreationPlaylistRe
 import com.practicum.playlistmaker.creationplaylist.domain.models.Playlist
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 class CreationPlaylistRepositoryImpl(
@@ -46,6 +48,11 @@ class CreationPlaylistRepositoryImpl(
         appDatabase.playlistsTrackDao().insertTrack(
             converter.map(track)
         )
+    }
+
+    override suspend fun getTracks(trackIds: List<String>): List<Track>  {
+        val tracks = appDatabase.playlistsTrackDao().getTracks()
+        return converter.filterTracks(trackIds, tracks)
     }
 
 }

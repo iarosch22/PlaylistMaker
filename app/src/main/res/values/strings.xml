@@ -40,6 +40,7 @@
     <string name="app_cancel_dialog">Отмена</string>
     <string name="app_finish_dialog">Завершить</string>
     <string name="app_tracks_size">%1$s %2$s</string>
+    <string name="app_playlist_duration">%1$s минут</string>
     <string name="app_add_to_playlist">Добавить в плейлист</string>
     <string name="app_no_photo_selected">Фото не выбрано</string>
 </resources>

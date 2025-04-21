@@ -193,8 +193,8 @@ class PlayerFragment : Fragment() {
         }
     }
 
-    private fun createOnPlaylistListener(): OnPlaylistClickListener {
-        val playlistListener = OnPlaylistClickListener { name, tracksId: List<String> ->
+    private fun createOnPlaylistListener(): OnAddToPlaylistClickListener {
+        val playlistListener = OnAddToPlaylistClickListener { name, tracksId: List<String> ->
             viewModel.hasTrackInPlaylist(name, tracksId)
         }
 

@@ -24,4 +24,8 @@ class CreationPlaylistInteractorImpl(private val repository: CreationPlaylistRep
         repository.addTrackToPlaylist(playlist, track)
     }
 
+    override suspend fun getTracks(trackIds: List<String>): List<Track> {
+        return repository.getTracks(trackIds)
+    }
+
 }

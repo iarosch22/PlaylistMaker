@@ -14,4 +14,6 @@ interface CreationPlaylistInteractor {
 
     suspend fun addTrackToPlaylist(playlist: Playlist, track: Track)
 
+    suspend fun getTracks(trackIds: List<String>): List<Track>
+
 }
