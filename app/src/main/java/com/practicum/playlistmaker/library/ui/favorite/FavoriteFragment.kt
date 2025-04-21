@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.library.ui
+package com.practicum.playlistmaker.library.ui.favorite
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,7 +12,7 @@ import com.practicum.playlistmaker.databinding.FragmentFavoriteBinding
 import com.practicum.playlistmaker.library.ui.view_models.FavoriteViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.util.BindingFragment
-import com.practicum.playlistmaker.util.OnTrackClickListener
+import com.practicum.playlistmaker.search.ui.OnTrackClickListener
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -64,10 +64,9 @@ class FavoriteFragment: BindingFragment<FragmentFavoriteBinding>() {
 
     private fun createOnTrackClick(): OnTrackClickListener {
         val trackListener = OnTrackClickListener { track: Track ->
-
             if (clickDebounce()) {
                 findNavController().navigate(
-                    R.id.action_libraryFragment_to_playerActivity,
+                    R.id.action_libraryFragment_to_playerFragment,
                     bundleOf(TRACK to track)
                 )
             }

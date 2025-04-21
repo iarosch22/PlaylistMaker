@@ -8,6 +8,9 @@ import com.google.gson.Gson
 import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.library.data.converters.TrackDbConvertor
 import com.practicum.playlistmaker.library.data.db.AppDatabase
+import com.practicum.playlistmaker.library.data.db.MIGRATION_1_TO_2
+import com.practicum.playlistmaker.creationplaylist.data.converters.NewPlaylistDbConvertor
+import com.practicum.playlistmaker.library.data.db.MIGRATION_2_TO_3
 import com.practicum.playlistmaker.search.data.NetworkClient
 import com.practicum.playlistmaker.search.data.dto.preferences.SearchHistoryLocalDataSource
 import com.practicum.playlistmaker.search.data.network.ItunesApi
@@ -58,11 +61,18 @@ val dataModule = module {
 
     single {
         Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
+            .addMigrations(MIGRATION_1_TO_2)
+            .addMigrations(MIGRATION_2_TO_3)
+            .fallbackToDestructiveMigration()
             .build()
     }
 
     single {
         TrackDbConvertor()
+    }
+
+    single {
+        NewPlaylistDbConvertor()
     }
 
 }
