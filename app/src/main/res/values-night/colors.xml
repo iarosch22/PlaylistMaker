@@ -11,4 +11,5 @@
     <color name="yp_blue">#3772E7</color>
     <color name="yp_switcher_thumb">#3772E7</color>
     <color name="yp_switcher_track">#9FBBF3</color>
+    <color name="yp_bottomsheet_switcher">#FFFFFF</color>
 </resources>
