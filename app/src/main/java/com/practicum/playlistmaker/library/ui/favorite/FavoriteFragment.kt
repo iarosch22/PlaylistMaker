@@ -48,6 +48,11 @@ class FavoriteFragment: BindingFragment<FragmentFavoriteBinding>() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        isClickAllowed = true
+    }
+
 
     private fun showContent(favoriteTracks: List<Track>) {
         binding.rvFavoriteTracks.visibility = View.VISIBLE

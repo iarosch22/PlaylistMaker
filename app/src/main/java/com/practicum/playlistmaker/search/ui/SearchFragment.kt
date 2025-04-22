@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -78,6 +79,11 @@ class SearchFragment: Fragment() {
         super.onStop()
 
         viewModel.saveSearchedTracks(searchTracksAdapter.tracks)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isClickAllowed = true
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -211,6 +217,8 @@ class SearchFragment: Fragment() {
         val trackListener = OnTrackClickListener { track: Track ->
             addSearchTrack(track)
 
+            Log.d("PLAYER_TAG", "CLICK!!!")
+
             if (clickDebounce()) {
                 findNavController().navigate(
                     R.id.action_searchFragment_to_playerFragment,
@@ -279,6 +287,7 @@ class SearchFragment: Fragment() {
     }
 
     private fun addSearchedTracks(tracks: List<Track>) {
+        savedTracks.clear()
         savedTracks.addAll(tracks)
         searchTracksAdapter.notifyDataSetChanged()
     }

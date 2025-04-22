@@ -29,19 +29,6 @@
             android:orientation="vertical"
             app:layout_constraintGuide_end="@dimen/margin_16" />
 
-        <ImageButton
-            android:id="@+id/btn_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_4"
-            android:layout_marginTop="@dimen/margin_4"
-            android:background="@null"
-            android:padding="@dimen/padding_12"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_back"
-            app:tint="?attr/colorOnSecondary" />
-
         <ImageView
             android:id="@+id/cover"
             android:layout_width="match_parent"
@@ -52,6 +39,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_placeholder_large" />
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_4"
+            android:layout_marginTop="@dimen/margin_4"
+            android:background="@null"
+            android:padding="@dimen/padding_12"
+            app:layout_constraintStart_toStartOf="@id/cover"
+            app:layout_constraintTop_toTopOf="@id/cover"
+            app:srcCompat="@drawable/ic_back"
+            app:tint="?attr/colorOnSecondary" />
 
         <TextView
             android:id="@+id/playlistName"
@@ -156,13 +156,12 @@
         android:visibility="gone"/>
 
     <LinearLayout
-        android:id="@+id/playlistsBottomSheet"
+        android:id="@+id/tracksBottomSheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bottom_sheet_bg"
         android:orientation="vertical"
-        app:behavior_hideable="true"
-        app:behavior_peekHeight="200dp"
+        app:behavior_hideable="false"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <View
@@ -174,7 +173,7 @@
             android:background="@drawable/rounder" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvBottomSheetPlaylist"
+            android:id="@+id/rvBottomSheetTracks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
