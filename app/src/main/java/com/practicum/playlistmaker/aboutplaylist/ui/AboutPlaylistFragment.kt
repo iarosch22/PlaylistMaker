@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.aboutplaylist.ui
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,12 +13,14 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.aboutplaylist.ui.view_model.AboutPlaylistAdapter
 import com.practicum.playlistmaker.aboutplaylist.ui.view_model.AboutPlaylistViewModel
 import com.practicum.playlistmaker.creationplaylist.domain.models.Playlist
 import com.practicum.playlistmaker.databinding.FragmentAboutplaylistBinding
 import com.practicum.playlistmaker.search.domain.models.Track
+import com.practicum.playlistmaker.search.ui.OnTrackClickListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.text.SimpleDateFormat
@@ -31,7 +34,12 @@ class AboutPlaylistFragment: Fragment() {
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
-    private val adapter by lazy { AboutPlaylistAdapter() }
+    private lateinit var confirmDialog: MaterialAlertDialogBuilder
+
+    private val adapter by lazy { AboutPlaylistAdapter(
+        createOnTrackClick(),
+        createOnTrackLongClick()
+    ) }
 
     private val viewModel by viewModel<AboutPlaylistViewModel> {
         parametersOf(requireArguments().getLong(ARGS_PLAYLIST_ID))
@@ -60,6 +68,7 @@ class AboutPlaylistFragment: Fragment() {
         }
 
         viewModel.observeAboutPlaylist().observe(viewLifecycleOwner) {
+            Log.d("AboutPlaylistFragment", "renderState called")
             renderState(it)
         }
     }
@@ -103,6 +112,37 @@ class AboutPlaylistFragment: Fragment() {
             .into(binding.cover)
     }
 
+    private fun createOnTrackClick(): OnTrackClickListener {
+        val listener = OnTrackClickListener { track: Track ->
+
+            findNavController().navigate(
+                R.id.action_aboutPlaylistFragment_to_playerFragment,
+                bundleOf(TRACK to track)
+            )
+        }
+
+        return listener
+    }
+
+    private fun createOnTrackLongClick(): OnTrackLongClickListener {
+        val listener = OnTrackLongClickListener { track: Track ->
+            showConfirmation(track)
+        }
+
+        return listener
+    }
+
+    private fun showConfirmation(track: Track) {
+        confirmDialog = MaterialAlertDialogBuilder(requireContext())
+            .setMessage(getString(R.string.app_delete_dialog_message))
+            .setNegativeButton(getString(R.string.app_delete_dialog_cancel)) { _, _ -> }
+            .setPositiveButton(getString(R.string.app_delete_dialog_confirm)) { _, _ ->
+                viewModel.deleteTrack(track)
+            }
+
+        confirmDialog.show()
+    }
+
     private fun renderState(state: AboutPlaylistUiState) {
         when(state) {
             is AboutPlaylistUiState.Content -> {
@@ -123,6 +163,8 @@ class AboutPlaylistFragment: Fragment() {
     companion object {
 
         private const val ARGS_PLAYLIST_ID = "playlist_id"
+
+        private const val TRACK = "TRACK"
 
         fun createArgs(playlistId: Long): Bundle =
             bundleOf(ARGS_PLAYLIST_ID to playlistId)

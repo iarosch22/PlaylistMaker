@@ -2,11 +2,14 @@ package com.practicum.playlistmaker.creationplaylist.data
 
 import com.practicum.playlistmaker.library.data.db.AppDatabase
 import com.practicum.playlistmaker.creationplaylist.data.converters.NewPlaylistDbConvertor
+import com.practicum.playlistmaker.creationplaylist.data.db.entity.PlaylistEntity
 import com.practicum.playlistmaker.creationplaylist.domain.db.CreationPlaylistRepository
 import com.practicum.playlistmaker.creationplaylist.domain.models.Playlist
+import com.practicum.playlistmaker.player.data.db.PlaylistsTrackEntity
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
@@ -48,6 +51,36 @@ class CreationPlaylistRepositoryImpl(
         appDatabase.playlistsTrackDao().insertTrack(
             converter.map(track)
         )
+    }
+
+    override suspend fun deleteTrackFromPlaylist(playlist: Playlist, track: Track) {
+        val tracksId = track.trackId
+
+        val newTracksId = playlist.tracksId.toMutableList().apply {
+            remove(tracksId)
+        }
+
+        val updatedPlaylist = playlist.copy(
+            tracksId = newTracksId,
+            size = (playlist.size.toInt() - 1).toString()
+        )
+
+        appDatabase.playlistsDao().updatePlaylist( converter.map(updatedPlaylist) )
+        deleteTrackFromDb(converter.map(track))
+    }
+
+    private suspend fun deleteTrackFromDb(track: PlaylistsTrackEntity) {
+        var trackIsUsed = false
+        appDatabase.playlistsDao().getPlaylists().map { playlist ->
+            playlist.map {
+                if (it.tracksId.contains(track.trackId)) {
+                    trackIsUsed = true
+                }
+            }
+        }
+        if (trackIsUsed) {
+            appDatabase.playlistsTrackDao().deleteTrack(track)
+        }
     }
 
     override suspend fun getTracks(trackIds: List<String>): List<Track>  {

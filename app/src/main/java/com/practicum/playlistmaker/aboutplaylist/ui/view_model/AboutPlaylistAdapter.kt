@@ -1,14 +1,19 @@
 package com.practicum.playlistmaker.aboutplaylist.ui.view_model
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.aboutplaylist.ui.AboutPlaylistViewHolder
+import com.practicum.playlistmaker.aboutplaylist.ui.OnTrackLongClickListener
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.TrackViewHolder
+import com.practicum.playlistmaker.search.ui.OnTrackClickListener
 
-class AboutPlaylistAdapter: RecyclerView.Adapter<AboutPlaylistViewHolder>() {
+class AboutPlaylistAdapter(
+    private val listener: OnTrackClickListener,
+    private val longClickListener: OnTrackLongClickListener
+): RecyclerView.Adapter<AboutPlaylistViewHolder>() {
 
     var tracks = mutableListOf<Track>()
 
@@ -23,6 +28,15 @@ class AboutPlaylistAdapter: RecyclerView.Adapter<AboutPlaylistViewHolder>() {
 
     override fun onBindViewHolder(holder: AboutPlaylistViewHolder, position: Int) {
         holder.bind(tracks[position])
+
+        holder.itemView.setOnClickListener {
+            listener.onTrackClick(tracks[position])
+        }
+
+        holder.itemView.setOnLongClickListener {
+            longClickListener.onTrackLongClick(tracks[position])
+            true
+        }
     }
 
 }

@@ -65,7 +65,7 @@ class NewPlaylistDbConvertor {
         )
     }
 
-    fun filterTracks(trackIds: List<String>, tracks: List<TrackEntity>): List<Track> {
+    fun filterTracks(trackIds: List<String>, tracks: List<PlaylistsTrackEntity>): List<Track> {
         return tracks.filter { it.trackId in trackIds }.map {
             Track(
                 trackId = it.trackId,

@@ -217,8 +217,6 @@ class SearchFragment: Fragment() {
         val trackListener = OnTrackClickListener { track: Track ->
             addSearchTrack(track)
 
-            Log.d("PLAYER_TAG", "CLICK!!!")
-
             if (clickDebounce()) {
                 findNavController().navigate(
                     R.id.action_searchFragment_to_playerFragment,

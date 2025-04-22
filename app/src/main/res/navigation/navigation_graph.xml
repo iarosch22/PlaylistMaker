@@ -65,7 +65,11 @@
         android:id="@+id/aboutPlaylistFragment"
         android:name="com.practicum.playlistmaker.aboutplaylist.ui.AboutPlaylistFragment"
         android:label="fragment_aboutplaylist"
-        tools:layout="@layout/fragment_aboutplaylist" />
+        tools:layout="@layout/fragment_aboutplaylist" >
+        <action
+            android:id="@+id/action_aboutPlaylistFragment_to_playerFragment"
+            app:destination="@id/playerFragment" />
+    </fragment>
 
 
 </navigation>
