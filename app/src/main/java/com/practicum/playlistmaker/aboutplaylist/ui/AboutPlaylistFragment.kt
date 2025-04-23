@@ -2,7 +2,6 @@ package com.practicum.playlistmaker.aboutplaylist.ui
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,7 +31,7 @@ class AboutPlaylistFragment: Fragment() {
 
     private lateinit var binding: FragmentAboutplaylistBinding
 
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private lateinit var tracksBottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
     private lateinit var confirmDialog: MaterialAlertDialogBuilder
 
@@ -59,16 +58,16 @@ class AboutPlaylistFragment: Fragment() {
 
         setAdapter()
 
-        bottomSheetBehavior = BottomSheetBehavior.from(binding.tracksBottomSheet).apply {
+        tracksBottomSheetBehavior = BottomSheetBehavior.from(binding.tracksBottomSheet).apply {
             state = BottomSheetBehavior.STATE_EXPANDED
         }
+        tracksBottomSheetBehavior.isDraggable = true
 
-            binding.btnBack.setOnClickListener{
+        binding.btnBack.setOnClickListener{
             findNavController().popBackStack()
         }
 
         viewModel.observeAboutPlaylist().observe(viewLifecycleOwner) {
-            Log.d("AboutPlaylistFragment", "renderState called")
             renderState(it)
         }
     }

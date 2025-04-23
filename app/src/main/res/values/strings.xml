@@ -46,4 +46,7 @@
     <string name="app_playlist_duration">%1$s минут</string>
     <string name="app_add_to_playlist">Добавить в плейлист</string>
     <string name="app_no_photo_selected">Фото не выбрано</string>
+    <string name="app_playlist_share">Поделиться</string>
+    <string name="app_playlist_edit">Редактировать информацию</string>
+    <string name="app_playlist_delete">Удалить плейлист</string>
 </resources>
