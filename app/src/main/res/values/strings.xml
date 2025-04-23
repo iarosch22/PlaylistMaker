@@ -49,4 +49,6 @@
     <string name="app_playlist_share">Поделиться</string>
     <string name="app_playlist_edit">Редактировать информацию</string>
     <string name="app_playlist_delete">Удалить плейлист</string>
+    <string name="app_share_track_info">%1$d. %2$s - %3$s (%4$s)</string>
+    <string name="app_share_message">В этом плейлисте нет списка треков, которым можно поделиться</string>
 </resources>

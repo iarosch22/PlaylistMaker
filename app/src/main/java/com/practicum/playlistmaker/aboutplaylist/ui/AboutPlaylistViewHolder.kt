@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.domain.models.Track
@@ -35,8 +36,10 @@ class AboutPlaylistViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 
         Glide.with(itemView)
             .load(artworkUrl)
-            .centerCrop()
-            .transform(RoundedCorners(cornersValuePx))
+            .transform(
+                CenterCrop(),
+                RoundedCorners(cornersValuePx)
+            )
             .placeholder(R.drawable.ic_placeholder)
             .into(ivTrackArtwork)
     }

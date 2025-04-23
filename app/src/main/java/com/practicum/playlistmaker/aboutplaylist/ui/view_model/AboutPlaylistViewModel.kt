@@ -8,12 +8,14 @@ import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.aboutplaylist.ui.AboutPlaylistUiState
 import com.practicum.playlistmaker.creationplaylist.domain.db.CreationPlaylistInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
+import com.practicum.playlistmaker.sharing.data.ExternalNavigator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class AboutPlaylistViewModel(
     private val playlistId: Long,
-    private val interactor: CreationPlaylistInteractor
+    private val interactor: CreationPlaylistInteractor,
+    private val navigator: ExternalNavigator
 ): ViewModel() {
 
     private val aboutPlaylistLiveData = MutableLiveData<AboutPlaylistUiState>()
@@ -49,8 +51,20 @@ class AboutPlaylistViewModel(
         }
     }
 
+    fun sharePlaylist() {
+        viewModelScope.launch {
+            val playlist = interactor.getPlaylistById(playlistId)
+            val tracks = interactor.getTracks(playlist.tracksId)
+
+            if (tracks.isEmpty()) {
+                updateState(AboutPlaylistUiState.ShareContent(true, playlist, tracks))
+            } else {
+                updateState(AboutPlaylistUiState.ShareContent(false, playlist, tracks))
+            }
+        }
+    }
+
     private fun updateState(state: AboutPlaylistUiState) {
-        Log.d("AboutPlaylistViewModel", "updateState: $state tracks")
         aboutPlaylistLiveData.postValue(state)
     }
 

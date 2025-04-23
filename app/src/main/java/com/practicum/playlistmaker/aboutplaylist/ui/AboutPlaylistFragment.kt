@@ -1,16 +1,23 @@
 package com.practicum.playlistmaker.aboutplaylist.ui
 
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.practicum.playlistmaker.R
@@ -32,6 +39,7 @@ class AboutPlaylistFragment: Fragment() {
     private lateinit var binding: FragmentAboutplaylistBinding
 
     private lateinit var tracksBottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private lateinit var optionBottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
     private lateinit var confirmDialog: MaterialAlertDialogBuilder
 
@@ -58,18 +66,28 @@ class AboutPlaylistFragment: Fragment() {
 
         setAdapter()
 
-        tracksBottomSheetBehavior = BottomSheetBehavior.from(binding.tracksBottomSheet).apply {
-            state = BottomSheetBehavior.STATE_EXPANDED
+        setBottomSheets()
+
+        viewModel.observeAboutPlaylist().observe(viewLifecycleOwner) {
+            renderState(it)
         }
-        tracksBottomSheetBehavior.isDraggable = true
+
+        binding.optionsBtn.setOnClickListener {
+            optionBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
+        binding.shareBtn.setOnClickListener {
+            viewModel.sharePlaylist()
+        }
+
+        binding.sharePlaylist.setOnClickListener {
+            viewModel.sharePlaylist()
+        }
 
         binding.btnBack.setOnClickListener{
             findNavController().popBackStack()
         }
 
-        viewModel.observeAboutPlaylist().observe(viewLifecycleOwner) {
-            renderState(it)
-        }
     }
 
     private fun setAdapter() {
@@ -89,13 +107,57 @@ class AboutPlaylistFragment: Fragment() {
 
         setCoverImage(playlist.pathToCover.toUri())
 
-        setTracks(tracks)
+        setTracksToBottomSheet(tracks)
+        setOptionsBottomSheet(playlist)
     }
 
-    private fun setTracks(tracks: List<Track>) {
+    private fun setTracksToBottomSheet(tracks: List<Track>) {
         playlistTracks.clear()
         playlistTracks.addAll(tracks)
         adapter.notifyDataSetChanged()
+    }
+
+    private fun setBottomSheets() {
+        tracksBottomSheetBehavior = BottomSheetBehavior.from(binding.tracksBottomSheet).apply {
+            state = BottomSheetBehavior.STATE_EXPANDED
+        }
+        tracksBottomSheetBehavior.isDraggable = true
+
+        optionBottomSheetBehavior = BottomSheetBehavior.from(binding.optionsBottomSheet).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+        optionBottomSheetBehavior.isDraggable = true
+        optionBottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when(newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.visibility = View.GONE
+                    } else -> {
+                    binding.overlay.visibility = View.VISIBLE
+                }
+                }
+            }
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+
+        })
+    }
+
+    private fun setOptionsBottomSheet(playlist: Playlist) {
+        val cornersValueDp = 2F
+        val cornersValuePx = dpToPx(cornersValueDp, requireContext())
+
+        binding.bsNamePlaylist.text = playlist.name
+        binding.bsSizePlaylist.text = requireContext().getString(
+            R.string.app_tracks_size, playlist.size, getTrackDeclension(playlist.size.toInt())
+        )
+        Glide.with(this)
+            .load(playlist.pathToCover)
+            .transform(
+                CenterCrop(),
+                RoundedCorners(cornersValuePx)
+            )
+            .placeholder(R.drawable.ic_placeholder)
+            .into(binding.bsPlaylistCover)
     }
 
     private fun getDuration(tracks: List<Track>): String {
@@ -142,10 +204,51 @@ class AboutPlaylistFragment: Fragment() {
         confirmDialog.show()
     }
 
+    private fun sharePlaylist(playlist: Playlist, tracks: List<Track>) {
+        val title = playlist.name
+        val description = playlist.description
+        val size = getString(
+            R.string.app_tracks_size, playlist.size, getTrackDeclension(playlist.size.toInt())
+        )
+
+        val trackList = tracks.mapIndexed { index, track ->
+            val duration = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis.toLong())
+            "${index + 1}. ${track.trackName} - ${track.artistName} [$duration]"
+        }.joinToString("\n")
+
+        val fullText = """
+        $title
+        $description
+        $size
+        $trackList
+        """.trimIndent()
+
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, fullText)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+
+        requireContext().startActivity(shareIntent)
+    }
+
     private fun renderState(state: AboutPlaylistUiState) {
         when(state) {
             is AboutPlaylistUiState.Content -> {
                 setData(state.playlist, state.tracks)
+            }
+
+            is AboutPlaylistUiState.ShareContent -> {
+                Log.d("AboutPlaylistUiState", "${state.isEmptyContent}")
+                if (!state.isEmptyContent) {
+                    sharePlaylist(state.playlist, state.tracks)
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        R.string.app_share_message,
+                        Toast.LENGTH_SHORT)
+                        .show()
+                }
             }
         }
     }
@@ -157,6 +260,13 @@ class AboutPlaylistFragment: Fragment() {
             count % 10 in 2..4 -> "трека"
             else -> "треков"
         }
+    }
+
+    private fun dpToPx(dp: Float, context: Context): Int {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dp,
+            context.resources.displayMetrics).toInt()
     }
 
     companion object {
