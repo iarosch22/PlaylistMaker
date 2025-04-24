@@ -27,6 +27,8 @@ import com.practicum.playlistmaker.creationplaylist.domain.models.Playlist
 import com.practicum.playlistmaker.databinding.FragmentAboutplaylistBinding
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.OnTrackClickListener
+import com.practicum.playlistmaker.util.getDuration
+import com.practicum.playlistmaker.util.getTrackDeclension
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.text.SimpleDateFormat
@@ -41,7 +43,9 @@ class AboutPlaylistFragment: Fragment() {
     private lateinit var tracksBottomSheetBehavior: BottomSheetBehavior<LinearLayout>
     private lateinit var optionBottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
-    private lateinit var confirmDialog: MaterialAlertDialogBuilder
+    private lateinit var deleteTrackConfirmDialog: MaterialAlertDialogBuilder
+
+    private lateinit var deletePlaylistConfirmDialog: MaterialAlertDialogBuilder
 
     private val adapter by lazy { AboutPlaylistAdapter(
         createOnTrackClick(),
@@ -86,6 +90,10 @@ class AboutPlaylistFragment: Fragment() {
 
         binding.btnBack.setOnClickListener{
             findNavController().popBackStack()
+        }
+
+        binding.deletePlaylist.setOnClickListener{
+            viewModel.showDeletePlaylistDialog()
         }
 
     }
@@ -160,11 +168,6 @@ class AboutPlaylistFragment: Fragment() {
             .into(binding.bsPlaylistCover)
     }
 
-    private fun getDuration(tracks: List<Track>): String {
-        val totalDuration = tracks.sumOf { it.trackTimeMillis.toLong() }
-        return SimpleDateFormat("mm", Locale.getDefault()).format(totalDuration)
-    }
-
     private fun setCoverImage(uri: Uri) {
         Glide.with(this)
             .load(uri)
@@ -187,21 +190,33 @@ class AboutPlaylistFragment: Fragment() {
 
     private fun createOnTrackLongClick(): OnTrackLongClickListener {
         val listener = OnTrackLongClickListener { track: Track ->
-            showConfirmation(track)
+            showDeleteTrackConfirmation(track)
         }
 
         return listener
     }
 
-    private fun showConfirmation(track: Track) {
-        confirmDialog = MaterialAlertDialogBuilder(requireContext())
-            .setMessage(getString(R.string.app_delete_dialog_message))
+    private fun showDeleteTrackConfirmation(track: Track) {
+        deleteTrackConfirmDialog = MaterialAlertDialogBuilder(requireContext())
+            .setMessage(getString(R.string.app_delete_track_dialog_message))
             .setNegativeButton(getString(R.string.app_delete_dialog_cancel)) { _, _ -> }
             .setPositiveButton(getString(R.string.app_delete_dialog_confirm)) { _, _ ->
                 viewModel.deleteTrack(track)
             }
 
-        confirmDialog.show()
+        deleteTrackConfirmDialog.show()
+    }
+
+    private fun showDeletePlaylistConfirmation(playlistName: String) {
+        deletePlaylistConfirmDialog = MaterialAlertDialogBuilder(requireContext())
+            .setMessage(getString(R.string.app_delete_playlist_dialog_message, playlistName))
+            .setNegativeButton(getString(R.string.app_delete_dialog_cancel)) { _, _ -> }
+            .setPositiveButton(getString(R.string.app_delete_dialog_confirm)) { _, _ ->
+                viewModel.deletePlaylist()
+                findNavController().popBackStack()
+            }
+
+        deletePlaylistConfirmDialog.show()
     }
 
     private fun sharePlaylist(playlist: Playlist, tracks: List<Track>) {
@@ -250,15 +265,10 @@ class AboutPlaylistFragment: Fragment() {
                         .show()
                 }
             }
-        }
-    }
 
-    private fun getTrackDeclension(count: Int): String {
-        return when {
-            count % 100 in 11..14 -> "треков"
-            count % 10 == 1 -> "трек"
-            count % 10 in 2..4 -> "трека"
-            else -> "треков"
+            is AboutPlaylistUiState.ShowDeletePlaylistDialog -> {
+                showDeletePlaylistConfirmation(state.playlistName)
+            }
         }
     }
 

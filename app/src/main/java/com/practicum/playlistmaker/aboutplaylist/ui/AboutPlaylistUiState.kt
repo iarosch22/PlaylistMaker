@@ -16,4 +16,8 @@ sealed class AboutPlaylistUiState {
         val tracks: List<Track>
     ): AboutPlaylistUiState()
 
+    data class ShowDeletePlaylistDialog(
+        val playlistName: String
+    ): AboutPlaylistUiState()
+
 }

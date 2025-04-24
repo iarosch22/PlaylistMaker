@@ -39,7 +39,8 @@
     <string name="app_message_dialog">Все несохраненные данные будут потеряны</string>
     <string name="app_cancel_dialog">Отмена</string>
     <string name="app_finish_dialog">Завершить</string>
-    <string name="app_delete_dialog_message">Хотите удалить трек?</string>
+    <string name="app_delete_track_dialog_message">Хотите удалить трек?</string>
+    <string name="app_delete_playlist_dialog_message">Хотите удалить плейлист «%1$s»?</string>
     <string name="app_delete_dialog_confirm">ДА</string>
     <string name="app_delete_dialog_cancel">НЕТ</string>
     <string name="app_tracks_size">%1$s %2$s</string>

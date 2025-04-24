@@ -14,8 +14,7 @@ import kotlinx.coroutines.launch
 
 class AboutPlaylistViewModel(
     private val playlistId: Long,
-    private val interactor: CreationPlaylistInteractor,
-    private val navigator: ExternalNavigator
+    private val interactor: CreationPlaylistInteractor
 ): ViewModel() {
 
     private val aboutPlaylistLiveData = MutableLiveData<AboutPlaylistUiState>()
@@ -36,8 +35,6 @@ class AboutPlaylistViewModel(
     }
 
     fun deleteTrack(track: Track) {
-        Log.d("AboutPlaylistViewModel", "Track deleted func")
-
         viewModelScope.launch(Dispatchers.IO) {
             val playlist = interactor.getPlaylistById(playlistId)
 
@@ -51,8 +48,22 @@ class AboutPlaylistViewModel(
         }
     }
 
+    fun showDeletePlaylistDialog() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val playlist = interactor.getPlaylistById(playlistId)
+            updateState(AboutPlaylistUiState.ShowDeletePlaylistDialog(playlist.name))
+        }
+    }
+
+    fun deletePlaylist() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val playlist = interactor.getPlaylistById(playlistId)
+            interactor.deletePlaylist(playlist)
+        }
+    }
+
     fun sharePlaylist() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val playlist = interactor.getPlaylistById(playlistId)
             val tracks = interactor.getTracks(playlist.tracksId)
 

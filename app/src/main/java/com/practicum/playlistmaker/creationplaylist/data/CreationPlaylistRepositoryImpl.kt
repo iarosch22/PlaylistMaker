@@ -34,6 +34,16 @@ class CreationPlaylistRepositoryImpl(
         )
     }
 
+    override suspend fun deletePlaylist(playlist: Playlist) {
+        val tracks = getTracks(playlist.tracksId)
+
+        appDatabase.playlistsDao().deletePlaylist(converter.map(playlist))
+
+        tracks.forEach { track ->
+            deleteTrackFromDb(converter.map(track))
+        }
+    }
+
     override suspend fun addTrackToPlaylist(playlist: Playlist, track: Track) {
         val tracksId = track.trackId
 
