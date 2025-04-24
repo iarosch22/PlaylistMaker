@@ -201,15 +201,10 @@ class CreationPlaylistFragment: Fragment() {
                 binding.btnCreatePlaylist.isEnabled = state.isEnabled
             }
             is CreationPlaylistUiState.CloseWithConfirmation -> {
-                Log.d("BACK_TAG", "Back pressed triggered in state")
-                Log.d("NAVIGATION_TAG", "Current destination: ${findNavController().currentDestination?.id}")
-                Log.d("NAVIGATION_TAG", "Back stack entry count: ${findNavController().backQueue.size}")
                 if (state.isShowDialog) {
                     confirmDialog.show()
                 } else {
-                    Log.d("BACK_TAG", "Back pressed triggered in SHOW FALSE")
-                    val result = findNavController().popBackStack()
-                    Log.d("NAVIGATION_TAG", "popBackStack result: $result")
+                    findNavController().popBackStack()
                 }
             }
             is CreationPlaylistUiState.SavingCreationPlaylist -> {

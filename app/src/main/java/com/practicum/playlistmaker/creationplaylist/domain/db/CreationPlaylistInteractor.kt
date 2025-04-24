@@ -20,4 +20,6 @@ interface CreationPlaylistInteractor {
 
     suspend fun getTracks(trackIds: List<String>): List<Track>
 
+    suspend fun updatePlaylist(playlist: Playlist)
+
 }

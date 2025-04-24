@@ -26,10 +26,11 @@ class AboutPlaylistViewModel(
     fun observeEditMode(): LiveData<EditModeState> = editMode
 
     init {
+        Log.d("AboutPlaylistViewModel", "INIT!!!")
         initPlaylistInfo()
     }
 
-    private fun initPlaylistInfo() {
+    fun initPlaylistInfo() {
         viewModelScope.launch(Dispatchers.IO) {
             val playlist = interactor.getPlaylistById(playlistId)
             val tracks = interactor.getTracks(playlist.tracksId)
@@ -48,7 +49,6 @@ class AboutPlaylistViewModel(
             val playlist = interactor.getPlaylistById(playlistId)
 
             interactor.deleteTrackFromPlaylist(playlist, track)
-            Log.d("AboutPlaylistViewModel", "Track deleted")
 
             val updatedPlaylist = interactor.getPlaylistById(playlistId)
             val updatedTracks = interactor.getTracks(updatedPlaylist.tracksId)

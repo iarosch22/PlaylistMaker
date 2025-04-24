@@ -112,6 +112,11 @@ class AboutPlaylistFragment: Fragment() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.initPlaylistInfo()
+    }
+
     private fun setAdapter() {
         adapter.tracks = playlistTracks
         binding.rvBottomSheetTracks.adapter = adapter

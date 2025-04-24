@@ -36,4 +36,8 @@ class CreationPlaylistInteractorImpl(private val repository: CreationPlaylistRep
         return repository.getTracks(trackIds)
     }
 
+    override suspend fun updatePlaylist(playlist: Playlist) {
+        repository.updatePlaylist(playlist)
+    }
+
 }

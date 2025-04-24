@@ -96,7 +96,18 @@ class CreationPlaylistViewModel(
                 )
 
                 updateState(CreationPlaylistUiState.SavingCreationPlaylist(enteredName))
-            } else {}
+            } else {
+                val playlist = interactor.getPlaylistById(playlistId)
+
+                val updatedPlaylist = playlist.copy(
+                    pathToCover = pathToSelectedPhoto.toString(),
+                    name = enteredName,
+                    description = enteredDescription
+                )
+
+                interactor.updatePlaylist(updatedPlaylist)
+                updateState(CreationPlaylistUiState.SavingCreationPlaylist(enteredName))
+            }
         }
     }
 
