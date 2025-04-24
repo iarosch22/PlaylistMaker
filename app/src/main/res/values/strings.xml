@@ -35,6 +35,7 @@
     <string name="app_btn_description">Описание</string>
     <string name="app_btn_add">Создать</string>
     <string name="app_new_playlist_btn">Новый плейлист</string>
+    <string name="app_edit_playlist_btn">Редактировать</string>
     <string name="app_title_dialog">Завершить создание плейлиста?</string>
     <string name="app_message_dialog">Все несохраненные данные будут потеряны</string>
     <string name="app_cancel_dialog">Отмена</string>
@@ -52,4 +53,5 @@
     <string name="app_playlist_delete">Удалить плейлист</string>
     <string name="app_share_track_info">%1$d. %2$s - %3$s (%4$s)</string>
     <string name="app_share_message">В этом плейлисте нет списка треков, которым можно поделиться</string>
+    <string name="app_btn_save">Сохранить</string>
 </resources>

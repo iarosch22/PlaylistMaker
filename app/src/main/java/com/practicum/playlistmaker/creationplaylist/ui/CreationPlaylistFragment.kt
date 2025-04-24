@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -25,6 +27,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.creationplaylist.domain.models.Playlist
 import com.practicum.playlistmaker.databinding.FragmentCreationplaylistBinding
 import com.practicum.playlistmaker.creationplaylist.ui.view_model.CreationPlaylistViewModel
 import kotlinx.coroutines.Dispatchers
@@ -62,7 +65,6 @@ class CreationPlaylistFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setTextWatchers()
         setDialog()
 
         viewModel.observeState().observe(viewLifecycleOwner) {
@@ -88,6 +90,7 @@ class CreationPlaylistFragment: Fragment() {
         }
 
         binding.btnBack.setOnClickListener {
+            Log.d("BACK_TAG", "Back pressed triggered in top")
             viewModel.closeFragment()
         }
 
@@ -97,6 +100,7 @@ class CreationPlaylistFragment: Fragment() {
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
+                Log.d("BACK_TAG", "Back pressed triggered in bottom")
                 viewModel.closeFragment()
             }
         })
@@ -155,6 +159,25 @@ class CreationPlaylistFragment: Fragment() {
         binding.description.addTextChangedListener(descriptionTextWatcher)
     }
 
+    private fun setEditMode(playlist: Playlist) {
+        binding.btnCreatePlaylist.text = getString(R.string.app_btn_save)
+        binding.btnCreatePlaylist.isEnabled = true
+        setImageCover(playlist.pathToCover.toUri())
+        binding.tvNamePlaylist.setText(playlist.name)
+        binding.description.setText(playlist.description)
+        binding.title.text = getString(R.string.app_edit_playlist_btn)
+
+        setTextWatchers()
+    }
+
+    private fun setCreationMode() {
+        binding.btnCreatePlaylist.text = getString(R.string.app_btn_add)
+        binding.btnCreatePlaylist.isEnabled = false
+        binding.title.text = getString(R.string.app_new_playlist_btn)
+
+        setTextWatchers()
+    }
+
     private fun setDialog() {
         confirmDialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.app_title_dialog))
@@ -163,26 +186,30 @@ class CreationPlaylistFragment: Fragment() {
             .setPositiveButton(getString(R.string.app_finish_dialog)) { _, _ ->
                 findNavController().popBackStack()
             }
-
     }
 
     private fun renderState(state: CreationPlaylistUiState) {
         when(state) {
-            CreationPlaylistUiState.NewCreationPlaylistMode -> binding.btnCreatePlaylist.isEnabled = false
+            CreationPlaylistUiState.NewCreationPlaylistMode -> {
+                setCreationMode()
+            }
+
             is CreationPlaylistUiState.EditCreationPlaylistMode -> {
-                binding.btnCreatePlaylist.isEnabled = true
-                binding.ivCover.setImageURI(Uri.parse(state.playlist.pathToCover))
-                binding.tvNamePlaylist.setText(state.playlist.name)
-                binding.description.setText(state.playlist.description)
+                setEditMode(state.playlist)
             }
             is CreationPlaylistUiState.SaveButtonEnabled -> {
                 binding.btnCreatePlaylist.isEnabled = state.isEnabled
             }
             is CreationPlaylistUiState.CloseWithConfirmation -> {
+                Log.d("BACK_TAG", "Back pressed triggered in state")
+                Log.d("NAVIGATION_TAG", "Current destination: ${findNavController().currentDestination?.id}")
+                Log.d("NAVIGATION_TAG", "Back stack entry count: ${findNavController().backQueue.size}")
                 if (state.isShowDialog) {
                     confirmDialog.show()
                 } else {
-                    findNavController().popBackStack()
+                    Log.d("BACK_TAG", "Back pressed triggered in SHOW FALSE")
+                    val result = findNavController().popBackStack()
+                    Log.d("NAVIGATION_TAG", "popBackStack result: $result")
                 }
             }
             is CreationPlaylistUiState.SavingCreationPlaylist -> {
@@ -198,6 +225,7 @@ class CreationPlaylistFragment: Fragment() {
 
         Glide.with(this)
             .load(uri)
+            .placeholder(R.drawable.ic_placeholder_large)
             .transform(
                 CenterCrop(),
                 RoundedCorners(cornersValuePx)

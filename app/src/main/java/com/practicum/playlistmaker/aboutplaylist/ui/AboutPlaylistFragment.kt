@@ -21,9 +21,9 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.aboutplaylist.ui.view_model.AboutPlaylistAdapter
 import com.practicum.playlistmaker.aboutplaylist.ui.view_model.AboutPlaylistViewModel
 import com.practicum.playlistmaker.creationplaylist.domain.models.Playlist
+import com.practicum.playlistmaker.creationplaylist.ui.CreationPlaylistFragment
 import com.practicum.playlistmaker.databinding.FragmentAboutplaylistBinding
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.OnTrackClickListener
@@ -76,6 +76,16 @@ class AboutPlaylistFragment: Fragment() {
             renderState(it)
         }
 
+        viewModel.observeEditMode().observe(viewLifecycleOwner) { state ->
+            if (state is EditModeState.Show) {
+                findNavController().navigate(
+                    R.id.action_aboutPlaylistFragment_to_creationPlaylistFragment,
+                    CreationPlaylistFragment.createArgs(state.playlistId)
+                )
+                viewModel.editModeStarted()
+            }
+        }
+
         binding.optionsBtn.setOnClickListener {
             optionBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
@@ -94,6 +104,10 @@ class AboutPlaylistFragment: Fragment() {
 
         binding.deletePlaylist.setOnClickListener{
             viewModel.showDeletePlaylistDialog()
+        }
+
+        binding.editPlaylist.setOnClickListener {
+            viewModel.startEditingPlaylist()
         }
 
     }
@@ -269,6 +283,7 @@ class AboutPlaylistFragment: Fragment() {
             is AboutPlaylistUiState.ShowDeletePlaylistDialog -> {
                 showDeletePlaylistConfirmation(state.playlistName)
             }
+
         }
     }
 

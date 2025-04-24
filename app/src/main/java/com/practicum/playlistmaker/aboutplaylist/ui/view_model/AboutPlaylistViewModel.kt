@@ -6,9 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.aboutplaylist.ui.AboutPlaylistUiState
+import com.practicum.playlistmaker.aboutplaylist.ui.EditModeState
 import com.practicum.playlistmaker.creationplaylist.domain.db.CreationPlaylistInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.sharing.data.ExternalNavigator
+import com.practicum.playlistmaker.util.SingleLiveEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -19,6 +21,9 @@ class AboutPlaylistViewModel(
 
     private val aboutPlaylistLiveData = MutableLiveData<AboutPlaylistUiState>()
     fun observeAboutPlaylist(): LiveData<AboutPlaylistUiState> = aboutPlaylistLiveData
+
+    private val editMode = SingleLiveEvent<EditModeState>()
+    fun observeEditMode(): LiveData<EditModeState> = editMode
 
     init {
         initPlaylistInfo()
@@ -32,6 +37,10 @@ class AboutPlaylistViewModel(
             updateState(AboutPlaylistUiState.Content(playlist,tracks))
         }
 
+    }
+
+    fun editModeStarted() {
+        editMode.postValue(EditModeState.None)
     }
 
     fun deleteTrack(track: Track) {
@@ -53,6 +62,10 @@ class AboutPlaylistViewModel(
             val playlist = interactor.getPlaylistById(playlistId)
             updateState(AboutPlaylistUiState.ShowDeletePlaylistDialog(playlist.name))
         }
+    }
+
+    fun startEditingPlaylist() {
+        editMode.postValue(EditModeState.Show(playlistId))
     }
 
     fun deletePlaylist() {

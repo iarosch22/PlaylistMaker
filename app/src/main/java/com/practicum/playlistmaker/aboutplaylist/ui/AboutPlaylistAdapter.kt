@@ -1,12 +1,9 @@
-package com.practicum.playlistmaker.aboutplaylist.ui.view_model
+package com.practicum.playlistmaker.aboutplaylist.ui
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.aboutplaylist.ui.AboutPlaylistViewHolder
-import com.practicum.playlistmaker.aboutplaylist.ui.OnTrackLongClickListener
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.OnTrackClickListener
 
