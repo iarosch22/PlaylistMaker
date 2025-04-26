@@ -208,7 +208,9 @@ class CreationPlaylistFragment: Fragment() {
                 }
             }
             is CreationPlaylistUiState.SavingCreationPlaylist -> {
-                Toast.makeText(requireContext(), "Плейлист ${state.name} создан", Toast.LENGTH_SHORT).show()
+                if (state.isNewPlaylist) {
+                    Toast.makeText(requireContext(), "Плейлист ${state.name} создан", Toast.LENGTH_SHORT).show()
+                }
                 findNavController().popBackStack()
             }
         }

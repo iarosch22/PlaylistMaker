@@ -95,7 +95,7 @@ class CreationPlaylistViewModel(
                     )
                 )
 
-                updateState(CreationPlaylistUiState.SavingCreationPlaylist(enteredName))
+                updateState(CreationPlaylistUiState.SavingCreationPlaylist(enteredName, true))
             } else {
                 val playlist = interactor.getPlaylistById(playlistId)
 
@@ -106,7 +106,7 @@ class CreationPlaylistViewModel(
                 )
 
                 interactor.updatePlaylist(updatedPlaylist)
-                updateState(CreationPlaylistUiState.SavingCreationPlaylist(enteredName))
+                updateState(CreationPlaylistUiState.SavingCreationPlaylist(enteredName, false))
             }
         }
     }
