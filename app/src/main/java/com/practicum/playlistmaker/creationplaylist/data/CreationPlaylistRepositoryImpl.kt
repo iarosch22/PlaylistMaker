@@ -56,7 +56,6 @@ class CreationPlaylistRepositoryImpl(
             size = (playlist.size.toInt() + 1).toString()
         )
 
-        //appDatabase.playlistsDao().updatePlaylist( converter.map(updatedPlaylist))
         updatePlaylist(updatedPlaylist)
 
         appDatabase.playlistsTrackDao().insertTrack(
@@ -76,7 +75,6 @@ class CreationPlaylistRepositoryImpl(
             size = (playlist.size.toInt() - 1).toString()
         )
 
-        //appDatabase.playlistsDao().updatePlaylist( converter.map(updatedPlaylist) )
         updatePlaylist(updatedPlaylist)
         deleteTrackFromDb(converter.map(track))
     }
@@ -96,8 +94,8 @@ class CreationPlaylistRepositoryImpl(
     }
 
     override suspend fun getTracks(trackIds: List<String>): List<Track>  {
-        val tracks = appDatabase.playlistsTrackDao().getTracks()
-        return converter.filterTracks(trackIds, tracks)
+        val tracks = appDatabase.playlistsTrackDao().getTracks().toMutableList()
+        return converter.filterTracks(trackIds, tracks.reversed())
     }
 
     override suspend fun updatePlaylist(playlist: Playlist) {
