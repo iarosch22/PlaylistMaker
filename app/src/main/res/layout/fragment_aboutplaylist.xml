@@ -51,7 +51,7 @@
             app:layout_constraintStart_toStartOf="@id/cover"
             app:layout_constraintTop_toTopOf="@id/cover"
             app:srcCompat="@drawable/ic_back"
-            app:tint="?attr/colorOnSecondary" />
+            app:tint="@color/yp_black" />
 
         <TextView
             android:id="@+id/playlistName"

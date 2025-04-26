@@ -11,8 +11,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -158,9 +160,9 @@ class AboutPlaylistFragment: Fragment() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when(newState) {
                     BottomSheetBehavior.STATE_HIDDEN -> {
-                        binding.overlay.visibility = View.GONE
+                        binding.overlay.isVisible = false
                     } else -> {
-                    binding.overlay.visibility = View.VISIBLE
+                    binding.overlay.isVisible = true
                 }
                 }
             }
@@ -216,7 +218,7 @@ class AboutPlaylistFragment: Fragment() {
     }
 
     private fun showDeleteTrackConfirmation(track: Track) {
-        deleteTrackConfirmDialog = MaterialAlertDialogBuilder(requireContext())
+        deleteTrackConfirmDialog = MaterialAlertDialogBuilder(requireContext(), R.style.MyAlertDialogStyle)
             .setMessage(getString(R.string.app_delete_track_dialog_message))
             .setNegativeButton(getString(R.string.app_delete_dialog_cancel)) { _, _ -> }
             .setPositiveButton(getString(R.string.app_delete_dialog_confirm)) { _, _ ->
@@ -227,7 +229,7 @@ class AboutPlaylistFragment: Fragment() {
     }
 
     private fun showDeletePlaylistConfirmation(playlistName: String) {
-        deletePlaylistConfirmDialog = MaterialAlertDialogBuilder(requireContext())
+        deletePlaylistConfirmDialog = MaterialAlertDialogBuilder(requireContext(), R.style.MyAlertDialogStyle)
             .setMessage(getString(R.string.app_delete_playlist_dialog_message, playlistName))
             .setNegativeButton(getString(R.string.app_delete_dialog_cancel)) { _, _ -> }
             .setPositiveButton(getString(R.string.app_delete_dialog_confirm)) { _, _ ->

@@ -9,7 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentFavoriteBinding
-import com.practicum.playlistmaker.library.ui.view_models.FavoriteViewModel
+import com.practicum.playlistmaker.library.ui.favorite.view_model.FavoriteViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.util.BindingFragment
 import com.practicum.playlistmaker.search.ui.OnTrackClickListener
