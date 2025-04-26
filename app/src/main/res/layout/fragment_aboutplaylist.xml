@@ -247,50 +247,34 @@
 
         </LinearLayout>
 
-        <FrameLayout
+
+        <TextView
             android:id="@+id/sharePlaylist"
             android:layout_width="match_parent"
             android:layout_height="61dp"
-            android:paddingHorizontal="@dimen/padding_16">
+            android:text="@string/app_playlist_share"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="@dimen/padding_16"
+            style="@style/RegularTextStyle" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/app_playlist_share"
-                android:layout_gravity="start|center_vertical"
-                style="@style/RegularTextStyle" />
-
-        </FrameLayout>
-
-        <FrameLayout
+        <TextView
             android:id="@+id/editPlaylist"
             android:layout_width="match_parent"
             android:layout_height="61dp"
-            android:paddingHorizontal="@dimen/padding_16">
+            android:text="@string/app_playlist_edit"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="@dimen/padding_16"
+            style="@style/RegularTextStyle" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/app_playlist_edit"
-                android:layout_gravity="start|center_vertical"
-                style="@style/RegularTextStyle" />
 
-        </FrameLayout>
-
-        <FrameLayout
+        <TextView
             android:id="@+id/deletePlaylist"
             android:layout_width="match_parent"
             android:layout_height="61dp"
-            android:paddingHorizontal="@dimen/padding_16">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/app_playlist_delete"
-                android:layout_gravity="start|center_vertical"
-                style="@style/RegularTextStyle" />
-
-        </FrameLayout>
+            android:paddingHorizontal="@dimen/padding_16"
+            android:text="@string/app_playlist_delete"
+            android:gravity="center_vertical"
+            style="@style/RegularTextStyle" />
 
     </LinearLayout>
 

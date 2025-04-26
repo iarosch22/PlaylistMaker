@@ -12,7 +12,7 @@ class AboutPlaylistAdapter(
     private val longClickListener: OnTrackLongClickListener
 ): RecyclerView.Adapter<AboutPlaylistViewHolder>() {
 
-    var tracks = mutableListOf<Track>()
+    val tracks = mutableListOf<Track>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AboutPlaylistViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.track_search_item, parent, false)

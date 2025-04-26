@@ -80,11 +80,8 @@ class AboutPlaylistViewModel(
             val playlist = interactor.getPlaylistById(playlistId)
             val tracks = interactor.getTracks(playlist.tracksId)
 
-            if (tracks.isEmpty()) {
-                updateState(AboutPlaylistUiState.ShareContent(true, playlist, tracks))
-            } else {
-                updateState(AboutPlaylistUiState.ShareContent(false, playlist, tracks))
-            }
+            updateState(AboutPlaylistUiState.ShareContent(tracks.isEmpty(), playlist, tracks))
+
         }
     }
 
