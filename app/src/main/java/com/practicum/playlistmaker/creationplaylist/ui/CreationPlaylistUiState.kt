@@ -6,7 +6,7 @@ sealed class CreationPlaylistUiState {
 
     object NewCreationPlaylistMode: CreationPlaylistUiState()
 
-    data class SavingCreationPlaylist(val name: String): CreationPlaylistUiState()
+    data class SavingCreationPlaylist(val name: String, val isNewPlaylist: Boolean): CreationPlaylistUiState()
 
     data class SaveButtonEnabled(val isEnabled: Boolean): CreationPlaylistUiState()
 

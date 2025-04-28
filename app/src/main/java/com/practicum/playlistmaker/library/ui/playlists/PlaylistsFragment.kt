@@ -7,10 +7,11 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.aboutplaylist.ui.AboutPlaylistFragment
 import com.practicum.playlistmaker.creationplaylist.domain.models.Playlist
 import com.practicum.playlistmaker.creationplaylist.ui.CreationPlaylistFragment
 import com.practicum.playlistmaker.databinding.FragmentPlaylistsBinding
-import com.practicum.playlistmaker.library.ui.view_models.PlaylistsViewModel
+import com.practicum.playlistmaker.library.ui.playlists.view_model.PlaylistsViewModel
 import com.practicum.playlistmaker.util.BindingFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -20,7 +21,7 @@ class PlaylistsFragment: BindingFragment<FragmentPlaylistsBinding>() {
 
     private val playlists = mutableListOf<Playlist>()
 
-    private val adapter by lazy { PlaylistsAdapter() }
+    private val adapter by lazy { PlaylistsAdapter( createOpenPlaylistListener() ) }
 
     override fun createBinding(
         inflater: LayoutInflater,
@@ -61,7 +62,18 @@ class PlaylistsFragment: BindingFragment<FragmentPlaylistsBinding>() {
 
     private fun showMessage() {
         binding.placeholder.visibility = View.VISIBLE
-        binding.placeholder.visibility = View.GONE
+        binding.rvPlaylists.visibility = View.GONE
+    }
+
+    private fun createOpenPlaylistListener(): OnOpenPlaylistClickListener {
+        val onOpenPlaylistClickListener = OnOpenPlaylistClickListener { playlistId ->
+            findNavController().navigate(
+                R.id.action_libraryFragment_to_aboutPlaylistFragment,
+                AboutPlaylistFragment.createArgs(playlistId)
+            )
+        }
+
+        return onOpenPlaylistClickListener
     }
 
     companion object {

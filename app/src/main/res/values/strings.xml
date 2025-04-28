@@ -35,11 +35,24 @@
     <string name="app_btn_description">Описание</string>
     <string name="app_btn_add">Создать</string>
     <string name="app_new_playlist_btn">Новый плейлист</string>
+    <string name="app_edit_playlist_btn">Редактировать</string>
     <string name="app_title_dialog">Завершить создание плейлиста?</string>
     <string name="app_message_dialog">Все несохраненные данные будут потеряны</string>
     <string name="app_cancel_dialog">Отмена</string>
     <string name="app_finish_dialog">Завершить</string>
+    <string name="app_delete_track_dialog_message">Хотите удалить трек?</string>
+    <string name="app_delete_playlist_dialog_message">Хотите удалить плейлист «%1$s»?</string>
+    <string name="app_delete_dialog_confirm">ДА</string>
+    <string name="app_delete_dialog_cancel">НЕТ</string>
     <string name="app_tracks_size">%1$s %2$s</string>
+    <string name="app_playlist_duration">%1$s минут</string>
     <string name="app_add_to_playlist">Добавить в плейлист</string>
     <string name="app_no_photo_selected">Фото не выбрано</string>
+    <string name="app_playlist_share">Поделиться</string>
+    <string name="app_playlist_edit">Редактировать информацию</string>
+    <string name="app_playlist_delete">Удалить плейлист</string>
+    <string name="app_share_track_info">%1$d. %2$s - %3$s (%4$s)</string>
+    <string name="app_share_message">В этом плейлисте нет списка треков, которым можно поделиться</string>
+    <string name="app_btn_save">Сохранить</string>
+    <string name="app_empty_playlist">В плейлисте %1$s нет добавленных треков</string>
 </resources>

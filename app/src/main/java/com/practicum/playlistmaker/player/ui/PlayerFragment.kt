@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Build.VERSION
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -193,8 +194,8 @@ class PlayerFragment : Fragment() {
         }
     }
 
-    private fun createOnPlaylistListener(): OnPlaylistClickListener {
-        val playlistListener = OnPlaylistClickListener { name, tracksId: List<String> ->
+    private fun createOnPlaylistListener(): OnAddToPlaylistClickListener {
+        val playlistListener = OnAddToPlaylistClickListener { name, tracksId: List<String> ->
             viewModel.hasTrackInPlaylist(name, tracksId)
         }
 

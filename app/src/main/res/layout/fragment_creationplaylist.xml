@@ -50,7 +50,6 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/padding_14"
         android:paddingBottom="@dimen/padding_12"
-        android:text="@string/app_new_playlist"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/btn_back"/>
 
@@ -112,7 +111,6 @@
         app:layout_constraintStart_toStartOf="@id/left_guideline"
         app:layout_constraintEnd_toEndOf="@id/right_guideline"
         app:layout_constraintBottom_toBottomOf="@id/bottom_guideline"
-        android:text="@string/app_btn_add"
         style="@style/AddButtonStyles"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

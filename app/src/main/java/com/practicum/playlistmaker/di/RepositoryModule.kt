@@ -5,7 +5,7 @@ import com.practicum.playlistmaker.library.domain.db.LibraryRepository
 import com.practicum.playlistmaker.creationplaylist.data.CreationPlaylistRepositoryImpl
 import com.practicum.playlistmaker.creationplaylist.domain.db.CreationPlaylistRepository
 import com.practicum.playlistmaker.player.data.impl.PlayerRepositoryImpl
-import com.practicum.playlistmaker.player.domain.PlayerRepository
+import com.practicum.playlistmaker.player.domain.api.PlayerRepository
 import com.practicum.playlistmaker.search.data.TracksRepositoryImpl
 import com.practicum.playlistmaker.search.domain.TracksRepository
 import com.practicum.playlistmaker.settings.data.impl.SettingsRepositoryImpl
