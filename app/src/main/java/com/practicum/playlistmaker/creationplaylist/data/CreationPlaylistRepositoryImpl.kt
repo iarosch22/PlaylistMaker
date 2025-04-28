@@ -48,7 +48,7 @@ class CreationPlaylistRepositoryImpl(
         val tracksId = track.trackId
 
         val newTracksId = playlist.tracksId.toMutableList().apply {
-            add(tracksId)
+            add(0, tracksId)
         }
 
         val updatedPlaylist = playlist.copy(
@@ -95,7 +95,7 @@ class CreationPlaylistRepositoryImpl(
 
     override suspend fun getTracks(trackIds: List<String>): List<Track>  {
         val tracks = appDatabase.playlistsTrackDao().getTracks().toMutableList()
-        return converter.filterTracks(trackIds, tracks.reversed())
+        return converter.filterTracks(trackIds, tracks)
     }
 
     override suspend fun updatePlaylist(playlist: Playlist) {

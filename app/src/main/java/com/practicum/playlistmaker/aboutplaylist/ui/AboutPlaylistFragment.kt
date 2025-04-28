@@ -275,7 +275,6 @@ class AboutPlaylistFragment: Fragment() {
             }
 
             is AboutPlaylistUiState.ShareContent -> {
-                Log.d("AboutPlaylistUiState", "${state.isEmptyContent}")
                 if (!state.isEmptyContent) {
                     sharePlaylist(state.playlist, state.tracks)
                 } else {
@@ -291,6 +290,9 @@ class AboutPlaylistFragment: Fragment() {
                 showDeletePlaylistConfirmation(state.playlistName)
             }
 
+            is AboutPlaylistUiState.Empty -> {
+                Toast.makeText(requireContext(), getString(R.string.app_empty_playlist, state.playlistName), Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

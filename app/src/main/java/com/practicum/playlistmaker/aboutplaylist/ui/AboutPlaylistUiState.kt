@@ -10,6 +10,8 @@ sealed class AboutPlaylistUiState {
         val tracks: List<Track>
     ): AboutPlaylistUiState()
 
+    data class Empty(val playlistName: String): AboutPlaylistUiState()
+
     data class ShareContent(
         val isEmptyContent: Boolean,
         val playlist: Playlist,

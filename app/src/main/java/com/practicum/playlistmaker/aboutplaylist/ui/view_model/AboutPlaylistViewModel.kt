@@ -26,7 +26,6 @@ class AboutPlaylistViewModel(
     fun observeEditMode(): LiveData<EditModeState> = editMode
 
     init {
-        Log.d("AboutPlaylistViewModel", "INIT!!!")
         initPlaylistInfo()
     }
 
@@ -35,7 +34,11 @@ class AboutPlaylistViewModel(
             val playlist = interactor.getPlaylistById(playlistId)
             val tracks = interactor.getTracks(playlist.tracksId)
 
-            updateState(AboutPlaylistUiState.Content(playlist,tracks))
+            if (tracks.isEmpty()) {
+                updateState(AboutPlaylistUiState.Empty(playlist.name))
+            } else {
+                updateState(AboutPlaylistUiState.Content(playlist,tracks))
+            }
         }
 
     }
