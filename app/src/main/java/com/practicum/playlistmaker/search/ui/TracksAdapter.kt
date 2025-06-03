@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.search.ui
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -22,7 +23,9 @@ class TracksAdapter(private val listener: OnTrackClickListener): RecyclerView.Ad
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         holder.bind(tracks[position])
 
-        holder.itemView.setOnClickListener { listener.onTrackClick(tracks[position]) }
+        holder.itemView.setOnClickListener {
+            listener.onTrackClick(tracks[position])
+        }
     }
 
 }

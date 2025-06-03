@@ -63,4 +63,26 @@ class NewPlaylistDbConvertor {
             previewUrl = track.previewUrl
         )
     }
+
+    fun filterTracks(trackIds: List<String>, tracks: List<PlaylistsTrackEntity>): List<Track> {
+
+        val tracksMap = tracks.associateBy { it.trackId }
+
+        return trackIds.mapNotNull { trackId ->
+            tracksMap[trackId]?.let {
+                Track(
+                    trackId = it.trackId,
+                    trackName = it.trackName,
+                    artistName = it.artistName,
+                    trackTimeMillis = it.trackTimeMillis,
+                    artworkUrl100 = it.artworkUrl100,
+                    collectionName = it.collectionName,
+                    releaseDate = it.releaseDate,
+                    primaryGenreName = it.primaryGenreName,
+                    country = it.country,
+                    previewUrl = it.previewUrl
+                )
+            }
+        }
+    }
 }

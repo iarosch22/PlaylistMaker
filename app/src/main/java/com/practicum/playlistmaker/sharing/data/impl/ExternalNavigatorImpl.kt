@@ -4,7 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.creationplaylist.domain.models.Playlist
+import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.sharing.data.ExternalNavigator
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class ExternalNavigatorImpl(private val context: Context): ExternalNavigator {
     override fun shareLink() {
@@ -43,4 +47,5 @@ class ExternalNavigatorImpl(private val context: Context): ExternalNavigator {
 
         context.startActivity(intent)
     }
+
 }

@@ -20,8 +20,24 @@ class CreationPlaylistInteractorImpl(private val repository: CreationPlaylistRep
         repository.savePlaylist(playlist)
     }
 
+    override suspend fun deletePlaylist(playlist: Playlist) {
+        repository.deletePlaylist(playlist)
+    }
+
     override suspend fun addTrackToPlaylist(playlist: Playlist, track: Track) {
         repository.addTrackToPlaylist(playlist, track)
+    }
+
+    override suspend fun deleteTrackFromPlaylist(playlist: Playlist, track: Track) {
+        repository.deleteTrackFromPlaylist(playlist, track)
+    }
+
+    override suspend fun getTracks(trackIds: List<String>): List<Track> {
+        return repository.getTracks(trackIds)
+    }
+
+    override suspend fun updatePlaylist(playlist: Playlist) {
+        repository.updatePlaylist(playlist)
     }
 
 }

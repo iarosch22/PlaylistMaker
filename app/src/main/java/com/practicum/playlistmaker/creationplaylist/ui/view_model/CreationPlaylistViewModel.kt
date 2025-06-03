@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.creationplaylist.ui.view_model
 
 import android.net.Uri
+import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,7 +21,6 @@ class CreationPlaylistViewModel(
     private var pathToSelectedPhoto: Uri? = null
     private var enteredName = ""
     private var enteredDescription = ""
-    private val tracks: List<Track> = mutableListOf()
 
     private val stateLiveData = MutableLiveData<CreationPlaylistUiState>()
     fun observeState(): LiveData<CreationPlaylistUiState> = stateLiveData
@@ -35,6 +35,9 @@ class CreationPlaylistViewModel(
         } else {
             viewModelScope.launch(Dispatchers.IO) {
                 val playlist = interactor.getPlaylistById(playlistId)
+                pathToSelectedPhoto = playlist.pathToCover.toUri()
+                enteredName = playlist.name
+                enteredDescription = playlist.description
                 updateState(CreationPlaylistUiState.EditCreationPlaylistMode(playlist))
             }
         }
@@ -65,7 +68,9 @@ class CreationPlaylistViewModel(
     }
 
     fun closeFragment() {
-        if (
+        if (playlistId != NEW_PLAYLIST_MODE) {
+            updateState(CreationPlaylistUiState.CloseWithConfirmation(false))
+        } else if (
             pathToSelectedPhoto != null &&
             enteredName.isNotEmpty() ||
             enteredDescription.isNotEmpty()
@@ -78,18 +83,31 @@ class CreationPlaylistViewModel(
 
     fun savePlaylist() {
         viewModelScope.launch(Dispatchers.IO) {
-            interactor.savePlaylist(
-                Playlist(
-                    id = 0L,
-                    name = enteredName,
-                    description = enteredDescription,
-                    pathToCover = pathToSelectedPhoto.toString(),
-                    tracksId = tracks.map { it.trackId },
-                    size = tracks.size.toString()
+            if (playlistId == NEW_PLAYLIST_MODE) {
+                interactor.savePlaylist(
+                    Playlist(
+                        id = 0L,
+                        name = enteredName,
+                        description = enteredDescription,
+                        pathToCover = pathToSelectedPhoto.toString(),
+                        tracksId = emptyList(),
+                        size = DEFAULT_SIZE
+                    )
                 )
-            )
 
-            updateState(CreationPlaylistUiState.SavingCreationPlaylist(enteredName))
+                updateState(CreationPlaylistUiState.SavingCreationPlaylist(enteredName, true))
+            } else {
+                val playlist = interactor.getPlaylistById(playlistId)
+
+                val updatedPlaylist = playlist.copy(
+                    pathToCover = pathToSelectedPhoto.toString(),
+                    name = enteredName,
+                    description = enteredDescription
+                )
+
+                interactor.updatePlaylist(updatedPlaylist)
+                updateState(CreationPlaylistUiState.SavingCreationPlaylist(enteredName, false))
+            }
         }
     }
 
@@ -99,5 +117,6 @@ class CreationPlaylistViewModel(
 
     companion object {
         const val NEW_PLAYLIST_MODE = -1L
+        const val DEFAULT_SIZE = "0"
     }
 }

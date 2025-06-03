@@ -39,6 +39,17 @@
         <item name="android:textSize">@dimen/primary_text_size</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
     </style>
+    <style name="PlaylistNameTextStyles">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/yp_black</item>
+        <item name="android:textSize">@dimen/text_size_24</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+    </style>
+    <style name="PlaylistDescriptionTextStyle">
+        <item name="android:textColor">@color/yp_black</item>
+        <item name="android:textSize">@dimen/text_size_18</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+    </style>
     <style name="RegularTextStyle">
         <item name="android:textColor">?attr/colorOnSecondary</item>
         <item name="android:textSize">@dimen/regular_text_size</item>

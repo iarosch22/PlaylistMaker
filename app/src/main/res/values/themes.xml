@@ -14,4 +14,18 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="MyAlertDialogStyle" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="colorSurface">@color/yp_white</item> <!-- фон -->
+        <item name="colorOnSurface">@color/yp_black</item> <!-- цвет текста -->
+        <item name="android:textColorSecondary">@color/yp_blue</item>
+        <item name="android:background">@color/yp_white</item>
+
+        <item name="buttonBarPositiveButtonStyle">@style/MyDialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/MyDialogButton</item>
+    </style>
+
+    <style name="MyDialogButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/yp_blue</item> <!-- Цвет текста кнопки -->
+    </style>
+
 </resources>

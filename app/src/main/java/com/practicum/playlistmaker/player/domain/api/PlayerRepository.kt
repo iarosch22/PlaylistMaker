@@ -1,6 +1,4 @@
-package com.practicum.playlistmaker.player.domain
-
-import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
+package com.practicum.playlistmaker.player.domain.api
 
 interface PlayerRepository {
     fun preparePlayer(trackUrl: String, onPreparedListener: PlayerInteractor.OnPreparedListener, onCompletedListener: PlayerInteractor.OnCompletedListener)

@@ -12,6 +12,14 @@ interface CreationPlaylistInteractor {
 
     suspend fun savePlaylist(playlist: Playlist)
 
+    suspend fun deletePlaylist(playlist: Playlist)
+
     suspend fun addTrackToPlaylist(playlist: Playlist, track: Track)
+
+    suspend fun deleteTrackFromPlaylist(playlist: Playlist, track: Track)
+
+    suspend fun getTracks(trackIds: List<String>): List<Track>
+
+    suspend fun updatePlaylist(playlist: Playlist)
 
 }

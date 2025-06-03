@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.creationplaylist.data.db.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -13,6 +14,9 @@ interface PlaylistsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPlaylist(playlist: PlaylistEntity)
+
+    @Delete(entity = PlaylistEntity::class)
+    suspend fun deletePlaylist(playlist: PlaylistEntity)
 
     @Update(entity = PlaylistEntity::class, onConflict = OnConflictStrategy.REPLACE)
     suspend fun updatePlaylist(playlist: PlaylistEntity)
