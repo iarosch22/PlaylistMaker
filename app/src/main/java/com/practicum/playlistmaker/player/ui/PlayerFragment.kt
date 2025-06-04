@@ -205,24 +205,21 @@ class PlayerFragment : Fragment() {
     private fun renderState(state: PlayerUiState) {
         when (state) {
             is PlayerUiState.Playing -> {
-                binding.playButton.setImageResource(R.drawable.ic_pause)
                 binding.duration.text = state.progress
                 setFavoriteIcon(state.isFavorite)
             }
 
             is PlayerUiState.Paused -> {
-                binding.playButton.setImageResource(R.drawable.ic_play)
                 binding.duration.text = state.progress
                 setFavoriteIcon(state.isFavorite)
             }
 
             is PlayerUiState.Prepared -> {
-                binding.playButton.setImageResource(R.drawable.ic_play)
                 binding.duration.text = DEFAULT_TIMER
             }
 
             is PlayerUiState.Default -> {
-                binding.playButton.setImageResource(R.drawable.ic_play)
+                binding.playButton.changeButtonState()
                 binding.duration.text = DEFAULT_TIMER
             }
 
