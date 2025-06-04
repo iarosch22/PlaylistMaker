@@ -52,7 +52,7 @@ class PlayerViewModel(
             onCompleted = object : PlayerInteractor.OnCompletedListener {
                 override fun onComplete() {
                     timerJob?.cancel()
-                    updateState(PlayerUiState.Prepared)
+                    updateState(PlayerUiState.Default)
                 }
             }
         )
