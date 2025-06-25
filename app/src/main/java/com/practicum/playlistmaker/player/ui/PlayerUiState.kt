@@ -6,6 +6,8 @@ sealed class PlayerUiState {
 
     object Prepared : PlayerUiState()
 
+    object Completed: PlayerUiState()
+
     class AddingToPlaylist(val playlistName:String, val isSuccess: Boolean): PlayerUiState()
 
     data class Playing(val progress: String) : PlayerUiState()

@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.Build.VERSION
 import android.os.Bundle
 import android.os.IBinder
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -54,16 +53,14 @@ class PlayerFragment : Fragment() {
 
     private val playerAdapter by lazy { PlayerAdapter( createOnPlaylistListener() ) }
 
-    private var musicService: MusicService? = null
-
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val binder = service as MusicService.MusicServiceBinder
-            musicService = service.getService()
+            viewModel.setAudioPlayerControl(binder.getService())
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
-            musicService = null
+            viewModel.removeAudioPlayerControl()
         }
 
     }
@@ -95,7 +92,7 @@ class PlayerFragment : Fragment() {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
-        viewModel.observeState().observe(viewLifecycleOwner) { state ->
+        viewModel.observePlayerState().observe(viewLifecycleOwner) { state ->
             renderState(state)
         }
 
@@ -144,11 +141,6 @@ class PlayerFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         unbindMusicService()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        viewModel.onPause()
     }
 
     private fun setBackBtn() {
@@ -260,6 +252,10 @@ class PlayerFragment : Fragment() {
             }
 
             is PlayerUiState.Default -> {
+                binding.duration.text = DEFAULT_TIMER
+            }
+
+            is PlayerUiState.Completed -> {
                 binding.playButton.changeButtonState()
                 binding.duration.text = DEFAULT_TIMER
             }
@@ -272,6 +268,7 @@ class PlayerFragment : Fragment() {
                     Toast.makeText(requireContext(), "Трек уже добавлен в плейлист [${state.playlistName}]", Toast.LENGTH_SHORT).show()
                 }
             }
+
         }
     }
 
