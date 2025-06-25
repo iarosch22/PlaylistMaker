@@ -1,9 +1,13 @@
 package com.practicum.playlistmaker.player.ui
 
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Build
 import android.os.Build.VERSION
 import android.os.Bundle
+import android.os.IBinder
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -50,6 +54,20 @@ class PlayerFragment : Fragment() {
 
     private val playerAdapter by lazy { PlayerAdapter( createOnPlaylistListener() ) }
 
+    private var musicService: MusicService? = null
+
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as MusicService.MusicServiceBinder
+            musicService = service.getService()
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            musicService = null
+        }
+
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -71,12 +89,18 @@ class PlayerFragment : Fragment() {
 
         setPlaylistsAdapter()
 
+        bindMusicService()
+
         binding.saveToPlaylist.setOnClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
         viewModel.observeState().observe(viewLifecycleOwner) { state ->
             renderState(state)
+        }
+
+        viewModel.observeFavorite().observe(viewLifecycleOwner) {
+            setFavoriteIcon(it)
         }
 
         lifecycleScope.launch {
@@ -93,6 +117,7 @@ class PlayerFragment : Fragment() {
         binding.playButton.setOnClickListener{
             viewModel.onPlayButtonClicked()
         }
+        binding.playButton.isEnabled = false
 
         binding.saveToFavorites.setOnClickListener { viewModel.onFavoriteClicked() }
 
@@ -102,6 +127,23 @@ class PlayerFragment : Fragment() {
                 CreationPlaylistFragment.createArgs(NEW_PLAYLIST_MODE)
             )
         }
+    }
+
+    private fun bindMusicService() {
+        val intent = Intent(requireContext(), MusicService::class.java).apply {
+            putExtra(SONG_URL, track?.previewUrl)
+        }
+
+        requireActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    private fun unbindMusicService() {
+        requireActivity().unbindService(serviceConnection)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        unbindMusicService()
     }
 
     override fun onStop() {
@@ -206,16 +248,15 @@ class PlayerFragment : Fragment() {
         when (state) {
             is PlayerUiState.Playing -> {
                 binding.duration.text = state.progress
-                setFavoriteIcon(state.isFavorite)
             }
 
             is PlayerUiState.Paused -> {
                 binding.duration.text = state.progress
-                setFavoriteIcon(state.isFavorite)
             }
 
             is PlayerUiState.Prepared -> {
                 binding.duration.text = DEFAULT_TIMER
+                binding.playButton.isEnabled = true
             }
 
             is PlayerUiState.Default -> {
@@ -245,6 +286,8 @@ class PlayerFragment : Fragment() {
         private const val TRACK = "TRACK"
 
         private const val DEFAULT_TIMER = "00:00"
+
+        private const val SONG_URL = "song_url"
     }
 
 }

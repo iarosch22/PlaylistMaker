@@ -8,6 +8,7 @@ import com.practicum.playlistmaker.creationplaylist.domain.db.CreationPlaylistIn
 import com.practicum.playlistmaker.creationplaylist.domain.models.Playlist
 import com.practicum.playlistmaker.library.domain.db.LibraryInteractor
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
+import com.practicum.playlistmaker.player.ui.AudioPlayerControl
 import com.practicum.playlistmaker.player.ui.PlayerUiState
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Dispatchers
@@ -29,16 +30,36 @@ class PlayerViewModel(
     private var isFavorite = track.isFavorite
     private var timerJob: Job? = null
 
-    private val stateLiveData = MutableLiveData<PlayerUiState>()
-    fun observeState(): LiveData<PlayerUiState> = stateLiveData
+    private val playerState = MutableLiveData<PlayerUiState>()
+    fun observeState(): LiveData<PlayerUiState> = playerState
 
-    private val playlistsLiveData = MutableStateFlow<List<Playlist>>(emptyList())
-    fun observePlaylistsState(): StateFlow<List<Playlist>> = playlistsLiveData
+    private val favoriteLiveData = MutableLiveData<Boolean>()
+    fun observeFavorite(): LiveData<Boolean> = favoriteLiveData
+
+    private val playlistsState = MutableStateFlow<List<Playlist>>(emptyList())
+    fun observePlaylistsState(): StateFlow<List<Playlist>> = playlistsState
 
     init {
         setFavoriteValue()
         initPlayer()
         getPlaylists()
+    }
+
+    //TODO
+    fun setAudioPlayerControl(audioPlayerControl: AudioPlayerControl) {
+        //this.audioPlayerControl = audioPlayerControl
+
+        viewModelScope.launch {
+            audioPlayerControl.getPlayerState().collect { state ->
+                when(state) {
+                    PlayerUiState.Default -> playerState.postValue(state)
+                    is PlayerUiState.Paused -> playerState.postValue(PlayerUiState.Paused(state.progress))
+                    is PlayerUiState.Playing -> playerState.postValue(PlayerUiState.Playing(state.progress))
+                    PlayerUiState.Prepared -> playerState.postValue(state)
+                    else -> {}
+                }
+            }
+        }
     }
 
     private fun initPlayer() {
@@ -59,7 +80,7 @@ class PlayerViewModel(
     }
 
     fun onPlayButtonClicked() {
-        when (stateLiveData.value) {
+        when (playerState.value) {
             is PlayerUiState.Playing -> pausePlayer()
             is PlayerUiState.Prepared,
             is PlayerUiState.Paused,
@@ -74,19 +95,19 @@ class PlayerViewModel(
 
     private fun startPlayer() {
         playerInteractor.startPlayer()
-        updateState(PlayerUiState.Playing(getCurrentPlayerPosition(), isFavorite))
+        updateState(PlayerUiState.Playing(getCurrentPlayerPosition()))
         startTimer()
     }
 
     private fun pausePlayer() {
         playerInteractor.pausePlayer()
         timerJob?.cancel()
-        updateState(PlayerUiState.Paused(getCurrentPlayerPosition(), isFavorite))
+        updateState(PlayerUiState.Paused(getCurrentPlayerPosition()))
     }
 
     private fun releasePlayer() {
         playerInteractor.releasePlayer()
-        stateLiveData.value = PlayerUiState.Default
+        playerState.value = PlayerUiState.Default
     }
 
     override fun onCleared() {
@@ -99,7 +120,7 @@ class PlayerViewModel(
         timerJob = viewModelScope.launch {
             while (playerInteractor.getStatePlaying()) {
                 delay(CHECK_INTERVAL)
-                updateState(PlayerUiState.Playing(getCurrentPlayerPosition(), isFavorite))
+                updateState(PlayerUiState.Playing(getCurrentPlayerPosition()))
             }
         }
     }
@@ -107,6 +128,7 @@ class PlayerViewModel(
     private fun setFavoriteValue() {
         viewModelScope.launch {
             isFavorite = libraryInteractor.getTrackFavoriteValue(track.trackId)
+            favoriteLiveData.value = isFavorite
         }
     }
 
@@ -116,8 +138,12 @@ class PlayerViewModel(
     }
 
     private fun updateState(state: PlayerUiState) {
-        stateLiveData.postValue(state)
+        playerState.postValue(state)
     }
+
+//    fun removeAudioPlayerControl() {
+//        audioPlayerControl = null
+//    }
 
     fun onFavoriteClicked() {
         viewModelScope.launch {
@@ -127,22 +153,23 @@ class PlayerViewModel(
                 libraryInteractor.addToFavoriteTracks(track)
             }
 
+            favoriteLiveData.value = !isFavorite
             isFavorite = !isFavorite
-
-            val currentState = stateLiveData.value
-            val progress = when (currentState) {
-                is PlayerUiState.Playing -> currentState.progress
-                is PlayerUiState.Paused -> currentState.progress
-                else -> DEFAULT_TIMER
-            }
-
-            when (currentState) {
-                is PlayerUiState.Playing -> updateState(PlayerUiState.Playing(progress, isFavorite))
-                is PlayerUiState.Paused -> updateState(PlayerUiState.Paused(progress, isFavorite))
-                is PlayerUiState.Prepared -> updateState(PlayerUiState.Prepared)
-                is PlayerUiState.Default -> updateState(PlayerUiState.Default)
-                else -> {}
-            }
+//
+//            val currentState = playerState.value
+//            val progress = when (currentState) {
+//                is PlayerUiState.Playing -> currentState.progress
+//                is PlayerUiState.Paused -> currentState.progress
+//                else -> DEFAULT_TIMER
+//            }
+//
+//            when (currentState) {
+//                is PlayerUiState.Playing -> updateState(PlayerUiState.Playing(progress))
+//                is PlayerUiState.Paused -> updateState(PlayerUiState.Paused(progress))
+//                is PlayerUiState.Prepared -> updateState(PlayerUiState.Prepared)
+//                is PlayerUiState.Default -> updateState(PlayerUiState.Default)
+//                else -> {}
+//            }
         }
     }
 
@@ -150,7 +177,7 @@ class PlayerViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             creationPlaylistInteractor.getPlaylists()
                 .collect { playlists ->
-                    playlistsLiveData.value = playlists
+                    playlistsState.value = playlists
                 }
         }
     }

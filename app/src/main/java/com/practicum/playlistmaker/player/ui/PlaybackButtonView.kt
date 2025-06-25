@@ -44,6 +44,8 @@ class PlaybackButtonView @JvmOverloads constructor(
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (!isEnabled) return false
+
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 return true
