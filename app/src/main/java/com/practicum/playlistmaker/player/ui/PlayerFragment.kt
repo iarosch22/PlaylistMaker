@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -34,6 +35,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.text.SimpleDateFormat
 import java.util.Locale
+import android.Manifest
 
 const val SDK_TIRAMISU = Build.VERSION_CODES.TIRAMISU
 
@@ -62,7 +64,16 @@ class PlayerFragment : Fragment() {
         override fun onServiceDisconnected(name: ComponentName?) {
             viewModel.removeAudioPlayerControl()
         }
+    }
 
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            bindMusicService()
+        } else {
+            Toast.makeText(requireContext(), "Can't bind service!", Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun onCreateView(
@@ -86,7 +97,11 @@ class PlayerFragment : Fragment() {
 
         setPlaylistsAdapter()
 
-        bindMusicService()
+        if (VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            bindMusicService()
+        }
 
         binding.saveToPlaylist.setOnClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -129,6 +144,8 @@ class PlayerFragment : Fragment() {
     private fun bindMusicService() {
         val intent = Intent(requireContext(), MusicService::class.java).apply {
             putExtra(SONG_URL, track?.previewUrl)
+            putExtra(ARTIST_NAME, track?.artistName)
+            putExtra(SONG_TITLE, track?.trackName)
         }
 
         requireActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
@@ -285,6 +302,8 @@ class PlayerFragment : Fragment() {
         private const val DEFAULT_TIMER = "00:00"
 
         private const val SONG_URL = "song_url"
+        private const val ARTIST_NAME = "artist_name"
+        private const val SONG_TITLE = "song_title"
     }
 
 }
