@@ -11,6 +11,7 @@ import android.media.MediaPlayer
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import com.practicum.playlistmaker.R
@@ -99,6 +100,7 @@ class MusicService: Service(), AudioPlayerControl {
         }
         mediaPlayer?.setOnCompletionListener {
             timerJob?.cancel()
+            stopNotification()
             _playerState.value = PlayerUiState.Completed
         }
     }
@@ -124,12 +126,16 @@ class MusicService: Service(), AudioPlayerControl {
     }
 
     private fun releasePlayer() {
+        if (mediaPlayer == null) return
+
         timerJob?.cancel()
 
-        mediaPlayer?.stop()
-        mediaPlayer?.setOnPreparedListener(null)
-        mediaPlayer?.setOnCompletionListener(null)
-        mediaPlayer?.release()
+        mediaPlayer?.apply {
+            stop()
+            setOnPreparedListener(null)
+            setOnCompletionListener(null)
+            release()
+        }
         mediaPlayer = null
 
         _playerState.value = PlayerUiState.Default
@@ -142,7 +148,7 @@ class MusicService: Service(), AudioPlayerControl {
             NotificationManager.IMPORTANCE_DEFAULT
         )
 
-        channel.description = "Service for playing music"
+        channel.description = getString(R.string.app_service_name)
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
