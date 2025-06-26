@@ -54,6 +54,7 @@ class MusicService: Service(), AudioPlayerControl {
 
     override fun onCreate() {
         super.onCreate()
+        releasePlayer()
         mediaPlayer = MediaPlayer()
     }
 
