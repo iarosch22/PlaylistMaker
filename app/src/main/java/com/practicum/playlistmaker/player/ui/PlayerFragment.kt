@@ -160,6 +160,16 @@ class PlayerFragment : Fragment() {
         unbindMusicService()
     }
 
+    override fun onStop() {
+        super.onStop()
+        viewModel.startNotification()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.stopNotification()
+    }
+
     private fun setBackBtn() {
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()

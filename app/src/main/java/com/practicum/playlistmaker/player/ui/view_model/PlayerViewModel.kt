@@ -49,6 +49,17 @@ class PlayerViewModel(
         }
     }
 
+    fun startNotification() {
+        when(playerState.value) {
+            is PlayerUiState.Playing -> audioPlayerControl?.startNotification()
+            else -> {}
+        }
+    }
+
+    fun stopNotification() {
+        audioPlayerControl?.stopNotification()
+    }
+
     fun onPlayButtonClicked() {
         when (playerState.value) {
             is PlayerUiState.Playing -> audioPlayerControl?.pausePlayer()

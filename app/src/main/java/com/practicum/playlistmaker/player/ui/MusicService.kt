@@ -63,14 +63,21 @@ class MusicService: Service(), AudioPlayerControl {
         initMediaPlayer()
 
         createNotificationChannel()
+
+        return binder
+    }
+
+    override fun startNotification() {
         ServiceCompat.startForeground(
             this,
             SERVICE_NOTIFICATION_ID,
             createServiceNotification(),
             ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
         )
+    }
 
-        return binder
+    override fun stopNotification() {
+        ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
