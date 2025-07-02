@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.player.ui.view_model
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,116 +8,84 @@ import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.creationplaylist.domain.db.CreationPlaylistInteractor
 import com.practicum.playlistmaker.creationplaylist.domain.models.Playlist
 import com.practicum.playlistmaker.library.domain.db.LibraryInteractor
-import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
+import com.practicum.playlistmaker.player.ui.AudioPlayerControl
 import com.practicum.playlistmaker.player.ui.PlayerUiState
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class PlayerViewModel(
     private val track: Track,
-    private val playerInteractor: PlayerInteractor,
     private val libraryInteractor: LibraryInteractor,
     private val creationPlaylistInteractor: CreationPlaylistInteractor
 ) : ViewModel() {
 
     private var isFavorite = track.isFavorite
-    private var timerJob: Job? = null
 
-    private val stateLiveData = MutableLiveData<PlayerUiState>()
-    fun observeState(): LiveData<PlayerUiState> = stateLiveData
+    private val playerState = MutableLiveData<PlayerUiState>()
+    fun observePlayerState(): LiveData<PlayerUiState> = playerState
 
-    private val playlistsLiveData = MutableStateFlow<List<Playlist>>(emptyList())
-    fun observePlaylistsState(): StateFlow<List<Playlist>> = playlistsLiveData
+    private val favoriteLiveData = MutableLiveData<Boolean>()
+    fun observeFavorite(): LiveData<Boolean> = favoriteLiveData
+
+    private val playlistsState = MutableStateFlow<List<Playlist>>(emptyList())
+    fun observePlaylistsState(): StateFlow<List<Playlist>> = playlistsState
+
+    private var audioPlayerControl: AudioPlayerControl? = null
 
     init {
         setFavoriteValue()
-        initPlayer()
         getPlaylists()
     }
 
-    private fun initPlayer() {
-        playerInteractor.preparePlayer(
-            track.previewUrl,
-            onPrepared = object : PlayerInteractor.OnPreparedListener {
-                override fun onPrepared() {
-                    updateState(PlayerUiState.Prepared)
-                }
-            },
-            onCompleted = object : PlayerInteractor.OnCompletedListener {
-                override fun onComplete() {
-                    timerJob?.cancel()
-                    updateState(PlayerUiState.Default)
-                }
+    fun setAudioPlayerControl(audioPlayerControl: AudioPlayerControl) {
+        this.audioPlayerControl = audioPlayerControl
+
+        viewModelScope.launch {
+            audioPlayerControl.getPlayerState().collect {
+                playerState.postValue(it)
             }
-        )
+        }
     }
 
-    fun onPlayButtonClicked() {
-        when (stateLiveData.value) {
-            is PlayerUiState.Playing -> pausePlayer()
-            is PlayerUiState.Prepared,
-            is PlayerUiState.Paused,
-            is PlayerUiState.Default -> startPlayer()
+    fun startNotification() {
+        when(playerState.value) {
+            is PlayerUiState.Playing -> audioPlayerControl?.startNotification()
             else -> {}
         }
     }
 
-    fun onPause() {
-        if (playerInteractor.getStatePlaying()) pausePlayer()
+    fun stopNotification() {
+        audioPlayerControl?.stopNotification()
     }
 
-    private fun startPlayer() {
-        playerInteractor.startPlayer()
-        updateState(PlayerUiState.Playing(getCurrentPlayerPosition(), isFavorite))
-        startTimer()
+    fun onPlayButtonClicked() {
+        when (playerState.value) {
+            is PlayerUiState.Playing -> audioPlayerControl?.pausePlayer()
+            else -> audioPlayerControl?.startPlayer()
+        }
     }
 
-    private fun pausePlayer() {
-        playerInteractor.pausePlayer()
-        timerJob?.cancel()
-        updateState(PlayerUiState.Paused(getCurrentPlayerPosition(), isFavorite))
-    }
-
-    private fun releasePlayer() {
-        playerInteractor.releasePlayer()
-        stateLiveData.value = PlayerUiState.Default
+    fun removeAudioPlayerControl() {
+        audioPlayerControl = null
     }
 
     override fun onCleared() {
         super.onCleared()
-        releasePlayer()
-    }
-
-    private fun startTimer() {
-        timerJob?.cancel()
-        timerJob = viewModelScope.launch {
-            while (playerInteractor.getStatePlaying()) {
-                delay(CHECK_INTERVAL)
-                updateState(PlayerUiState.Playing(getCurrentPlayerPosition(), isFavorite))
-            }
-        }
+        audioPlayerControl = null
     }
 
     private fun setFavoriteValue() {
         viewModelScope.launch {
             isFavorite = libraryInteractor.getTrackFavoriteValue(track.trackId)
+            favoriteLiveData.value = isFavorite
         }
     }
 
-    private fun getCurrentPlayerPosition(): String {
-        return SimpleDateFormat("mm:ss", Locale.getDefault())
-            .format(playerInteractor.getCurrentPosition()) ?: DEFAULT_TIMER
-    }
-
     private fun updateState(state: PlayerUiState) {
-        stateLiveData.postValue(state)
+        playerState.postValue(state)
     }
 
     fun onFavoriteClicked() {
@@ -127,22 +96,8 @@ class PlayerViewModel(
                 libraryInteractor.addToFavoriteTracks(track)
             }
 
+            favoriteLiveData.value = !isFavorite
             isFavorite = !isFavorite
-
-            val currentState = stateLiveData.value
-            val progress = when (currentState) {
-                is PlayerUiState.Playing -> currentState.progress
-                is PlayerUiState.Paused -> currentState.progress
-                else -> DEFAULT_TIMER
-            }
-
-            when (currentState) {
-                is PlayerUiState.Playing -> updateState(PlayerUiState.Playing(progress, isFavorite))
-                is PlayerUiState.Paused -> updateState(PlayerUiState.Paused(progress, isFavorite))
-                is PlayerUiState.Prepared -> updateState(PlayerUiState.Prepared)
-                is PlayerUiState.Default -> updateState(PlayerUiState.Default)
-                else -> {}
-            }
         }
     }
 
@@ -150,7 +105,7 @@ class PlayerViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             creationPlaylistInteractor.getPlaylists()
                 .collect { playlists ->
-                    playlistsLiveData.value = playlists
+                    playlistsState.value = playlists
                 }
         }
     }
@@ -164,11 +119,5 @@ class PlayerViewModel(
                 updateState(PlayerUiState.AddingToPlaylist(playlist.name, true))
             }
         }
-    }
-
-    companion object {
-        private const val CHECK_INTERVAL = 300L
-
-        private const val DEFAULT_TIMER = "00:00"
     }
 }

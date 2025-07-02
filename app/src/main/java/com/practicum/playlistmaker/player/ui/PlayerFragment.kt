@@ -1,16 +1,20 @@
 package com.practicum.playlistmaker.player.ui
 
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Build
 import android.os.Build.VERSION
 import android.os.Bundle
-import android.util.Log
+import android.os.IBinder
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -31,6 +35,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.text.SimpleDateFormat
 import java.util.Locale
+import android.Manifest
 
 const val SDK_TIRAMISU = Build.VERSION_CODES.TIRAMISU
 
@@ -49,6 +54,27 @@ class PlayerFragment : Fragment() {
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
     private val playerAdapter by lazy { PlayerAdapter( createOnPlaylistListener() ) }
+
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as MusicService.MusicServiceBinder
+            viewModel.setAudioPlayerControl(binder.getService())
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            viewModel.removeAudioPlayerControl()
+        }
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            bindMusicService()
+        } else {
+            Toast.makeText(requireContext(), "Can't bind service!", Toast.LENGTH_LONG).show()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -71,12 +97,22 @@ class PlayerFragment : Fragment() {
 
         setPlaylistsAdapter()
 
+        if (VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            bindMusicService()
+        }
+
         binding.saveToPlaylist.setOnClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
-        viewModel.observeState().observe(viewLifecycleOwner) { state ->
+        viewModel.observePlayerState().observe(viewLifecycleOwner) { state ->
             renderState(state)
+        }
+
+        viewModel.observeFavorite().observe(viewLifecycleOwner) {
+            setFavoriteIcon(it)
         }
 
         lifecycleScope.launch {
@@ -93,6 +129,7 @@ class PlayerFragment : Fragment() {
         binding.playButton.setOnClickListener{
             viewModel.onPlayButtonClicked()
         }
+        binding.playButton.isEnabled = false
 
         binding.saveToFavorites.setOnClickListener { viewModel.onFavoriteClicked() }
 
@@ -104,9 +141,33 @@ class PlayerFragment : Fragment() {
         }
     }
 
+    private fun bindMusicService() {
+        val intent = Intent(requireContext(), MusicService::class.java).apply {
+            putExtra(SONG_URL, track?.previewUrl)
+            putExtra(ARTIST_NAME, track?.artistName)
+            putExtra(SONG_TITLE, track?.trackName)
+        }
+
+        requireActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    private fun unbindMusicService() {
+        requireActivity().unbindService(serviceConnection)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        unbindMusicService()
+    }
+
     override fun onStop() {
         super.onStop()
-        viewModel.onPause()
+        viewModel.startNotification()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.stopNotification()
     }
 
     private fun setBackBtn() {
@@ -206,19 +267,22 @@ class PlayerFragment : Fragment() {
         when (state) {
             is PlayerUiState.Playing -> {
                 binding.duration.text = state.progress
-                setFavoriteIcon(state.isFavorite)
             }
 
             is PlayerUiState.Paused -> {
                 binding.duration.text = state.progress
-                setFavoriteIcon(state.isFavorite)
             }
 
             is PlayerUiState.Prepared -> {
                 binding.duration.text = DEFAULT_TIMER
+                binding.playButton.isEnabled = true
             }
 
             is PlayerUiState.Default -> {
+                binding.duration.text = DEFAULT_TIMER
+            }
+
+            is PlayerUiState.Completed -> {
                 binding.playButton.changeButtonState()
                 binding.duration.text = DEFAULT_TIMER
             }
@@ -231,6 +295,7 @@ class PlayerFragment : Fragment() {
                     Toast.makeText(requireContext(), "Трек уже добавлен в плейлист [${state.playlistName}]", Toast.LENGTH_SHORT).show()
                 }
             }
+
         }
     }
 
@@ -245,6 +310,10 @@ class PlayerFragment : Fragment() {
         private const val TRACK = "TRACK"
 
         private const val DEFAULT_TIMER = "00:00"
+
+        private const val SONG_URL = "song_url"
+        private const val ARTIST_NAME = "artist_name"
+        private const val SONG_TITLE = "song_title"
     }
 
 }
